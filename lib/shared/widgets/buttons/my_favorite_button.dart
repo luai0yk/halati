@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app_template/core/constants/app_icons.dart';
-import 'package:flutter_app_template/core/utils/extensions/context_extension.dart';
-import 'package:flutter_app_template/shared/widgets/buttons/my_icon_button.dart';
+import 'package:status_saver/core/constants/app_icons.dart';
+import 'package:status_saver/core/utils/extensions/context_extension.dart';
+import 'package:status_saver/shared/widgets/buttons/my_icon_button.dart';
 
 class MyFavoriteButton extends StatefulWidget {
   final bool initialIsFavorite;

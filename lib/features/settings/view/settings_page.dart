@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app_template/core/constants/app_icons.dart';
-import 'package:flutter_app_template/core/l10n/app_locales.dart';
-import 'package:flutter_app_template/core/utils/extensions/context_extension.dart';
-import 'package:flutter_app_template/core/utils/extensions/responsive_values.dart';
-import 'package:flutter_app_template/core/utils/helpers/settings_helper.dart';
-import 'package:flutter_app_template/core/utils/helpers/ui/bottom_sheet_helper.dart';
-import 'package:flutter_app_template/features/settings/controller/settings_controller.dart';
-import 'package:flutter_app_template/shared/widgets/appbars/my_app_bar.dart';
-import 'package:flutter_app_template/shared/widgets/cards/my_card.dart';
-import 'package:flutter_app_template/shared/widgets/cards/my_section_card.dart';
-import 'package:flutter_app_template/shared/widgets/lists/selectable_list.dart';
-import 'package:flutter_app_template/shared/widgets/misc/my_icon.dart';
-import 'package:flutter_app_template/shared/widgets/sheets/my_bottom_sheet.dart';
-import 'package:flutter_app_template/shared/widgets/tiles/my_list_tile.dart';
+import 'package:status_saver/core/constants/app_icons.dart';
+import 'package:status_saver/core/l10n/app_locales.dart';
+import 'package:status_saver/core/utils/extensions/context_extension.dart';
+import 'package:status_saver/core/utils/extensions/responsive_values.dart';
+import 'package:status_saver/core/utils/helpers/settings_helper.dart';
+import 'package:status_saver/core/utils/helpers/ui/bottom_sheet_helper.dart';
+import 'package:status_saver/features/settings/controller/settings_controller.dart';
+import 'package:status_saver/shared/widgets/appbars/my_app_bar.dart';
+import 'package:status_saver/shared/widgets/cards/my_card.dart';
+import 'package:status_saver/shared/widgets/cards/my_section_card.dart';
+import 'package:status_saver/shared/widgets/lists/selectable_list.dart';
+import 'package:status_saver/shared/widgets/misc/my_icon.dart';
+import 'package:status_saver/shared/widgets/sheets/my_bottom_sheet.dart';
+import 'package:status_saver/shared/widgets/tiles/my_list_tile.dart';
 import 'package:get/get.dart';
 
 class SettingsPage extends GetView<SettingsController> {

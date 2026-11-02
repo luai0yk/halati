@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app_template/core/l10n/app_locales.dart';
-import 'package:flutter_app_template/core/services/cash/cash_keys.dart';
-import 'package:flutter_app_template/core/services/cash/cash_service.dart';
-import 'package:flutter_app_template/core/utils/helpers/settings_helper.dart';
+import 'package:status_saver/core/l10n/app_locales.dart';
+import 'package:status_saver/core/services/cash/cash_keys.dart';
+import 'package:status_saver/core/services/cash/cash_service.dart';
+import 'package:status_saver/core/utils/helpers/settings_helper.dart';
 import 'package:get/get.dart';
 
 class SettingsController extends GetxController {

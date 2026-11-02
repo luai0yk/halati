@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_app_template/core/constants/app_constants.dart';
-import 'package:flutter_app_template/core/utils/extensions/responsive_size.dart';
+import 'package:status_saver/core/constants/app_constants.dart';
+import 'package:status_saver/core/utils/extensions/responsive_size.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import 'dark_theme.dart';

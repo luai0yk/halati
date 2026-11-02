@@ -1,5 +1,5 @@
-import 'package:flutter_app_template/features/app_shell/view/app_shell_page.dart';
-import 'package:flutter_app_template/features/settings/view/settings_page.dart';
+import 'package:status_saver/features/app_shell/view/app_shell_page.dart';
+import 'package:status_saver/features/settings/view/settings_page.dart';
 import 'package:get/get.dart';
 
 import 'app_routes.dart';

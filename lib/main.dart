@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_app_template/core/constants/app_constants.dart';
-import 'package:flutter_app_template/core/utils/helpers/ui/app_navigator.dart';
+import 'package:status_saver/core/constants/app_constants.dart';
+import 'package:status_saver/core/utils/helpers/ui/app_navigator.dart';
 import 'package:get/get.dart';
 
 import 'core/l10n/app_locale_config.dart';
@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       navigatorKey: AppNavigator.key,
-      title: 'FlutterAppTemplate',
+      title: 'StatusSaver',
       debugShowCheckedModeBanner: false,
       theme: const MaterialTheme().light(),
       darkTheme: const MaterialTheme().dark(),

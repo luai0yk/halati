@@ -1,11 +1,12 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_app_template/core/utils/extensions/context_extension.dart';
-import 'package:flutter_app_template/core/utils/extensions/responsive_size.dart';
-import 'package:flutter_app_template/core/utils/extensions/responsive_values.dart';
-import 'package:flutter_app_template/shared/widgets/animations/my_animated_visibility.dart';
-import 'package:flutter_app_template/shared/widgets/misc/my_icon.dart';
-import 'package:flutter_app_template/shared/widgets/misc/my_progress_indicator.dart';
+import 'package:status_saver/core/utils/extensions/context_extension.dart';
+import 'package:status_saver/core/utils/extensions/responsive_size.dart';
+import 'package:status_saver/core/utils/extensions/responsive_values.dart';
+import 'package:status_saver/shared/widgets/animations/my_animated_visibility.dart';
+import 'package:status_saver/shared/widgets/misc/my_icon.dart';
+import 'package:status_saver/shared/widgets/misc/my_progress_indicator.dart';
 
 enum AppButtonTextStyle { bold, medium, regular }
 

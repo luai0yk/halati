@@ -2,16 +2,16 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_app_template/core/constants/app_icons.dart';
-import 'package:flutter_app_template/core/utils/extensions/context_extension.dart';
-import 'package:flutter_app_template/core/utils/extensions/responsive_size.dart';
-import 'package:flutter_app_template/core/utils/extensions/responsive_values.dart';
-import 'package:flutter_app_template/shared/widgets/cards/my_card.dart';
-import 'package:flutter_app_template/shared/widgets/images/image_viewer_page.dart';
-import 'package:flutter_app_template/shared/widgets/misc/my_icon.dart';
-import 'package:flutter_app_template/shared/widgets/misc/my_progress_indicator.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:status_saver/core/constants/app_icons.dart';
+import 'package:status_saver/core/utils/extensions/context_extension.dart';
+import 'package:status_saver/core/utils/extensions/responsive_size.dart';
+import 'package:status_saver/core/utils/extensions/responsive_values.dart';
+import 'package:status_saver/shared/widgets/cards/my_card.dart';
+import 'package:status_saver/shared/widgets/images/image_viewer_page.dart';
+import 'package:status_saver/shared/widgets/misc/my_icon.dart';
+import 'package:status_saver/shared/widgets/misc/my_progress_indicator.dart';
 
 class MyImage extends StatefulWidget {
   /// The asset image path.

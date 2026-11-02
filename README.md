@@ -1,4 +1,4 @@
-# flutter_app_template
+# status_saver
 
 A new Flutter project.
 

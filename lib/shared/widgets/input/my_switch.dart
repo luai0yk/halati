@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app_template/core/constants/app_durations.dart';
-import 'package:flutter_app_template/core/utils/extensions/context_extension.dart';
-import 'package:flutter_app_template/core/utils/extensions/responsive_size.dart';
+import 'package:status_saver/core/constants/app_durations.dart';
+import 'package:status_saver/core/utils/extensions/context_extension.dart';
+import 'package:status_saver/core/utils/extensions/responsive_size.dart';
 
 class MySwitch extends StatefulWidget {
   final bool value;

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app_template/core/utils/extensions/context_extension.dart';
+import 'package:status_saver/core/utils/extensions/context_extension.dart';
 
 enum LangCode {
   system('system'),

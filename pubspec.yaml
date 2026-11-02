@@ -1,5 +1,5 @@
-name: flutter_app_template
-description: "A flutter app template."
+name: status_saver
+description: "A Status Saver."
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 

@@ -7,11 +7,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_app_template/core/services/cash/cash_service.dart';
-import 'package:flutter_app_template/features/settings/controller/settings_controller.dart';
-import 'package:flutter_app_template/main.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:status_saver/core/services/cash/cash_service.dart';
+import 'package:status_saver/features/settings/controller/settings_controller.dart';
+import 'package:status_saver/main.dart';
 
 void main() {
   setUp(() async {

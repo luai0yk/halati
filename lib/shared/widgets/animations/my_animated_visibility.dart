@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app_template/core/constants/app_durations.dart';
+import 'package:status_saver/core/constants/app_durations.dart';
 
 /// Animates the visibility of a widget by fading it in and out,
 /// while still occupying layout space.

@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_app_template/core/constants/app_durations.dart';
-import 'package:flutter_app_template/core/l10n/app_localizations.dart';
-import 'package:flutter_app_template/core/services/cash/cash_keys.dart';
-import 'package:flutter_app_template/core/services/cash/cash_service.dart';
-import 'package:flutter_app_template/core/utils/extensions/context_extension.dart';
-import 'package:flutter_app_template/core/utils/extensions/responsive_size.dart';
-import 'package:flutter_app_template/core/utils/helpers/ui/bottom_sheet_helper.dart';
-import 'package:flutter_app_template/core/utils/helpers/ui/toast_helper.dart';
-import 'package:flutter_app_template/shared/widgets/cards/my_card.dart';
-import 'package:flutter_app_template/shared/widgets/input/my_text_field.dart';
-import 'package:flutter_app_template/shared/widgets/misc/my_toast.dart';
-import 'package:flutter_app_template/shared/widgets/sheets/my_bottom_sheet.dart';
+import 'package:status_saver/core/constants/app_durations.dart';
+import 'package:status_saver/core/l10n/app_localizations.dart';
+import 'package:status_saver/core/services/cash/cash_keys.dart';
+import 'package:status_saver/core/services/cash/cash_service.dart';
+import 'package:status_saver/core/utils/extensions/context_extension.dart';
+import 'package:status_saver/core/utils/extensions/responsive_size.dart';
+import 'package:status_saver/core/utils/helpers/ui/bottom_sheet_helper.dart';
+import 'package:status_saver/core/utils/helpers/ui/toast_helper.dart';
+import 'package:status_saver/shared/widgets/cards/my_card.dart';
+import 'package:status_saver/shared/widgets/input/my_text_field.dart';
+import 'package:status_saver/shared/widgets/misc/my_toast.dart';
+import 'package:status_saver/shared/widgets/sheets/my_bottom_sheet.dart';
 import 'package:get/get.dart';
 
 class MyColorPicker extends StatefulWidget {

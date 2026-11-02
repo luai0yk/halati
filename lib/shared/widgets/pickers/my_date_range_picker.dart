@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app_template/core/l10n/app_localizations.dart';
-import 'package:flutter_app_template/core/utils/extensions/context_extension.dart';
-import 'package:flutter_app_template/core/utils/extensions/responsive_size.dart';
-import 'package:flutter_app_template/core/utils/extensions/responsive_values.dart';
-import 'package:flutter_app_template/core/utils/helpers/ui/bottom_sheet_helper.dart';
-import 'package:flutter_app_template/shared/widgets/cards/my_card.dart';
-import 'package:flutter_app_template/shared/widgets/sheets/my_bottom_sheet.dart';
+import 'package:status_saver/core/l10n/app_localizations.dart';
+import 'package:status_saver/core/utils/extensions/context_extension.dart';
+import 'package:status_saver/core/utils/extensions/responsive_size.dart';
+import 'package:status_saver/core/utils/extensions/responsive_values.dart';
+import 'package:status_saver/core/utils/helpers/ui/bottom_sheet_helper.dart';
+import 'package:status_saver/shared/widgets/cards/my_card.dart';
+import 'package:status_saver/shared/widgets/sheets/my_bottom_sheet.dart';
 
 class MyDateRangePicker {
   MyDateRangePicker._();

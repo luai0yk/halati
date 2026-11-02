@@ -1,9 +1,9 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_app_template/core/services/cash/cash_keys.dart';
-import 'package:flutter_app_template/core/services/cash/cash_service.dart';
-import 'package:flutter_app_template/core/utils/extensions/context_extension.dart';
+import 'package:status_saver/core/services/cash/cash_keys.dart';
+import 'package:status_saver/core/services/cash/cash_service.dart';
+import 'package:status_saver/core/utils/extensions/context_extension.dart';
 import 'package:get/get.dart';
 
 class SettingsHelper {

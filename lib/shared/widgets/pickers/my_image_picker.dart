@@ -1,22 +1,22 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_app_template/core/l10n/app_localizations.dart';
-import 'package:flutter_app_template/core/constants/app_icons.dart';
-import 'package:flutter_app_template/core/utils/extensions/context_extension.dart';
-import 'package:flutter_app_template/core/utils/extensions/responsive_size.dart';
-import 'package:flutter_app_template/core/utils/extensions/responsive_values.dart';
-import 'package:flutter_app_template/core/utils/helpers/ui/bottom_sheet_helper.dart';
-import 'package:flutter_app_template/core/utils/helpers/ui/dialog_helper.dart';
-import 'package:flutter_app_template/core/utils/helpers/ui/toast_helper.dart';
-import 'package:flutter_app_template/core/utils/validators/empty_validator.dart';
-import 'package:flutter_app_template/shared/controller/image_picker_controller.dart';
-import 'package:flutter_app_template/shared/widgets/buttons/my_button.dart';
-import 'package:flutter_app_template/shared/widgets/cards/my_card.dart';
-import 'package:flutter_app_template/shared/widgets/dialogs/my_dialog.dart';
-import 'package:flutter_app_template/shared/widgets/images/my_image.dart';
-import 'package:flutter_app_template/shared/widgets/misc/my_icon.dart';
-import 'package:flutter_app_template/shared/widgets/sheets/my_bottom_sheet.dart';
+import 'package:status_saver/core/constants/app_icons.dart';
+import 'package:status_saver/core/l10n/app_localizations.dart';
+import 'package:status_saver/core/utils/extensions/context_extension.dart';
+import 'package:status_saver/core/utils/extensions/responsive_size.dart';
+import 'package:status_saver/core/utils/extensions/responsive_values.dart';
+import 'package:status_saver/core/utils/helpers/ui/bottom_sheet_helper.dart';
+import 'package:status_saver/core/utils/helpers/ui/dialog_helper.dart';
+import 'package:status_saver/core/utils/helpers/ui/toast_helper.dart';
+import 'package:status_saver/core/utils/validators/empty_validator.dart';
+import 'package:status_saver/shared/controller/image_picker_controller.dart';
+import 'package:status_saver/shared/widgets/buttons/my_button.dart';
+import 'package:status_saver/shared/widgets/cards/my_card.dart';
+import 'package:status_saver/shared/widgets/dialogs/my_dialog.dart';
+import 'package:status_saver/shared/widgets/images/my_image.dart';
+import 'package:status_saver/shared/widgets/misc/my_icon.dart';
+import 'package:status_saver/shared/widgets/sheets/my_bottom_sheet.dart';
 
 class MyImagePicker extends StatelessWidget {
   final ImagePickerController controller;

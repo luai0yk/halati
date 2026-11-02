@@ -1,4 +1,4 @@
-import 'package:flutter_app_template/shared/widgets/dialogs/my_progress_dialog.dart';
+import 'package:status_saver/shared/widgets/dialogs/my_progress_dialog.dart';
 
 import 'dialog_helper.dart';
 
