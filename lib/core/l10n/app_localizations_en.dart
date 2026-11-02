@@ -161,4 +161,100 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get selectIcon => 'Select Icon';
+
+  @override
+  String get statuses => 'Statuses';
+
+  @override
+  String get saved => 'Saved';
+
+  @override
+  String get images => 'Images';
+
+  @override
+  String get videos => 'Videos';
+
+  @override
+  String get audio => 'Audio';
+
+  @override
+  String get refresh => 'Refresh';
+
+  @override
+  String get grantPermission => 'Grant Permission';
+
+  @override
+  String get safPermissionTitle => 'WhatsApp Status Folder Access';
+
+  @override
+  String get safPermissionExplanation =>
+      'To view and save WhatsApp statuses, please select the WhatsApp Statuses folder.';
+
+  @override
+  String get selectFolder => 'Select Folder';
+
+  @override
+  String get savedSuccessfully => 'Saved to Gallery';
+
+  @override
+  String get saveFailed => 'Failed to save media';
+
+  @override
+  String get noStatusesFound => 'No statuses available';
+
+  @override
+  String get noStatusesSubtitle =>
+      'View statuses in WhatsApp first to make them appear here.';
+
+  @override
+  String get noSavedMedia => 'No saved media yet';
+
+  @override
+  String get share => 'Share';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get deletedSuccessfully => 'Deleted successfully';
+
+  @override
+  String get error => 'Error';
+
+  @override
+  String get deleteSavedMedia => 'Delete Saved Media?';
+
+  @override
+  String get confirmDeleteMessage =>
+      'Are you sure you want to delete this media file?';
+
+  @override
+  String get counterOf => 'of';
+
+  @override
+  String get mediaViewer => 'Media Viewer';
+
+  @override
+  String get failedToLoadMedia => 'Failed to load media';
+
+  @override
+  String get itemDeleted => 'Item deleted';
+
+  @override
+  String get play => 'Play';
+
+  @override
+  String get pause => 'Pause';
+
+  @override
+  String get playingAudio => 'Playing audio';
+
+  @override
+  String get paused => 'Paused';
+
+  @override
+  String get unableToPlayAudio => 'Unable to play audio format';
 }

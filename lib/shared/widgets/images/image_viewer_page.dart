@@ -8,26 +8,38 @@ import 'package:status_saver/core/constants/app_icons.dart';
 import 'package:status_saver/core/utils/extensions/context_extension.dart';
 import 'package:status_saver/core/utils/extensions/responsive_size.dart';
 import 'package:status_saver/shared/widgets/appbars/my_app_bar.dart';
+import 'package:status_saver/shared/widgets/buttons/my_icon_button.dart';
 import 'package:status_saver/shared/widgets/misc/my_icon.dart';
 import 'package:photo_view/photo_view.dart';
 
 class ImageViewerPage extends StatefulWidget {
-  const ImageViewerPage({super.key, required this.image, this.title});
+  const ImageViewerPage({
+    super.key,
+    required this.image,
+    this.title,
+    this.onSave,
+  });
 
   final String image;
   final String? title;
+  final VoidCallback? onSave;
 
   static void show(
     BuildContext context, {
     required String image,
     String? title,
+    VoidCallback? onSave,
   }) {
     Navigator.of(context).push(
       PageRouteBuilder(
         opaque: false,
         transitionDuration: AppDurations.medium,
         pageBuilder: (context, animation, secondaryAnimation) {
-          return ImageViewerPage(image: image, title: title);
+          return ImageViewerPage(
+            image: image,
+            title: title,
+            onSave: onSave,
+          );
         },
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return FadeTransition(opacity: animation, child: child);
@@ -119,6 +131,14 @@ class _ImageViewerPageState extends State<ImageViewerPage> {
           leadingIconColor: Colors.white,
           leadingBackgroundColor: Colors.white.withValues(alpha: 0.1),
           systemOverlayStyle: overlayStyle,
+          actions: [
+            if (widget.onSave != null)
+              MyIconButton.ghost(
+                icon: AppIcons.download,
+                iconColor: Colors.white,
+                onPressed: widget.onSave,
+              ),
+          ],
         ),
         body: SizedBox.expand(
           child: Hero(

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:status_saver/core/constants/app_icons.dart';
-import 'package:status_saver/core/theme/extended_colors.dart';
 import 'package:status_saver/core/utils/extensions/context_extension.dart';
 import 'package:status_saver/core/utils/extensions/responsive_size.dart';
 import 'package:status_saver/core/utils/extensions/responsive_values.dart';
@@ -110,8 +109,8 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colors = context.colorScheme;
-    final ExtendedColors xColors = context.extendedColors;
+    final colors = context.colorScheme;
+    final xColors = context.extendedColors;
 
     IconData? defaultIcon;
     Color? iconColor;

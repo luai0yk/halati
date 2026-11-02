@@ -56,6 +56,18 @@ class MyImage extends StatefulWidget {
   /// Whether the image can be opened in full screen.
   final bool isViewable;
 
+  /// Optional custom error widget to show when loading fails.
+  final Widget? errorWidget;
+
+  /// Optional custom error builder.
+  final Widget Function(BuildContext, Object, StackTrace?)? errorBuilder;
+
+  /// Optional target width for decoded image caching.
+  final int? cacheWidth;
+
+  /// Optional target height for decoded image caching.
+  final int? cacheHeight;
+
   const MyImage.asset({
     super.key,
     required String asset,
@@ -68,6 +80,10 @@ class MyImage extends StatefulWidget {
     this.borderWidth,
     this.padding,
     this.backgroundColor,
+    this.errorWidget,
+    this.errorBuilder,
+    this.cacheWidth,
+    this.cacheHeight,
   }) : assetImage = asset,
        fileImage = null,
        networkImage = null,
@@ -86,6 +102,10 @@ class MyImage extends StatefulWidget {
     this.borderWidth,
     this.padding,
     this.backgroundColor,
+    this.errorWidget,
+    this.errorBuilder,
+    this.cacheWidth,
+    this.cacheHeight,
     this.isViewable = false,
   }) : fileImage = file,
        assetImage = null,
@@ -104,6 +124,10 @@ class MyImage extends StatefulWidget {
     this.borderWidth,
     this.padding,
     this.backgroundColor,
+    this.errorWidget,
+    this.errorBuilder,
+    this.cacheWidth,
+    this.cacheHeight,
     this.showSkeleton = true,
     this.isViewable = false,
   }) : networkImage = url,
@@ -191,6 +215,8 @@ class _MyImageState extends State<MyImage> {
       height: double.infinity,
       fit: widget.fit,
       color: widget.color,
+      cacheWidth: widget.cacheWidth,
+      cacheHeight: widget.cacheHeight,
       errorBuilder: _localErrorBuilder,
     );
   }
@@ -202,6 +228,8 @@ class _MyImageState extends State<MyImage> {
       height: double.infinity,
       fit: widget.fit,
       color: widget.color,
+      cacheWidth: widget.cacheWidth,
+      cacheHeight: widget.cacheHeight,
       errorBuilder: _localErrorBuilder,
     );
   }
@@ -237,6 +265,8 @@ class _MyImageState extends State<MyImage> {
       height: double.infinity,
       fit: widget.fit,
       color: widget.color,
+      memCacheWidth: widget.cacheWidth,
+      memCacheHeight: widget.cacheHeight,
       errorWidget: (context, url, error) {
         debugPrint('MyImage Network Error: $error for URL: $url');
         if (!_hasError) {
@@ -273,10 +303,19 @@ class _MyImageState extends State<MyImage> {
         }
       });
     }
+    if (widget.errorWidget != null) {
+      return widget.errorWidget!;
+    }
+    if (widget.errorBuilder != null) {
+      return widget.errorBuilder!(context, error, stackTrace);
+    }
     return _buildErrorIcon(context);
   }
 
   Widget _networkErrorBuilder(BuildContext context) {
+    if (widget.errorWidget != null) {
+      return widget.errorWidget!;
+    }
     return _buildErrorIcon(context);
   }
 

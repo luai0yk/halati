@@ -1,0 +1,50 @@
+import 'package:status_saver/features/home/domain/entities/status_media.dart';
+
+class StatusMediaModel extends StatusMedia {
+  const StatusMediaModel({
+    required super.id,
+    required super.documentUri,
+    required super.fileName,
+    required super.mediaType,
+    required super.mimeType,
+    required super.size,
+    required super.lastModified,
+    super.thumbnailPath,
+    super.durationMs,
+  });
+
+  factory StatusMediaModel.fromMap(Map<dynamic, dynamic> map) {
+    final mediaTypeString = (map['mediaType'] as String?)?.toLowerCase() ?? 'image';
+    final mediaType = switch (mediaTypeString) {
+      'video' => MediaType.video,
+      'audio' => MediaType.audio,
+      _ => MediaType.image,
+    };
+
+    return StatusMediaModel(
+      id: (map['id'] ?? map['documentId'] ?? '') as String,
+      documentUri: (map['documentUri'] ?? '') as String,
+      fileName: (map['fileName'] ?? '') as String,
+      mediaType: mediaType,
+      mimeType: (map['mimeType'] ?? '') as String,
+      size: (map['size'] as num?)?.toInt() ?? 0,
+      lastModified: (map['lastModified'] as num?)?.toInt() ?? 0,
+      thumbnailPath: map['thumbnailPath'] as String?,
+      durationMs: (map['durationMs'] as num?)?.toInt(),
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'documentUri': documentUri,
+      'fileName': fileName,
+      'mediaType': mediaType.name,
+      'mimeType': mimeType,
+      'size': size,
+      'lastModified': lastModified,
+      'thumbnailPath': thumbnailPath,
+      'durationMs': durationMs,
+    };
+  }
+}

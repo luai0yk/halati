@@ -420,9 +420,9 @@ Saving media to the user's public gallery must use the Android MediaStore API, e
 
 | Media Type | MediaStore Collection | Destination Directory | MIME Type |
 |---|---|---|---|
-| Image | `MediaStore.Images.Media.EXTERNAL_CONTENT_URI` | `Pictures/StatusSaver` | `image/jpeg` or source MIME |
-| Video | `MediaStore.Video.Media.EXTERNAL_CONTENT_URI` | `Movies/StatusSaver` | `video/mp4` |
-| Audio | `MediaStore.Audio.Media.EXTERNAL_CONTENT_URI` | `Music/StatusSaver` | `audio/ogg` or `audio/opus` |
+| Image | `MediaStore.Downloads.EXTERNAL_CONTENT_URI` | `Download/StatusSaver/images` | `image/jpeg` or source MIME |
+| Video | `MediaStore.Downloads.EXTERNAL_CONTENT_URI` | `Download/StatusSaver/video` | `video/mp4` |
+| Audio | `MediaStore.Downloads.EXTERNAL_CONTENT_URI` | `Download/StatusSaver/audio` | `audio/ogg` or `audio/opus` |
 
 #### Two-Phase Insertion Pattern
 To prevent corrupted or zero-byte files appearing in the gallery if an operation is interrupted:

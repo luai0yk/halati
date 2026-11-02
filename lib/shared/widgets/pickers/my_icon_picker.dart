@@ -21,10 +21,8 @@ class MyIconPicker extends StatelessWidget {
     required BuildContext context,
     IconData? selectedIcon,
   }) async {
-    return showModalBottomSheet<IconData>(
-      context: context,
-      isScrollControlled: true,
-      builder: (_) => MyIconPicker(
+    return BottomSheetHelper.show<IconData>(
+      child: MyIconPicker(
         selectedIcon: selectedIcon,
         onIconSelected: (icon) => BottomSheetHelper.dismiss(result: icon),
       ),

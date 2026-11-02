@@ -160,4 +160,98 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get selectIcon => 'اختر أيقونة';
+
+  @override
+  String get statuses => 'الحالات';
+
+  @override
+  String get saved => 'المحفوظات';
+
+  @override
+  String get images => 'الصور';
+
+  @override
+  String get videos => 'الفيديوهات';
+
+  @override
+  String get audio => 'الصوتيات';
+
+  @override
+  String get refresh => 'تحديث';
+
+  @override
+  String get grantPermission => 'منح الإذن';
+
+  @override
+  String get safPermissionTitle => 'الوصول إلى مجلد حالات واتساب';
+
+  @override
+  String get safPermissionExplanation =>
+      'لعرض وحفظ حالات واتساب، يرجى اختيار مجلد حالات واتساب.';
+
+  @override
+  String get selectFolder => 'اختيار المجلد';
+
+  @override
+  String get savedSuccessfully => 'تم الحفظ في المعرض';
+
+  @override
+  String get saveFailed => 'فشل حفظ الوسائط';
+
+  @override
+  String get noStatusesFound => 'لا توجد حالات متاحة';
+
+  @override
+  String get noStatusesSubtitle => 'شاهد الحالات في واتساب أولاً لتظهر هنا.';
+
+  @override
+  String get noSavedMedia => 'لا توجد وسائط محفوظة بعد';
+
+  @override
+  String get share => 'مشاركة';
+
+  @override
+  String get save => 'حفظ';
+
+  @override
+  String get delete => 'حذف';
+
+  @override
+  String get deletedSuccessfully => 'تم الحذف بنجاح';
+
+  @override
+  String get error => 'خطأ';
+
+  @override
+  String get deleteSavedMedia => 'حذف الوسائط المحفوظة؟';
+
+  @override
+  String get confirmDeleteMessage => 'هل أنت متأكد من رغبتك في حذف هذا الملف؟';
+
+  @override
+  String get counterOf => 'من';
+
+  @override
+  String get mediaViewer => 'عارض الوسائط';
+
+  @override
+  String get failedToLoadMedia => 'فشل تحميل الوسائط';
+
+  @override
+  String get itemDeleted => 'تم حذف العنصر';
+
+  @override
+  String get play => 'تشغيل';
+
+  @override
+  String get pause => 'إيقاف مؤقت';
+
+  @override
+  String get playingAudio => 'جارٍ تشغيل الصوت';
+
+  @override
+  String get paused => 'متوقف مؤقتاً';
+
+  @override
+  String get unableToPlayAudio => 'تعذر تشغيل هذا التنسيق الصوتي';
 }

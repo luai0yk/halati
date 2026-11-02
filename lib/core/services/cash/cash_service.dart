@@ -81,14 +81,14 @@ class CashService extends GetxService {
     return _prefs.getStringList(key);
   }
 
-  /// Save json model
+  /// Save json models
   Future<bool> setModel(String key, Map<String, dynamic> json) {
     final jsonString = jsonEncode(json);
 
     return _prefs.setString(key, jsonString);
   }
 
-  /// Get json model
+  /// Get json models
   T? getModel<T>(String key, T Function(Map<String, dynamic> json) fromJson) {
     final jsonString = _prefs.getString(key);
 

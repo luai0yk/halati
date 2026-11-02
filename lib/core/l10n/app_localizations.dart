@@ -403,6 +403,192 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select Icon'**
   String get selectIcon;
+
+  /// No description provided for @statuses.
+  ///
+  /// In en, this message translates to:
+  /// **'Statuses'**
+  String get statuses;
+
+  /// No description provided for @saved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get saved;
+
+  /// No description provided for @images.
+  ///
+  /// In en, this message translates to:
+  /// **'Images'**
+  String get images;
+
+  /// No description provided for @videos.
+  ///
+  /// In en, this message translates to:
+  /// **'Videos'**
+  String get videos;
+
+  /// No description provided for @audio.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio'**
+  String get audio;
+
+  /// No description provided for @refresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get refresh;
+
+  /// No description provided for @grantPermission.
+  ///
+  /// In en, this message translates to:
+  /// **'Grant Permission'**
+  String get grantPermission;
+
+  /// No description provided for @safPermissionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp Status Folder Access'**
+  String get safPermissionTitle;
+
+  /// No description provided for @safPermissionExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'To view and save WhatsApp statuses, please select the WhatsApp Statuses folder.'**
+  String get safPermissionExplanation;
+
+  /// No description provided for @selectFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Folder'**
+  String get selectFolder;
+
+  /// No description provided for @savedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved to Gallery'**
+  String get savedSuccessfully;
+
+  /// No description provided for @saveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save media'**
+  String get saveFailed;
+
+  /// No description provided for @noStatusesFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No statuses available'**
+  String get noStatusesFound;
+
+  /// No description provided for @noStatusesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'View statuses in WhatsApp first to make them appear here.'**
+  String get noStatusesSubtitle;
+
+  /// No description provided for @noSavedMedia.
+  ///
+  /// In en, this message translates to:
+  /// **'No saved media yet'**
+  String get noSavedMedia;
+
+  /// No description provided for @share.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get share;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @deletedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted successfully'**
+  String get deletedSuccessfully;
+
+  /// No description provided for @error.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get error;
+
+  /// No description provided for @deleteSavedMedia.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Saved Media?'**
+  String get deleteSavedMedia;
+
+  /// No description provided for @confirmDeleteMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this media file?'**
+  String get confirmDeleteMessage;
+
+  /// No description provided for @counterOf.
+  ///
+  /// In en, this message translates to:
+  /// **'of'**
+  String get counterOf;
+
+  /// No description provided for @mediaViewer.
+  ///
+  /// In en, this message translates to:
+  /// **'Media Viewer'**
+  String get mediaViewer;
+
+  /// No description provided for @failedToLoadMedia.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load media'**
+  String get failedToLoadMedia;
+
+  /// No description provided for @itemDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Item deleted'**
+  String get itemDeleted;
+
+  /// No description provided for @play.
+  ///
+  /// In en, this message translates to:
+  /// **'Play'**
+  String get play;
+
+  /// No description provided for @pause.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause'**
+  String get pause;
+
+  /// No description provided for @playingAudio.
+  ///
+  /// In en, this message translates to:
+  /// **'Playing audio'**
+  String get playingAudio;
+
+  /// No description provided for @paused.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused'**
+  String get paused;
+
+  /// No description provided for @unableToPlayAudio.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to play audio format'**
+  String get unableToPlayAudio;
 }
 
 class _AppLocalizationsDelegate

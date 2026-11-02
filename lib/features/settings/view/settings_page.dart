@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:status_saver/core/constants/app_icons.dart';
 import 'package:status_saver/core/l10n/app_locales.dart';
 import 'package:status_saver/core/utils/extensions/context_extension.dart';
+import 'package:status_saver/core/utils/extensions/responsive_size.dart';
 import 'package:status_saver/core/utils/extensions/responsive_values.dart';
 import 'package:status_saver/core/utils/helpers/settings_helper.dart';
 import 'package:status_saver/core/utils/helpers/ui/bottom_sheet_helper.dart';
@@ -13,7 +15,6 @@ import 'package:status_saver/shared/widgets/lists/selectable_list.dart';
 import 'package:status_saver/shared/widgets/misc/my_icon.dart';
 import 'package:status_saver/shared/widgets/sheets/my_bottom_sheet.dart';
 import 'package:status_saver/shared/widgets/tiles/my_list_tile.dart';
-import 'package:get/get.dart';
 
 class SettingsPage extends GetView<SettingsController> {
   const SettingsPage({super.key});
@@ -22,9 +23,15 @@ class SettingsPage extends GetView<SettingsController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: context.colorScheme.surface,
-      appBar: MyAppBar(title: context.l10n.settings),
+      appBar: MyAppBar(title: context.l10n.settings, withLeading: false),
       body: ListView(
-        padding: context.insetsAllM,
+        padding: EdgeInsets.only(
+          left: context.spaceM,
+          right: context.spaceM,
+          top: context.spaceM,
+          bottom: context.setSize(95) + MediaQuery.paddingOf(context).bottom,
+        ),
+        clipBehavior: Clip.none,
         children: [
           MySectionCard(
             title: context.l10n.generalSettings,

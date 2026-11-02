@@ -209,70 +209,84 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
       }
     }
 
+    final resolvedBorderRadius = widget.borderRadius ?? BorderRadius.zero;
+    final navBackgroundColor = widget.backgroundColor ??
+        theme.bottomNavigationBarTheme.backgroundColor ??
+        theme.colorScheme.surface.withValues(alpha: 0.88);
+
     return SafeArea(
       child: Padding(
         padding: widget.margin ?? EdgeInsets.zero,
         child: Container(
           height: widget.height,
-          padding: widget.padding ?? context.insetsAllS,
           decoration: BoxDecoration(
-            color:
-                widget.backgroundColor ??
-                theme.bottomNavigationBarTheme.backgroundColor ??
-                theme.colorScheme.surface,
-            border: widget.border,
-            borderRadius: widget.borderRadius ?? BorderRadius.zero,
+            borderRadius: resolvedBorderRadius,
             boxShadow: (widget.elevation ?? context.elevationNone) > 0
                 ? [
                     BoxShadow(
-                      color: theme.shadowColor.withValues(alpha: 0.1),
+                      color: theme.shadowColor.withValues(alpha: 0.15),
                       blurRadius: widget.elevation ?? context.elevationNone,
                       offset: Offset(0, context.setSize(4)),
                     ),
                   ]
                 : null,
           ),
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              if (isSlidingMode && _isInitialized)
-                AnimatedPositioned(
-                  left: _indicatorLeft,
-                  top: _indicatorTop,
-                  width: _indicatorWidth,
-                  height: _indicatorHeight,
-                  duration: AppDurations.slow,
-                  curve:
-                      widget.itemAnimation ==
-                          MyBottomNavigationBarAnimation.bounce
-                      ? Curves.easeOutBack
-                      : Curves.easeOutQuint,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color:
-                          widget.selectedBackgroundColor ??
-                          theme.colorScheme.primary.withValues(alpha: 0.1),
-                      border: widget.itemBorder,
-                      borderRadius: widget.itemBorderRadius ?? context.brL,
-                    ),
-                  ),
+          child: ClipRRect(
+            borderRadius: resolvedBorderRadius,
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+              child: Container(
+                clipBehavior: Clip.antiAlias,
+                padding: widget.padding ?? context.insetsAllXs,
+                decoration: BoxDecoration(
+                  color: navBackgroundColor,
+                  border: widget.border,
+                  borderRadius: resolvedBorderRadius,
                 ),
-              NotificationListener<SizeChangedLayoutNotification>(
-                onNotification: (n) {
-                  WidgetsBinding.instance.addPostFrameCallback(
-                    (_) => _updateIndicatorPosition(),
-                  );
-                  return true;
-                },
-                child: SizeChangedLayoutNotifier(
-                  child: Row(
-                    key: _rowKey,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: children,
-                  ),
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    if (isSlidingMode && _isInitialized)
+                      AnimatedPositioned(
+                        left: _indicatorLeft,
+                        top: _indicatorTop,
+                        width: _indicatorWidth,
+                        height: _indicatorHeight,
+                        duration: AppDurations.slow,
+                        curve:
+                            widget.itemAnimation ==
+                                MyBottomNavigationBarAnimation.bounce
+                            ? Curves.easeOutBack
+                            : Curves.easeOutQuint,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color:
+                                widget.selectedBackgroundColor ??
+                                theme.colorScheme.primary.withValues(alpha: 0.1),
+                            border: widget.itemBorder,
+                            borderRadius: widget.itemBorderRadius ?? context.brL,
+                          ),
+                        ),
+                      ),
+                    NotificationListener<SizeChangedLayoutNotification>(
+                      onNotification: (n) {
+                        WidgetsBinding.instance.addPostFrameCallback(
+                          (_) => _updateIndicatorPosition(),
+                        );
+                        return true;
+                      },
+                      child: SizeChangedLayoutNotifier(
+                        child: Row(
+                          key: _rowKey,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: children,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
+            ),
           ),
         ),
       ),

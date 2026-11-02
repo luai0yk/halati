@@ -3,7 +3,6 @@ import 'package:status_saver/core/constants/app_icons.dart';
 import 'package:status_saver/core/utils/extensions/context_extension.dart';
 import 'package:status_saver/core/utils/extensions/responsive_size.dart';
 import 'package:status_saver/core/utils/extensions/responsive_values.dart';
-import 'package:status_saver/shared/widgets/cards/my_card.dart';
 import 'package:status_saver/shared/widgets/misc/my_icon.dart';
 
 class MyPopupMenuItem<T> {
@@ -27,6 +26,9 @@ class MyPopupMenu<T> extends StatelessWidget {
   final void Function(T)? onSelected;
   final IconData? icon;
   final Color? iconColor;
+  final double? iconSize;
+  final Color? iconBackground;
+  final BorderRadiusGeometry? iconRadius;
   final String? tooltip;
   final Offset offset;
   final ShapeBorder? shape;
@@ -39,6 +41,9 @@ class MyPopupMenu<T> extends StatelessWidget {
     this.onSelected,
     this.icon,
     this.iconColor,
+    this.iconSize,
+    this.iconBackground,
+    this.iconRadius,
     this.tooltip,
     this.offset = Offset.zero,
     this.shape,
@@ -49,10 +54,25 @@ class MyPopupMenu<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<T>(
-      icon: MyCard.filled(
-        padding: context.insetsAllS,
-        child: MyIcon(icon: icon ?? AppIcons.more, color: iconColor),
+      icon: MyIcon(
+        icon: icon ?? AppIcons.more,
+        color: iconColor,
+        size: iconSize ?? context.iconM,
       ),
+      iconSize: iconSize,
+      style: ButtonStyle(
+        backgroundColor: WidgetStatePropertyAll(
+          iconBackground ?? context.colorScheme.surfaceContainer,
+        ),
+        splashFactory: InkRipple.splashFactory,
+        shape: WidgetStatePropertyAll(
+          RoundedRectangleBorder(
+            borderRadius: iconRadius ?? context.brM,
+          ),
+        ),
+        padding: const WidgetStatePropertyAll(EdgeInsets.zero),
+      ),
+
       tooltip: tooltip,
       offset: offset,
       shape:
@@ -88,9 +108,8 @@ class MyPopupMenu<T> extends StatelessWidget {
                 Expanded(
                   child: Text(
                     item.label,
-                    style: TextStyle(
+                    style: context.textTheme.bodyMedium?.copyWith(
                       color: itemColor,
-                      fontSize: context.setSize(14),
                     ),
                   ),
                 ),

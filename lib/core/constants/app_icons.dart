@@ -56,6 +56,14 @@ class AppIcons {
   static const userEdit = Iconsax.user_edit_copy;
   static const archive = Iconsax.archive_2_copy;
   static const backspace = Icons.backspace_outlined;
+  static const download = Iconsax.import_copy;
+  static const downloadFilled = Iconsax.import_3;
+  static const play = Iconsax.play_copy;
+  static const playCircle = Iconsax.play_circle_copy;
+  static const pause = Iconsax.pause_copy;
+  static const pauseCircle = Iconsax.pause_circle_copy;
+  static const status = Iconsax.status_copy;
+  static const statusFilled = Iconsax.status;
 
   // Search & Filter
   static const search = Iconsax.search_normal_1_copy;
@@ -88,13 +96,18 @@ class AppIcons {
   static const addPhoto = Iconsax.gallery_add_copy;
   static const camera = Iconsax.camera_copy;
   static const gallery = Iconsax.gallery_copy;
+  static const image = Iconsax.image_copy;
+  static const video = Iconsax.video_play_copy;
+  static const music = Iconsax.music_copy;
   static const imageNotSupported = Iconsax.gallery_slash_copy;
   static const file = Iconsax.document_text_copy;
   static const folder = Iconsax.folder_copy;
+  static const folderAdd = Iconsax.folder_add_copy;
   static const exportBackup = Iconsax.export_copy;
   static const importBackup = Iconsax.import_copy;
   static const cloudExport = Icons.cloud_upload_outlined;
   static const cloudImport = Icons.cloud_download_outlined;
+  static const archiveFilled = Iconsax.archive_2;
 
   // Status
   static const check = Icons.check_rounded;
@@ -106,6 +119,7 @@ class AppIcons {
   static const info = Iconsax.info_circle_copy;
   static const help = Iconsax.message_question_copy;
   static const connectionError = Iconsax.cloud_cross_copy;
+  static const waveform = Iconsax.voice_square_copy;
 
   // Settings
   static const settings = Iconsax.setting_2_copy;
@@ -113,7 +127,7 @@ class AppIcons {
   static const lock = Iconsax.lock_copy;
   static const unlock = Iconsax.unlock_copy;
   static const fingerprint = Iconsax.finger_cricle_copy;
-  static const brightness = Icons.brightness_4_outlined;
+  static const brightness = Iconsax.sun_1_copy;
   static const translate = Iconsax.translate_copy;
   static const eye = Iconsax.eye_copy;
   static const eyeSlash = Iconsax.eye_slash_copy;
