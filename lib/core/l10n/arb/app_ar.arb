@@ -81,5 +81,39 @@
   "pause": "إيقاف مؤقت",
   "playingAudio": "جارٍ تشغيل الصوت",
   "paused": "متوقف مؤقتاً",
-  "unableToPlayAudio": "تعذر تشغيل هذا التنسيق الصوتي"
+  "unableToPlayAudio": "تعذر تشغيل هذا التنسيق الصوتي",
+  "aboutStatusSaver": "حول التطبيق",
+  "appName": "حافظ الحالات",
+  "appVersion": "الإصدار {version} ({build})",
+  "@appVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      },
+      "build": {
+        "type": "String"
+      }
+    }
+  },
+  "privacyPolicy": "سياسة الخصوصية",
+  "contactAndFeedback": "التواصل والملاحظات",
+  "openSourceLicenses": "تراخيص البرمجيات مفتوحة المصدر",
+  "couldNotOpenLink": "تعذر فتح الرابط.",
+  "couldNotOpenEmail": "لم يتم العثور على تطبيق بريد إلكتروني.",
+  "contactFeedbackNotice": "سيتم إرسال هذه الرسالة عبر تطبيق البريد الإلكتروني إلى فريق الدعم.",
+  "feedbackMessage": "الرسالة",
+  "feedbackHint": "اكتب رسالتك أو ملاحظاتك هنا...",
+  "sendEmail": "إرسال عبر البريد الإلكتروني",
+  "retry": "إعادة المحاولة",
+  "licensesCount": "{count, plural, =1{ترخيص واحد} =2{ترخيصان} few{{count} تراخيص} many{{count} ترخيصاً} other{{count} ترخيص}}",
+  "@licensesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noLicensesFound": "لم يتم العثور على أي تراخيص",
+  "noLicensesFoundSubtitle": "لا توجد أي تراخيص برمجيات مفتوحة المصدر لعرضها",
+  "failedToLoadLicenses": "تعذر تحميل التراخيص."
 }

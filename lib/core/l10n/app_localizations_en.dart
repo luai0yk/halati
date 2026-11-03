@@ -257,4 +257,67 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get unableToPlayAudio => 'Unable to play audio format';
+
+  @override
+  String get aboutStatusSaver => 'About Status Saver';
+
+  @override
+  String get appName => 'Status Saver';
+
+  @override
+  String appVersion(String version, String build) {
+    return 'Version $version ($build)';
+  }
+
+  @override
+  String get privacyPolicy => 'Privacy Policy';
+
+  @override
+  String get contactAndFeedback => 'Contact & Feedback';
+
+  @override
+  String get openSourceLicenses => 'Open-Source Licenses';
+
+  @override
+  String get couldNotOpenLink => 'Couldn\'t open link.';
+
+  @override
+  String get couldNotOpenEmail => 'No email app found.';
+
+  @override
+  String get contactFeedbackNotice =>
+      'This message will be sent through your email app to our support team.';
+
+  @override
+  String get feedbackMessage => 'Message';
+
+  @override
+  String get feedbackHint => 'Write your feedback or message here...';
+
+  @override
+  String get sendEmail => 'Send Email';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String licensesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count licenses',
+      one: '1 license',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get noLicensesFound => 'No Licenses Found';
+
+  @override
+  String get noLicensesFoundSubtitle =>
+      'There are no open-source licenses to display';
+
+  @override
+  String get failedToLoadLicenses => 'Couldn\'t load licenses.';
 }

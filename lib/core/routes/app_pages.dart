@@ -2,6 +2,9 @@ import 'package:get/get.dart';
 import 'package:status_saver/core/routes/app_routes.dart';
 import 'package:status_saver/features/app_shell/bindings/app_shell_binding.dart';
 import 'package:status_saver/features/app_shell/view/app_shell_page.dart';
+import 'package:status_saver/features/settings/controller/licenses_controller.dart';
+import 'package:status_saver/features/settings/view/about_page.dart';
+import 'package:status_saver/features/settings/view/licenses_page.dart';
 import 'package:status_saver/features/settings/view/settings_page.dart';
 
 class AppPages {
@@ -14,6 +17,17 @@ class AppPages {
     GetPage(
       name: AppRoutes.settings,
       page: () => const SettingsPage(),
+    ),
+    GetPage(
+      name: AppRoutes.about,
+      page: () => const AboutPage(),
+    ),
+    GetPage(
+      name: AppRoutes.licenses,
+      page: () => const LicensesPage(),
+      binding: BindingsBuilder(() {
+        Get.lazyPut<LicensesController>(() => LicensesController());
+      }),
     ),
   ];
 }

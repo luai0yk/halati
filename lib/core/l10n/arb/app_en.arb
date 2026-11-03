@@ -81,5 +81,39 @@
   "pause": "Pause",
   "playingAudio": "Playing audio",
   "paused": "Paused",
-  "unableToPlayAudio": "Unable to play audio format"
+  "unableToPlayAudio": "Unable to play audio format",
+  "aboutStatusSaver": "About Status Saver",
+  "appName": "Status Saver",
+  "appVersion": "Version {version} ({build})",
+  "@appVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      },
+      "build": {
+        "type": "String"
+      }
+    }
+  },
+  "privacyPolicy": "Privacy Policy",
+  "contactAndFeedback": "Contact & Feedback",
+  "openSourceLicenses": "Open-Source Licenses",
+  "couldNotOpenLink": "Couldn't open link.",
+  "couldNotOpenEmail": "No email app found.",
+  "contactFeedbackNotice": "This message will be sent through your email app to our support team.",
+  "feedbackMessage": "Message",
+  "feedbackHint": "Write your feedback or message here...",
+  "sendEmail": "Send Email",
+  "retry": "Retry",
+  "licensesCount": "{count, plural, =1{1 license} other{{count} licenses}}",
+  "@licensesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noLicensesFound": "No Licenses Found",
+  "noLicensesFoundSubtitle": "There are no open-source licenses to display",
+  "failedToLoadLicenses": "Couldn't load licenses."
 }

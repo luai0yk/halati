@@ -589,6 +589,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unable to play audio format'**
   String get unableToPlayAudio;
+
+  /// No description provided for @aboutStatusSaver.
+  ///
+  /// In en, this message translates to:
+  /// **'About Status Saver'**
+  String get aboutStatusSaver;
+
+  /// No description provided for @appName.
+  ///
+  /// In en, this message translates to:
+  /// **'Status Saver'**
+  String get appName;
+
+  /// No description provided for @appVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version} ({build})'**
+  String appVersion(String version, String build);
+
+  /// No description provided for @privacyPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get privacyPolicy;
+
+  /// No description provided for @contactAndFeedback.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact & Feedback'**
+  String get contactAndFeedback;
+
+  /// No description provided for @openSourceLicenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Open-Source Licenses'**
+  String get openSourceLicenses;
+
+  /// No description provided for @couldNotOpenLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open link.'**
+  String get couldNotOpenLink;
+
+  /// No description provided for @couldNotOpenEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'No email app found.'**
+  String get couldNotOpenEmail;
+
+  /// No description provided for @contactFeedbackNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'This message will be sent through your email app to our support team.'**
+  String get contactFeedbackNotice;
+
+  /// No description provided for @feedbackMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Message'**
+  String get feedbackMessage;
+
+  /// No description provided for @feedbackHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Write your feedback or message here...'**
+  String get feedbackHint;
+
+  /// No description provided for @sendEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Email'**
+  String get sendEmail;
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
+  /// No description provided for @licensesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 license} other{{count} licenses}}'**
+  String licensesCount(int count);
+
+  /// No description provided for @noLicensesFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No Licenses Found'**
+  String get noLicensesFound;
+
+  /// No description provided for @noLicensesFoundSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'There are no open-source licenses to display'**
+  String get noLicensesFoundSubtitle;
+
+  /// No description provided for @failedToLoadLicenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load licenses.'**
+  String get failedToLoadLicenses;
 }
 
 class _AppLocalizationsDelegate

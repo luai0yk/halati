@@ -9,4 +9,9 @@ class AppConstants {
   static const int maxAddressLength = 100;
   static const int maxNotesLength = 200;
   static const int maxPriceLength = 15;
+
+  // Support & Contact
+  static const String supportWhatsAppNumber = '+967774165500';
+  static const String privacyPolicyUrl = 'https://github.com/luai0yk';
+  static const String feedbackEmail = 'luai0yk@gmail.com';
 }

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:status_saver/core/constants/app_durations.dart';
 import 'package:status_saver/core/constants/app_icons.dart';
 import 'package:status_saver/core/utils/extensions/context_extension.dart';
@@ -10,7 +11,6 @@ import 'package:status_saver/core/utils/extensions/responsive_size.dart';
 import 'package:status_saver/shared/widgets/appbars/my_app_bar.dart';
 import 'package:status_saver/shared/widgets/buttons/my_icon_button.dart';
 import 'package:status_saver/shared/widgets/misc/my_icon.dart';
-import 'package:photo_view/photo_view.dart';
 
 class ImageViewerPage extends StatefulWidget {
   const ImageViewerPage({
@@ -35,11 +35,7 @@ class ImageViewerPage extends StatefulWidget {
         opaque: false,
         transitionDuration: AppDurations.medium,
         pageBuilder: (context, animation, secondaryAnimation) {
-          return ImageViewerPage(
-            image: image,
-            title: title,
-            onSave: onSave,
-          );
+          return ImageViewerPage(image: image, title: title, onSave: onSave);
         },
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return FadeTransition(opacity: animation, child: child);
@@ -125,7 +121,7 @@ class _ImageViewerPageState extends State<ImageViewerPage> {
         appBar: MyAppBar(
           color: Colors.transparent,
           isElevated: false,
-          isTitleCenter: false,
+          centerTitle: false,
           title: widget.title ?? '',
           titleColor: Colors.white,
           leadingIconColor: Colors.white,

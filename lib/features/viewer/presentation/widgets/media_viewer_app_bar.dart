@@ -52,7 +52,7 @@ class MediaViewerAppBar extends StatelessWidget {
               child: MyAppBar(
                 color: Colors.transparent,
                 isElevated: false,
-                isTitleCenter: false,
+                centerTitle: false,
                 leadingIconColor: Colors.white,
                 leadingBackgroundColor: Colors.white.withValues(alpha: 0.1),
                 title: title,

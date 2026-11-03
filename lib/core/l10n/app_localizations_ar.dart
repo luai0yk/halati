@@ -254,4 +254,70 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get unableToPlayAudio => 'تعذر تشغيل هذا التنسيق الصوتي';
+
+  @override
+  String get aboutStatusSaver => 'حول التطبيق';
+
+  @override
+  String get appName => 'حافظ الحالات';
+
+  @override
+  String appVersion(String version, String build) {
+    return 'الإصدار $version ($build)';
+  }
+
+  @override
+  String get privacyPolicy => 'سياسة الخصوصية';
+
+  @override
+  String get contactAndFeedback => 'التواصل والملاحظات';
+
+  @override
+  String get openSourceLicenses => 'تراخيص البرمجيات مفتوحة المصدر';
+
+  @override
+  String get couldNotOpenLink => 'تعذر فتح الرابط.';
+
+  @override
+  String get couldNotOpenEmail => 'لم يتم العثور على تطبيق بريد إلكتروني.';
+
+  @override
+  String get contactFeedbackNotice =>
+      'سيتم إرسال هذه الرسالة عبر تطبيق البريد الإلكتروني إلى فريق الدعم.';
+
+  @override
+  String get feedbackMessage => 'الرسالة';
+
+  @override
+  String get feedbackHint => 'اكتب رسالتك أو ملاحظاتك هنا...';
+
+  @override
+  String get sendEmail => 'إرسال عبر البريد الإلكتروني';
+
+  @override
+  String get retry => 'إعادة المحاولة';
+
+  @override
+  String licensesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ترخيص',
+      many: '$count ترخيصاً',
+      few: '$count تراخيص',
+      two: 'ترخيصان',
+      one: 'ترخيص واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get noLicensesFound => 'لم يتم العثور على أي تراخيص';
+
+  @override
+  String get noLicensesFoundSubtitle =>
+      'لا توجد أي تراخيص برمجيات مفتوحة المصدر لعرضها';
+
+  @override
+  String get failedToLoadLicenses => 'تعذر تحميل التراخيص.';
 }

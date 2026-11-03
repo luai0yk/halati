@@ -38,7 +38,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   /// Whether the title should be centered.
   /// Default to [true]
-  final bool isTitleCenter;
+  final bool centerTitle;
 
   /// The bottom widget to display at the bottom of the app bar.
   /// Default to [null]
@@ -58,7 +58,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.leadingIconColor,
     this.leadingBackgroundColor,
     this.isElevated = true,
-    this.isTitleCenter = true,
+    this.centerTitle = false,
     this.bottom,
     this.systemOverlayStyle,
   });
@@ -81,7 +81,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: color ?? colors.surface,
       surfaceTintColor: color ?? colors.surface,
       shadowColor: Colors.black.withValues(alpha: isElevated ? .2 : 0),
-      centerTitle: isTitleCenter,
+      centerTitle: centerTitle,
       actionsPadding: EdgeInsets.symmetric(horizontal: context.setSize(12)),
       systemOverlayStyle: systemOverlayStyle,
       actions: actions,
