@@ -33,7 +33,7 @@ class AppShellPage extends GetView<AppShellController> {
           itemAnimation: .bounce,
           currentIndex: currentIndex,
           borderRadius: context.brCircular,
-          backgroundColor: context.colorScheme.surface.withValues(alpha: 0.8),
+          // backgroundColor: context.colorScheme.surface.withValues(alpha: 0.90),
           itemBorderRadius: context.brCircular,
           expandItems: true,
           elevation: 5,

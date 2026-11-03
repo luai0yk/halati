@@ -29,13 +29,11 @@ class SliverFilterDelegate extends SliverPersistentHeaderDelegate {
     double shrinkOffset,
     bool overlapsContent,
   ) {
-    final bgColor = (backgroundColor ?? context.colorScheme.surface)
-        .withValues(alpha: withBlur ? 0.8 : 1.0);
-
-    Widget content = SizedBox(
-      height: height,
-      child: child,
+    final bgColor = (backgroundColor ?? context.colorScheme.surface).withValues(
+      alpha: withBlur ? 0.8 : 1.0,
     );
+
+    Widget content = SizedBox(height: height, child: child);
 
     if (withBlur) {
       content = ClipRect(
@@ -47,8 +45,9 @@ class SliverFilterDelegate extends SliverPersistentHeaderDelegate {
               border: overlapsContent
                   ? Border(
                       bottom: BorderSide(
-                        color: context.colorScheme.outlineVariant
-                            .withValues(alpha: 0.35),
+                        color: context.colorScheme.outlineVariant.withValues(
+                          alpha: 0.35,
+                        ),
                         width: context.setSize(0.5),
                       ),
                     )
@@ -65,8 +64,9 @@ class SliverFilterDelegate extends SliverPersistentHeaderDelegate {
           border: overlapsContent
               ? Border(
                   bottom: BorderSide(
-                    color: context.colorScheme.outlineVariant
-                        .withValues(alpha: 0.35),
+                    color: context.colorScheme.outlineVariant.withValues(
+                      alpha: 0.35,
+                    ),
                     width: context.setSize(0.5),
                   ),
                 )

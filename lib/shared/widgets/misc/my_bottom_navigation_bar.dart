@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:get/get_utils/src/extensions/context_extensions.dart';
 import 'package:status_saver/core/constants/app_durations.dart';
 import 'package:status_saver/core/utils/extensions/responsive_size.dart';
 import 'package:status_saver/core/utils/extensions/responsive_values.dart';
@@ -36,6 +37,7 @@ class MyBottomNavigationBar extends StatefulWidget {
   final BorderRadiusGeometry? borderRadius;
   final double? elevation;
   final bool expandItems;
+  final bool withBlur;
 
   // Item Properties
   final MyBottomNavigationBarDisplayMode displayMode;
@@ -66,6 +68,7 @@ class MyBottomNavigationBar extends StatefulWidget {
     this.borderRadius,
     this.elevation,
     this.expandItems = false,
+    this.withBlur = true,
 
     // Item Properties
     this.displayMode = MyBottomNavigationBarDisplayMode.both,
@@ -175,20 +178,19 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
         activeIconSize:
             widget.selectedIconSize ??
             widget.unselectedIconSize ??
-            context.iconL,
-        inactiveIconSize: widget.unselectedIconSize ?? context.iconL,
+            context.iconL * 0.90,
+        inactiveIconSize: widget.unselectedIconSize ?? context.iconL * 0.90,
         activeStyle:
             widget.selectedLabelStyle ??
             widget.unselectedLabelStyle ??
-            TextStyle(
-              fontSize: context.setSize(12),
+            context.textTheme.labelMedium!.copyWith(
               fontWeight: FontWeight.w600,
+              fontSize: context.setSize(11),
             ),
         inactiveStyle:
             widget.unselectedLabelStyle ??
-            TextStyle(
-              fontSize: context.setSize(12),
-              fontWeight: FontWeight.w500,
+            context.textTheme.labelMedium!.copyWith(
+              fontSize: context.setSize(11),
             ),
         selectedBackgroundColor: isSlidingMode
             ? Colors.transparent
@@ -209,86 +211,102 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
       }
     }
 
-    final resolvedBorderRadius = widget.borderRadius ?? BorderRadius.zero;
-    final navBackgroundColor = widget.backgroundColor ??
+    final defaultBgColor =
+        widget.backgroundColor ??
         theme.bottomNavigationBarTheme.backgroundColor ??
-        theme.colorScheme.surface.withValues(alpha: 0.88);
+        theme.colorScheme.surface;
+    final bgColor = defaultBgColor.withValues(
+      alpha: widget.withBlur ? 0.8 : 1.0,
+    );
+
+    final borderRadius = widget.borderRadius ?? BorderRadius.zero;
+    final hasShadow = (widget.elevation ?? context.elevationNone) > 0;
+
+    Widget navContainer = Container(
+      height: widget.height,
+      padding: widget.padding ?? context.insetsAllXs,
+      decoration: BoxDecoration(
+        color: bgColor,
+        border: widget.border,
+        borderRadius: borderRadius,
+      ),
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          if (isSlidingMode && _isInitialized)
+            AnimatedPositioned(
+              left: _indicatorLeft,
+              top: _indicatorTop,
+              width: _indicatorWidth,
+              height: _indicatorHeight,
+              duration: AppDurations.slow,
+              curve:
+                  widget.itemAnimation ==
+                          MyBottomNavigationBarAnimation.bounce
+                      ? Curves.easeOutBack
+                      : Curves.easeOutQuint,
+              child: Container(
+                decoration: BoxDecoration(
+                  color:
+                      widget.selectedBackgroundColor ??
+                      theme.colorScheme.primary.withValues(alpha: 0.1),
+                  border: widget.itemBorder,
+                  borderRadius: widget.itemBorderRadius ?? context.brL,
+                ),
+              ),
+            ),
+          NotificationListener<SizeChangedLayoutNotification>(
+            onNotification: (n) {
+              WidgetsBinding.instance.addPostFrameCallback(
+                (_) => _updateIndicatorPosition(),
+              );
+              return true;
+            },
+            child: SizeChangedLayoutNotifier(
+              child: Row(
+                key: _rowKey,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: children,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    Widget content;
+    if (widget.withBlur) {
+      content = ClipRRect(
+        borderRadius: borderRadius,
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+          child: navContainer,
+        ),
+      );
+    } else {
+      content = navContainer;
+    }
+
+    if (hasShadow) {
+      content = Container(
+        decoration: BoxDecoration(
+          borderRadius: borderRadius,
+          boxShadow: [
+            BoxShadow(
+              color: theme.shadowColor.withValues(alpha: 0.1),
+              blurRadius: widget.elevation ?? context.elevationNone,
+              offset: Offset(0, context.setSize(4)),
+            ),
+          ],
+        ),
+        child: content,
+      );
+    }
 
     return SafeArea(
       child: Padding(
         padding: widget.margin ?? EdgeInsets.zero,
-        child: Container(
-          height: widget.height,
-          decoration: BoxDecoration(
-            borderRadius: resolvedBorderRadius,
-            boxShadow: (widget.elevation ?? context.elevationNone) > 0
-                ? [
-                    BoxShadow(
-                      color: theme.shadowColor.withValues(alpha: 0.15),
-                      blurRadius: widget.elevation ?? context.elevationNone,
-                      offset: Offset(0, context.setSize(4)),
-                    ),
-                  ]
-                : null,
-          ),
-          child: ClipRRect(
-            borderRadius: resolvedBorderRadius,
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-              child: Container(
-                clipBehavior: Clip.antiAlias,
-                padding: widget.padding ?? context.insetsAllXs,
-                decoration: BoxDecoration(
-                  color: navBackgroundColor,
-                  border: widget.border,
-                  borderRadius: resolvedBorderRadius,
-                ),
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    if (isSlidingMode && _isInitialized)
-                      AnimatedPositioned(
-                        left: _indicatorLeft,
-                        top: _indicatorTop,
-                        width: _indicatorWidth,
-                        height: _indicatorHeight,
-                        duration: AppDurations.slow,
-                        curve:
-                            widget.itemAnimation ==
-                                MyBottomNavigationBarAnimation.bounce
-                            ? Curves.easeOutBack
-                            : Curves.easeOutQuint,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color:
-                                widget.selectedBackgroundColor ??
-                                theme.colorScheme.primary.withValues(alpha: 0.1),
-                            border: widget.itemBorder,
-                            borderRadius: widget.itemBorderRadius ?? context.brL,
-                          ),
-                        ),
-                      ),
-                    NotificationListener<SizeChangedLayoutNotification>(
-                      onNotification: (n) {
-                        WidgetsBinding.instance.addPostFrameCallback(
-                          (_) => _updateIndicatorPosition(),
-                        );
-                        return true;
-                      },
-                      child: SizeChangedLayoutNotifier(
-                        child: Row(
-                          key: _rowKey,
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: children,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
+        child: content,
       ),
     );
   }

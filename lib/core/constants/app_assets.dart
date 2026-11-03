@@ -1,5 +1,5 @@
 class AppAssets {
   AppAssets._();
 
-  static const String testImage = 'assets/images/test_image.png';
+  static const String appIcon = 'assets/images/app_icon.png';
 }
