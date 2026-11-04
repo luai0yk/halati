@@ -1,12 +1,14 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:status_saver/core/enums/whatsapp_type.dart';
 import 'package:status_saver/features/home/domain/entities/status_media.dart';
 import 'package:status_saver/features/home/domain/usecases/get_full_media_file_use_case.dart';
 import 'package:status_saver/features/home/domain/usecases/get_thumbnail_use_case.dart';
 import 'package:status_saver/features/saved/domain/entities/saved_media.dart';
 import 'package:status_saver/features/saved/domain/usecases/delete_saved_media_use_case.dart';
 import 'package:status_saver/features/saved/domain/usecases/get_saved_media_use_case.dart';
+import 'package:status_saver/features/settings/controller/settings_controller.dart';
 
 class SavedController extends GetxController {
   final GetSavedMediaUseCase _getSavedMediaUseCase;
@@ -45,13 +47,34 @@ class SavedController extends GetxController {
     });
   }
 
-  List<SavedMedia> get filteredItems {
-    if (filterType.value == null) {
-      return allSavedItems;
+  WhatsAppType get currentWhatsAppType =>
+      Get.isRegistered<SettingsController>()
+          ? SettingsController.to.activeWhatsAppType.value
+          : WhatsAppType.whatsapp;
+
+  void switchWhatsAppType(WhatsAppType type) {
+    if (Get.isRegistered<SettingsController>()) {
+      SettingsController.to.setActiveWhatsAppType(type);
     }
-    return allSavedItems
-        .where((item) => item.mediaType == filterType.value)
-        .toList();
+  }
+
+  List<SavedMedia> get filteredItems {
+    final activeType = currentWhatsAppType;
+    return allSavedItems.where((item) {
+      final uri = item.originalDocumentUri.toLowerCase();
+      final isItemBusiness = uri.contains('com.whatsapp.w4b') ||
+          uri.contains('whatsapp%20business') ||
+          uri.contains('whatsapp business');
+
+      final matchesApp =
+          activeType.isBusiness ? isItemBusiness : !isItemBusiness;
+      if (!matchesApp) return false;
+
+      if (filterType.value != null && item.mediaType != filterType.value) {
+        return false;
+      }
+      return true;
+    }).toList();
   }
 
   void setFilter(MediaType? type) {

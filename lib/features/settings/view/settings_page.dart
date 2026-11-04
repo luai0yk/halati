@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide ContextExtensionss;
 import 'package:status_saver/core/constants/app_icons.dart';
+import 'package:status_saver/core/enums/whatsapp_type.dart';
 import 'package:status_saver/core/l10n/app_locales.dart';
 import 'package:status_saver/core/routes/app_routes.dart';
 import 'package:status_saver/core/utils/extensions/context_extension.dart';
@@ -44,9 +45,8 @@ class SettingsPage extends GetView<SettingsController> {
                     alignment: AlignmentDirectional.centerStart,
                     child: Text(
                       context.l10n.settings,
-                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: Theme.of(context).textTheme.headlineMedium
+                          ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
@@ -97,10 +97,37 @@ class SettingsPage extends GetView<SettingsController> {
                           ),
                           borderRadius: BorderRadius.zero,
                           title: context.l10n.language,
-                          subtitle: controller.selectLang.localizedName(context),
+                          subtitle: controller.selectLang.localizedName(
+                            context,
+                          ),
                           trailingIcon: AppIcons.arrowForward(context),
                           onTap: () =>
                               _showLanguageBottomSheet(context, controller),
+                        );
+                      },
+                    ),
+                    GetBuilder<SettingsController>(
+                      id: SettingsController.whatsappSettingId,
+                      builder: (controller) {
+                        final defaultType = controller.defaultWhatsAppType;
+                        return MyListTile(
+                          leading: _buildIconContainer(
+                            context,
+                            defaultType.isBusiness
+                                ? AppIcons.store
+                                : AppIcons.message,
+                            context.colorScheme.primary,
+                          ),
+                          borderRadius: BorderRadius.zero,
+                          title: context.l10n.defaultWhatsApp,
+                          subtitle: defaultType.isBusiness
+                              ? context.l10n.whatsappBusiness
+                              : context.l10n.whatsapp,
+                          trailingIcon: AppIcons.arrowForward(context),
+                          onTap: () => _showDefaultWhatsAppBottomSheet(
+                            context,
+                            controller,
+                          ),
                         );
                       },
                     ),
@@ -113,7 +140,12 @@ class SettingsPage extends GetView<SettingsController> {
                         ),
                         borderRadius: BorderRadius.zero,
                         title: context.l10n.selectFolder,
-                        subtitle: context.l10n.safPermissionTitle,
+                        subtitle:
+                            Get.find<HomeController>()
+                                .currentWhatsAppType
+                                .isBusiness
+                            ? context.l10n.safPermissionTitleBusiness
+                            : context.l10n.safPermissionTitle,
                         trailingIcon: AppIcons.arrowForward(context),
                         onTap: () =>
                             Get.find<HomeController>().requestPermission(),
@@ -183,6 +215,29 @@ class SettingsPage extends GetView<SettingsController> {
           itemLabel: (label) => label.localizedName(context),
           onChanged: (value) {
             controller.changeLocale(value);
+            Navigator.pop(context);
+          },
+        ),
+      ),
+    );
+  }
+
+  void _showDefaultWhatsAppBottomSheet(
+    BuildContext context,
+    SettingsController controller,
+  ) {
+    BottomSheetHelper.show(
+      child: MyBottomSheet(
+        title: context.l10n.selectDefaultWhatsApp,
+        padding: EdgeInsets.zero,
+        child: SelectableList<WhatsAppType>.single(
+          items: const [WhatsAppType.whatsapp, WhatsAppType.business],
+          initialSelected: controller.defaultWhatsAppType,
+          itemLabel: (type) => type.isBusiness
+              ? context.l10n.whatsappBusiness
+              : context.l10n.whatsapp,
+          onChanged: (value) {
+            controller.setDefaultWhatsAppType(value);
             Navigator.pop(context);
           },
         ),

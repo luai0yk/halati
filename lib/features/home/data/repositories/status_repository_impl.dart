@@ -1,3 +1,4 @@
+import 'package:status_saver/core/enums/whatsapp_type.dart';
 import 'package:status_saver/core/errors/failures.dart';
 import 'package:status_saver/core/services/cash/cash_keys.dart';
 import 'package:status_saver/core/services/cash/cash_service.dart';
@@ -10,7 +11,7 @@ class StatusRepositoryImpl implements StatusRepository {
   final SafNativeDataSource _safDataSource;
   final CashService _cashService;
 
-  List<StatusMedia>? _cachedStatuses;
+  final Map<WhatsAppType, List<StatusMedia>> _cachedStatuses = {};
 
   StatusRepositoryImpl({
     required SafNativeDataSource safDataSource,
@@ -18,10 +19,15 @@ class StatusRepositoryImpl implements StatusRepository {
   })  : _safDataSource = safDataSource,
         _cashService = cashService;
 
+  String _safKey(WhatsAppType type) =>
+      type.isBusiness ? CashKeys.safTreeUriBusiness : CashKeys.safTreeUri;
+
   @override
-  Future<Result<bool, Failure>> checkSafAccess() async {
+  Future<Result<bool, Failure>> checkSafAccess([
+    WhatsAppType type = WhatsAppType.whatsapp,
+  ]) async {
     try {
-      final storedUri = _cashService.getString(CashKeys.safTreeUri);
+      final storedUri = _cashService.getString(_safKey(type));
       if (storedUri == null || storedUri.isEmpty) {
         return const Success(false);
       }
@@ -39,15 +45,19 @@ class StatusRepositoryImpl implements StatusRepository {
   }
 
   @override
-  Future<Result<String, Failure>> requestSafAccess() async {
+  Future<Result<String, Failure>> requestSafAccess([
+    WhatsAppType type = WhatsAppType.whatsapp,
+  ]) async {
     try {
-      final selectedUri = await _safDataSource.requestDirectorySelection();
+      final selectedUri = await _safDataSource.requestDirectorySelection(
+        isBusiness: type.isBusiness,
+      );
       if (selectedUri == null || selectedUri.isEmpty) {
         return const FailureResult(SafPermissionDeniedFailure());
       }
 
-      await _cashService.setString(CashKeys.safTreeUri, selectedUri);
-      _cachedStatuses = null;
+      await _cashService.setString(_safKey(type), selectedUri);
+      _cachedStatuses.remove(type);
       return Success(selectedUri);
     } on Failure catch (f) {
       return FailureResult(f);
@@ -57,14 +67,16 @@ class StatusRepositoryImpl implements StatusRepository {
   }
 
   @override
-  Future<Result<bool, Failure>> releaseSafAccess() async {
+  Future<Result<bool, Failure>> releaseSafAccess([
+    WhatsAppType type = WhatsAppType.whatsapp,
+  ]) async {
     try {
-      final storedUri = _cashService.getString(CashKeys.safTreeUri);
+      final storedUri = _cashService.getString(_safKey(type));
       if (storedUri != null && storedUri.isNotEmpty) {
         await _safDataSource.releaseDirectoryAccess(storedUri);
-        await _cashService.remove(CashKeys.safTreeUri);
+        await _cashService.remove(_safKey(type));
       }
-      _cachedStatuses = null;
+      _cachedStatuses.remove(type);
       return const Success(true);
     } catch (e) {
       return FailureResult(SafAccessRevokedFailure(e.toString()));
@@ -72,19 +84,22 @@ class StatusRepositoryImpl implements StatusRepository {
   }
 
   @override
-  Future<Result<List<StatusMedia>, Failure>> getStatuses({bool forceRefresh = false}) async {
-    if (!forceRefresh && _cachedStatuses != null) {
-      return Success(_cachedStatuses!);
+  Future<Result<List<StatusMedia>, Failure>> getStatuses({
+    bool forceRefresh = false,
+    WhatsAppType type = WhatsAppType.whatsapp,
+  }) async {
+    if (!forceRefresh && _cachedStatuses.containsKey(type) && _cachedStatuses[type] != null) {
+      return Success(_cachedStatuses[type]!);
     }
 
     try {
-      final storedUri = _cashService.getString(CashKeys.safTreeUri);
+      final storedUri = _cashService.getString(_safKey(type));
       if (storedUri == null || storedUri.isEmpty) {
         return const FailureResult(SafPermissionDeniedFailure('No SAF folder configured'));
       }
 
       final models = await _safDataSource.discoverStatuses(storedUri);
-      _cachedStatuses = models;
+      _cachedStatuses[type] = models;
       return Success(models);
     } on Failure catch (f) {
       return FailureResult(f);

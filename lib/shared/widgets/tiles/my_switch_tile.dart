@@ -17,6 +17,7 @@ class MySwitchTile extends StatelessWidget {
   final Widget? secondary;
   final ListTileControlAffinity controlAffinity;
   final bool enabled;
+  final BorderRadius? borderRadius;
 
   const MySwitchTile({
     super.key,
@@ -34,6 +35,7 @@ class MySwitchTile extends StatelessWidget {
     this.secondary,
     this.controlAffinity = ListTileControlAffinity.trailing,
     this.enabled = true,
+    this.borderRadius,
   });
 
   @override
@@ -55,6 +57,7 @@ class MySwitchTile extends StatelessWidget {
       title: title,
       subtitle: subtitle,
       enabled: enabled,
+      borderRadius: borderRadius,
       leading: controlAffinity == ListTileControlAffinity.leading
           ? control
           : secondary,

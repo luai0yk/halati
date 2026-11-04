@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:status_saver/core/enums/whatsapp_type.dart';
 import 'package:status_saver/core/errors/failures.dart';
 import 'package:status_saver/core/utils/result.dart';
 import 'package:status_saver/features/home/domain/entities/status_media.dart';
@@ -12,15 +13,22 @@ class FakeStatusRepository implements StatusRepository {
   String? requestResultUri = 'content://tree/primary:Android/media/com.whatsapp/WhatsApp/Media/.Statuses';
   List<StatusMedia> statuses = [];
   Failure? failure;
+  WhatsAppType? lastRequestedType;
 
   @override
-  Future<Result<bool, Failure>> checkSafAccess() async {
+  Future<Result<bool, Failure>> checkSafAccess([
+    WhatsAppType type = WhatsAppType.whatsapp,
+  ]) async {
+    lastRequestedType = type;
     if (failure != null) return FailureResult(failure!);
     return Success(hasAccess);
   }
 
   @override
-  Future<Result<String, Failure>> requestSafAccess() async {
+  Future<Result<String, Failure>> requestSafAccess([
+    WhatsAppType type = WhatsAppType.whatsapp,
+  ]) async {
+    lastRequestedType = type;
     if (failure != null) return FailureResult(failure!);
     if (requestResultUri == null) {
       return const FailureResult(SafPermissionDeniedFailure());
@@ -30,13 +38,20 @@ class FakeStatusRepository implements StatusRepository {
   }
 
   @override
-  Future<Result<bool, Failure>> releaseSafAccess() async {
+  Future<Result<bool, Failure>> releaseSafAccess([
+    WhatsAppType type = WhatsAppType.whatsapp,
+  ]) async {
+    lastRequestedType = type;
     hasAccess = false;
     return const Success(true);
   }
 
   @override
-  Future<Result<List<StatusMedia>, Failure>> getStatuses({bool forceRefresh = false}) async {
+  Future<Result<List<StatusMedia>, Failure>> getStatuses({
+    bool forceRefresh = false,
+    WhatsAppType type = WhatsAppType.whatsapp,
+  }) async {
+    lastRequestedType = type;
     if (failure != null) return FailureResult(failure!);
     return Success(statuses);
   }
@@ -88,6 +103,15 @@ void main() {
 
       expect(result.isSuccess, true);
       expect(result.dataOrNull, false);
+    });
+
+    test('passes WhatsAppType to repository', () async {
+      fakeRepo.hasAccess = true;
+      final useCase = CheckSafAccessUseCase(fakeRepo);
+
+      await useCase(WhatsAppType.business);
+
+      expect(fakeRepo.lastRequestedType, WhatsAppType.business);
     });
   });
 

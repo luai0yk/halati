@@ -320,4 +320,30 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get failedToLoadLicenses => 'تعذر تحميل التراخيص.';
+
+  @override
+  String get whatsapp => 'واتساب';
+
+  @override
+  String get whatsappBusiness => 'واتساب للأعمال';
+
+  @override
+  String get business => 'الأعمال';
+
+  @override
+  String get defaultWhatsApp => 'واتساب الافتراضي';
+
+  @override
+  String get selectDefaultWhatsApp => 'اختر واتساب الافتراضي';
+
+  @override
+  String get defaultWhatsAppSubtitle => 'تعيين التطبيق الافتراضي لحافظ الحالات';
+
+  @override
+  String get safPermissionTitleBusiness =>
+      'الوصول إلى مجلد حالات واتساب للأعمال';
+
+  @override
+  String get safPermissionExplanationBusiness =>
+      'لعرض وحفظ حالات واتساب للأعمال، يرجى اختيار مجلد حالات واتساب للأعمال.';
 }

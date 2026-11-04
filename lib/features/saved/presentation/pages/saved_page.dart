@@ -94,6 +94,8 @@ class SavedPage extends GetView<SavedController> {
                   title: context.l10n.saved,
                   selectedType: controller.filterType.value,
                   onFilterChanged: controller.setFilter,
+                  currentWhatsAppType: controller.currentWhatsAppType,
+                  onWhatsAppTypeChanged: controller.switchWhatsAppType,
                 ),
               ),
             ),

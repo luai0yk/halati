@@ -115,5 +115,13 @@
   },
   "noLicensesFound": "لم يتم العثور على أي تراخيص",
   "noLicensesFoundSubtitle": "لا توجد أي تراخيص برمجيات مفتوحة المصدر لعرضها",
-  "failedToLoadLicenses": "تعذر تحميل التراخيص."
+  "failedToLoadLicenses": "تعذر تحميل التراخيص.",
+  "whatsapp": "واتساب",
+  "whatsappBusiness": "واتساب للأعمال",
+  "business": "الأعمال",
+  "defaultWhatsApp": "واتساب الافتراضي",
+  "selectDefaultWhatsApp": "اختر واتساب الافتراضي",
+  "defaultWhatsAppSubtitle": "تعيين التطبيق الافتراضي لحافظ الحالات",
+  "safPermissionTitleBusiness": "الوصول إلى مجلد حالات واتساب للأعمال",
+  "safPermissionExplanationBusiness": "لعرض وحفظ حالات واتساب للأعمال، يرجى اختيار مجلد حالات واتساب للأعمال."
 }

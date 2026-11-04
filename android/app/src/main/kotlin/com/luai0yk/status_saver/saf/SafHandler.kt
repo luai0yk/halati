@@ -35,6 +35,7 @@ class SafHandler(
     companion object {
         const val REQUEST_CODE_SAF_TREE = 4210
         private const val WHATSAPP_PACKAGE = "com.whatsapp"
+        private const val WHATSAPP_BUSINESS_PACKAGE = "com.whatsapp.w4b"
         private const val STATUSES_FOLDER = ".Statuses"
     }
 
@@ -52,7 +53,8 @@ class SafHandler(
             }
             "requestDirectorySelection" -> {
                 val initialUriHint = call.argument<String>("initialUriHint")
-                requestDirectorySelection(initialUriHint, result)
+                val isBusiness = call.argument<Boolean>("isBusiness") ?: false
+                requestDirectorySelection(initialUriHint, isBusiness, result)
             }
             "releaseDirectoryAccess" -> {
                 val uriString = call.argument<String>("uri")
@@ -146,7 +148,7 @@ class SafHandler(
         }
     }
 
-    private fun requestDirectorySelection(initialUriHint: String?, result: MethodChannel.Result) {
+    private fun requestDirectorySelection(initialUriHint: String?, isBusiness: Boolean, result: MethodChannel.Result) {
         if (pendingResult != null) {
             result.error("ALREADY_ACTIVE", "A folder selection is already in progress", null)
             return
@@ -176,11 +178,13 @@ class SafHandler(
             val hintUri: Uri? = if (!initialUriHint.isNullOrEmpty()) {
                 Uri.parse(initialUriHint)
             } else {
-                val legacyRawPath = "WhatsApp%2FMedia%2F$STATUSES_FOLDER"
-                val modernRawPath = "Android%2Fmedia%2F$WHATSAPP_PACKAGE%2FWhatsApp%2FMedia%2F$STATUSES_FOLDER"
+                val pkg = if (isBusiness) WHATSAPP_BUSINESS_PACKAGE else WHATSAPP_PACKAGE
+                val folder = if (isBusiness) "WhatsApp Business" else "WhatsApp"
+                val legacyRawPath = "$folder%2FMedia%2F$STATUSES_FOLDER"
+                val modernRawPath = "Android%2Fmedia%2F$pkg%2F$folder%2FMedia%2F$STATUSES_FOLDER"
 
                 val isLegacy = try {
-                    val legacyDir = File(Environment.getExternalStorageDirectory(), "WhatsApp/Media/.Statuses")
+                    val legacyDir = File(Environment.getExternalStorageDirectory(), "$folder/Media/.Statuses")
                     legacyDir.exists()
                 } catch (_: Exception) {
                     false
@@ -195,7 +199,7 @@ class SafHandler(
                     Uri.parse(scheme)
                 } else {
                     if (isLegacy) {
-                        Uri.parse("content://$treeAuthority/tree/primary%3AWhatsApp%2FMedia/document/primary%3A$targetRawPath")
+                        Uri.parse("content://$treeAuthority/tree/primary%3A$folder%2FMedia/document/primary%3A$targetRawPath")
                     } else {
                         Uri.parse("content://$treeAuthority/tree/primary%3AAndroid%2Fmedia/document/primary%3A$targetRawPath")
                     }
@@ -238,6 +242,7 @@ class SafHandler(
             // Validate that the folder belongs to WhatsApp
             val path = treeUri.path ?: ""
             val isWhatsAppFolder = path.contains(WHATSAPP_PACKAGE, ignoreCase = true) ||
+                    path.contains(WHATSAPP_BUSINESS_PACKAGE, ignoreCase = true) ||
                     path.contains(STATUSES_FOLDER, ignoreCase = true) ||
                     path.contains("WhatsApp", ignoreCase = true)
 

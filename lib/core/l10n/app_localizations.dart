@@ -691,6 +691,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Couldn\'t load licenses.'**
   String get failedToLoadLicenses;
+
+  /// No description provided for @whatsapp.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp'**
+  String get whatsapp;
+
+  /// No description provided for @whatsappBusiness.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp Business'**
+  String get whatsappBusiness;
+
+  /// No description provided for @business.
+  ///
+  /// In en, this message translates to:
+  /// **'Business'**
+  String get business;
+
+  /// No description provided for @defaultWhatsApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Default WhatsApp'**
+  String get defaultWhatsApp;
+
+  /// No description provided for @selectDefaultWhatsApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Default WhatsApp'**
+  String get selectDefaultWhatsApp;
+
+  /// No description provided for @defaultWhatsAppSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set default app for Status Saver'**
+  String get defaultWhatsAppSubtitle;
+
+  /// No description provided for @safPermissionTitleBusiness.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp Business Status Access'**
+  String get safPermissionTitleBusiness;
+
+  /// No description provided for @safPermissionExplanationBusiness.
+  ///
+  /// In en, this message translates to:
+  /// **'To view and save WhatsApp Business statuses, please select the WhatsApp Business Statuses folder.'**
+  String get safPermissionExplanationBusiness;
 }
 
 class _AppLocalizationsDelegate

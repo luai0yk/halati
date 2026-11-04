@@ -5,7 +5,7 @@ import 'package:status_saver/features/home/data/models/status_media_model.dart';
 
 abstract class SafNativeDataSource {
   Future<Map<String, dynamic>> checkDirectoryAccess(String? uri);
-  Future<String?> requestDirectorySelection({String? initialUriHint});
+  Future<String?> requestDirectorySelection({String? initialUriHint, bool isBusiness = false});
   Future<bool> releaseDirectoryAccess(String uri);
   Future<List<StatusMediaModel>> discoverStatuses(String treeUri);
   Future<String?> getThumbnail(String documentUri, {int width = 300, int height = 300});
@@ -38,11 +38,14 @@ class SafNativeDataSourceImpl implements SafNativeDataSource {
   }
 
   @override
-  Future<String?> requestDirectorySelection({String? initialUriHint}) async {
+  Future<String?> requestDirectorySelection({String? initialUriHint, bool isBusiness = false}) async {
     try {
       final result = await _channel.invokeMethod<String>(
         SafChannel.requestDirectorySelection,
-        {'initialUriHint': initialUriHint},
+        {
+          'initialUriHint': initialUriHint,
+          'isBusiness': isBusiness,
+        },
       );
       return result;
     } on PlatformException catch (e) {

@@ -66,37 +66,41 @@ class HomePage extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Obx(() {
-        if (controller.isLoading.value && controller.statuses.isEmpty) {
-          return const Center(child: MyProgressIndicator());
-        }
+        final items = controller.filteredStatuses;
+        final hasPerm = controller.hasPermission.value;
+        final isLoading = controller.isLoading.value && controller.statuses.isEmpty;
+        final error = controller.errorMessage.value;
+        final isBusiness = controller.currentWhatsAppType.isBusiness;
 
-        if (!controller.hasPermission.value) {
-          return Center(
+        Widget bodyContent;
+        if (isLoading) {
+          bodyContent = const Center(child: MyProgressIndicator());
+        } else if (!hasPerm) {
+          bodyContent = Center(
             child: MyEmptyState(
               icon: AppIcons.folder,
-              title: context.l10n.safPermissionTitle,
-              subtitle: context.l10n.safPermissionExplanation,
+              title: isBusiness
+                  ? context.l10n.safPermissionTitleBusiness
+                  : context.l10n.safPermissionTitle,
+              subtitle: isBusiness
+                  ? context.l10n.safPermissionExplanationBusiness
+                  : context.l10n.safPermissionExplanation,
               onAction: controller.requestPermission,
               actionText: context.l10n.selectFolder,
             ),
           );
-        }
-
-        if (controller.errorMessage.value != null &&
-            controller.statuses.isEmpty) {
-          return Center(
+        } else if (error != null && controller.statuses.isEmpty) {
+          bodyContent = Center(
             child: MyEmptyState(
               icon: AppIcons.error,
               title: context.l10n.noResultsFound,
-              subtitle: controller.errorMessage.value!,
+              subtitle: error,
               actionText: context.l10n.refresh,
               onAction: () => controller.loadStatuses(forceRefresh: true),
             ),
           );
-        }
-
-        if (controller.statuses.isEmpty) {
-          return Center(
+        } else if (items.isEmpty) {
+          bodyContent = Center(
             child: MyEmptyState(
               icon: AppIcons.status,
               title: context.l10n.noStatusesFound,
@@ -105,9 +109,11 @@ class HomePage extends GetView<HomeController> {
               onAction: () => controller.loadStatuses(forceRefresh: true),
             ),
           );
+        } else {
+          bodyContent = const SizedBox.shrink();
         }
 
-        final items = controller.filteredStatuses;
+        final showGrid = !isLoading && hasPerm && (error == null || controller.statuses.isNotEmpty) && items.isNotEmpty;
 
         return RefreshIndicator(
           onRefresh: () => controller.loadStatuses(forceRefresh: true),
@@ -125,19 +131,15 @@ class HomePage extends GetView<HomeController> {
                     title: context.l10n.statuses,
                     selectedType: controller.filterType.value,
                     onFilterChanged: controller.setFilter,
+                    currentWhatsAppType: controller.currentWhatsAppType,
+                    onWhatsAppTypeChanged: controller.switchWhatsAppType,
                   ),
                 ),
               ),
-              if (items.isEmpty)
+              if (!showGrid)
                 SliverFillRemaining(
                   hasScrollBody: false,
-                  child: Center(
-                    child: MyEmptyState(
-                      icon: AppIcons.status,
-                      title: context.l10n.noStatusesFound,
-                      subtitle: context.l10n.noStatusesSubtitle,
-                    ),
-                  ),
+                  child: bodyContent,
                 )
               else
                 SliverPadding(

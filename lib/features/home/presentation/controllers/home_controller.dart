@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:status_saver/core/enums/whatsapp_type.dart';
 import 'package:status_saver/features/home/domain/entities/status_media.dart';
 import 'package:status_saver/features/home/domain/usecases/check_saf_access_use_case.dart';
 import 'package:status_saver/features/home/domain/usecases/get_full_media_file_use_case.dart';
@@ -9,6 +10,7 @@ import 'package:status_saver/features/home/domain/usecases/get_thumbnail_use_cas
 import 'package:status_saver/features/home/domain/usecases/request_saf_access_use_case.dart';
 import 'package:status_saver/features/home/domain/usecases/save_media_use_case.dart';
 import 'package:status_saver/features/saved/domain/usecases/get_saved_media_use_case.dart';
+import 'package:status_saver/features/settings/controller/settings_controller.dart';
 
 class HomeController extends GetxController {
   final CheckSafAccessUseCase _checkSafAccessUseCase;
@@ -59,10 +61,26 @@ class HomeController extends GetxController {
     filterType.value = type;
   }
 
+  WhatsAppType get currentWhatsAppType =>
+      Get.isRegistered<SettingsController>()
+          ? SettingsController.to.activeWhatsAppType.value
+          : WhatsAppType.whatsapp;
+
+  void switchWhatsAppType(WhatsAppType type) {
+    if (Get.isRegistered<SettingsController>()) {
+      SettingsController.to.setActiveWhatsAppType(type);
+    }
+  }
+
   @override
   void onInit() {
     super.onInit();
     _subscribeSavedMedia();
+    if (Get.isRegistered<SettingsController>()) {
+      ever(SettingsController.to.activeWhatsAppType, (type) {
+        checkAccessAndLoadStatuses(type);
+      });
+    }
     initSafStatus();
   }
 
@@ -79,36 +97,44 @@ class HomeController extends GetxController {
   }
 
   Future<void> initSafStatus() async {
+    await checkAccessAndLoadStatuses(currentWhatsAppType);
+  }
+
+  Future<void> checkAccessAndLoadStatuses([WhatsAppType? type]) async {
+    final targetType = type ?? currentWhatsAppType;
     isLoading.value = true;
     errorMessage.value = null;
 
-    final result = await _checkSafAccessUseCase();
+    final result = await _checkSafAccessUseCase(targetType);
     result.when(
       success: (granted) {
         hasPermission.value = granted;
         if (granted) {
-          loadStatuses();
+          loadStatuses(type: targetType);
         } else {
+          statuses.clear();
           isLoading.value = false;
         }
       },
       failure: (f) {
         hasPermission.value = false;
+        statuses.clear();
         errorMessage.value = f.message;
         isLoading.value = false;
       },
     );
   }
 
-  Future<void> requestPermission() async {
+  Future<void> requestPermission([WhatsAppType? type]) async {
+    final targetType = type ?? currentWhatsAppType;
     isLoading.value = true;
     errorMessage.value = null;
 
-    final result = await _requestSafAccessUseCase();
+    final result = await _requestSafAccessUseCase(targetType);
     result.when(
       success: (treeUri) {
         hasPermission.value = true;
-        loadStatuses(forceRefresh: true);
+        loadStatuses(forceRefresh: true, type: targetType);
       },
       failure: (f) {
         hasPermission.value = false;
@@ -118,11 +144,18 @@ class HomeController extends GetxController {
     );
   }
 
-  Future<void> loadStatuses({bool forceRefresh = false}) async {
+  Future<void> loadStatuses({
+    bool forceRefresh = false,
+    WhatsAppType? type,
+  }) async {
+    final targetType = type ?? currentWhatsAppType;
     isLoading.value = true;
     errorMessage.value = null;
 
-    final result = await _getStatusesUseCase(forceRefresh: forceRefresh);
+    final result = await _getStatusesUseCase(
+      forceRefresh: forceRefresh,
+      type: targetType,
+    );
     result.when(
       success: (items) {
         statuses.assignAll(items);

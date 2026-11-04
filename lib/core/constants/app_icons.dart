@@ -73,6 +73,7 @@ class AppIcons {
 
   // Communication
   static const message = Iconsax.messages_1_copy;
+  static const whatsapp = Iconsax.whatsapp_copy;
   static const phone = Iconsax.call_copy;
   static const call = Iconsax.call_copy;
 

@@ -47,7 +47,7 @@ class AnimatedChip extends StatelessWidget {
         key: ValueKey<bool>(isSelected),
         padding: EdgeInsets.symmetric(
           horizontal: context.spaceM,
-          vertical: context.spaceS,
+          vertical: context.setSize(6),
         ),
         color: isSelected
             ? context.colorScheme.primary

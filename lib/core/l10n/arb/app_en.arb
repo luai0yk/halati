@@ -115,5 +115,13 @@
   },
   "noLicensesFound": "No Licenses Found",
   "noLicensesFoundSubtitle": "There are no open-source licenses to display",
-  "failedToLoadLicenses": "Couldn't load licenses."
+  "failedToLoadLicenses": "Couldn't load licenses.",
+  "whatsapp": "WhatsApp",
+  "whatsappBusiness": "WhatsApp Business",
+  "business": "Business",
+  "defaultWhatsApp": "Default WhatsApp",
+  "selectDefaultWhatsApp": "Select Default WhatsApp",
+  "defaultWhatsAppSubtitle": "Set default app for Status Saver",
+  "safPermissionTitleBusiness": "WhatsApp Business Status Access",
+  "safPermissionExplanationBusiness": "To view and save WhatsApp Business statuses, please select the WhatsApp Business Statuses folder."
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:status_saver/core/constants/app_constants.dart';
+import 'package:status_saver/core/enums/whatsapp_type.dart';
 import 'package:status_saver/core/l10n/app_locales.dart';
 import 'package:status_saver/core/services/cash/cash_keys.dart';
 import 'package:status_saver/core/services/cash/cash_service.dart';
@@ -9,10 +10,15 @@ import 'package:status_saver/core/utils/helpers/misc/url_helper.dart';
 import 'package:status_saver/core/utils/helpers/settings_helper.dart';
 
 class SettingsController extends GetxController {
+  static SettingsController get to => Get.find<SettingsController>();
+
   final CashService _cash = Get.find<CashService>();
 
   static const String themeId = 'theme';
   static const String aboutInfoId = 'aboutInfo';
+  static const String whatsappSettingId = 'whatsappSetting';
+
+  late final Rx<WhatsAppType> activeWhatsAppType;
 
   String _appVersion = '';
   String get appVersion => _appVersion;
@@ -23,7 +29,28 @@ class SettingsController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    activeWhatsAppType = defaultWhatsAppType.obs;
     loadAppInfo();
+  }
+
+  WhatsAppType get defaultWhatsAppType {
+    final String? stored = _cash.getString(CashKeys.defaultWhatsAppType);
+    if (stored == WhatsAppType.business.name) {
+      return WhatsAppType.business;
+    }
+    return WhatsAppType.whatsapp;
+  }
+
+  Future<void> setDefaultWhatsAppType(WhatsAppType type) async {
+    await _cash.setString(CashKeys.defaultWhatsAppType, type.name);
+    activeWhatsAppType.value = type;
+    update([whatsappSettingId]);
+  }
+
+  void setActiveWhatsAppType(WhatsAppType type) {
+    if (activeWhatsAppType.value != type) {
+      activeWhatsAppType.value = type;
+    }
   }
 
   Future<void> loadAppInfo() async {

@@ -320,4 +320,29 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get failedToLoadLicenses => 'Couldn\'t load licenses.';
+
+  @override
+  String get whatsapp => 'WhatsApp';
+
+  @override
+  String get whatsappBusiness => 'WhatsApp Business';
+
+  @override
+  String get business => 'Business';
+
+  @override
+  String get defaultWhatsApp => 'Default WhatsApp';
+
+  @override
+  String get selectDefaultWhatsApp => 'Select Default WhatsApp';
+
+  @override
+  String get defaultWhatsAppSubtitle => 'Set default app for Status Saver';
+
+  @override
+  String get safPermissionTitleBusiness => 'WhatsApp Business Status Access';
+
+  @override
+  String get safPermissionExplanationBusiness =>
+      'To view and save WhatsApp Business statuses, please select the WhatsApp Business Statuses folder.';
 }
