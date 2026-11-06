@@ -5,13 +5,21 @@ import 'package:status_saver/features/home/data/models/status_media_model.dart';
 
 abstract class SafNativeDataSource {
   Future<Map<String, dynamic>> checkDirectoryAccess(String? uri);
+  Future<Map<String, dynamic>> checkSaveFolderAccess(String? uri);
   Future<String?> requestDirectorySelection({String? initialUriHint, bool isBusiness = false});
+  Future<Map<String, dynamic>?> requestCustomSaveFolder({String? initialUriHint});
   Future<bool> releaseDirectoryAccess(String uri);
   Future<List<StatusMediaModel>> discoverStatuses(String treeUri);
   Future<String?> getThumbnail(String documentUri, {int width = 300, int height = 300});
   Future<Map<String, dynamic>> getMediaMetadata(String documentUri);
   Future<String?> getFullMediaFile(String documentUri, String fileName);
-  Future<Map<String, dynamic>> saveToMediaStore(String documentUri, String mediaType, String fileName);
+  Future<Map<String, dynamic>> saveToMediaStore(
+    String documentUri,
+    String mediaType,
+    String fileName, {
+    bool isBusiness = false,
+    String? customTreeUri,
+  });
   Future<bool> deleteFromMediaStore(String mediaStoreUri);
 }
 
@@ -38,6 +46,22 @@ class SafNativeDataSourceImpl implements SafNativeDataSource {
   }
 
   @override
+  Future<Map<String, dynamic>> checkSaveFolderAccess(String? uri) async {
+    try {
+      final result = await _channel.invokeMethod<Map<dynamic, dynamic>>(
+        SafChannel.checkSaveFolderAccess,
+        {'uri': uri},
+      );
+      if (result == null) {
+        return {'granted': false, 'accessible': false};
+      }
+      return Map<String, dynamic>.from(result);
+    } on PlatformException catch (e) {
+      throw SafAccessRevokedFailure(e.message ?? 'Failed to check save folder access', e.code);
+    }
+  }
+
+  @override
   Future<String?> requestDirectorySelection({String? initialUriHint, bool isBusiness = false}) async {
     try {
       final result = await _channel.invokeMethod<String>(
@@ -53,6 +77,23 @@ class SafNativeDataSourceImpl implements SafNativeDataSource {
         throw SafPermissionDeniedFailure(e.message ?? 'User cancelled selection', e.code);
       }
       throw SafFolderInvalidFailure(e.message ?? 'Folder selection failed', e.code);
+    }
+  }
+
+  @override
+  Future<Map<String, dynamic>?> requestCustomSaveFolder({String? initialUriHint}) async {
+    try {
+      final result = await _channel.invokeMethod<Map<dynamic, dynamic>>(
+        SafChannel.requestCustomSaveFolder,
+        {'initialUriHint': initialUriHint},
+      );
+      if (result == null) return null;
+      return Map<String, dynamic>.from(result);
+    } on PlatformException catch (e) {
+      if (e.code == 'USER_CANCELLED') {
+        throw SafPermissionDeniedFailure(e.message ?? 'User cancelled selection', e.code);
+      }
+      throw SafFolderInvalidFailure(e.message ?? 'Save folder selection failed', e.code);
     }
   }
 
@@ -143,8 +184,10 @@ class SafNativeDataSourceImpl implements SafNativeDataSource {
   Future<Map<String, dynamic>> saveToMediaStore(
     String documentUri,
     String mediaType,
-    String fileName,
-  ) async {
+    String fileName, {
+    bool isBusiness = false,
+    String? customTreeUri,
+  }) async {
     try {
       final result = await _channel.invokeMethod<Map<dynamic, dynamic>>(
         SafChannel.saveToMediaStore,
@@ -152,6 +195,8 @@ class SafNativeDataSourceImpl implements SafNativeDataSource {
           'documentUri': documentUri,
           'mediaType': mediaType,
           'fileName': fileName,
+          'isBusiness': isBusiness,
+          'customTreeUri': customTreeUri,
         },
       );
       if (result == null) {

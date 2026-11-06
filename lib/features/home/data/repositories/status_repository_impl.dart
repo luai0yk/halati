@@ -159,12 +159,27 @@ class StatusRepositoryImpl implements StatusRepository {
   }
 
   @override
-  Future<Result<Map<String, dynamic>, Failure>> saveMediaToGallery(StatusMedia media) async {
+  Future<Result<Map<String, dynamic>, Failure>> saveMediaToGallery(
+    StatusMedia media, {
+    WhatsAppType? type,
+  }) async {
     try {
+      final isBusiness = type?.isBusiness ??
+          (media.documentUri.contains('com.whatsapp.w4b') ||
+              media.documentUri.contains('whatsapp%20business') ||
+              media.documentUri.toLowerCase().contains('whatsapp business'));
+
+      final customFolderKey = isBusiness
+          ? CashKeys.saveFolderCustomUriBusiness
+          : CashKeys.saveFolderCustomUri;
+      final customTreeUri = _cashService.getString(customFolderKey);
+
       final result = await _safDataSource.saveToMediaStore(
         media.documentUri,
         media.mediaType.name,
         media.fileName,
+        isBusiness: isBusiness,
+        customTreeUri: customTreeUri,
       );
       return Success(result);
     } on Failure catch (f) {

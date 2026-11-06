@@ -59,6 +59,13 @@ class HomePage extends GetView<HomeController> {
           await ShareHelper.shareFile(File(path), text: item.fileName);
         }
       },
+      onDelete: (item) async {
+        return await controller.deleteStatus(
+          item.originalObject as StatusMedia,
+          onError: (msg) => ToastHelper.show(msg: '${context.l10n.error}: $msg'),
+        );
+      },
+      closeOnDelete: true,
     );
   }
 

@@ -4,19 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:status_saver/core/constants/app_durations.dart';
-import 'package:status_saver/core/constants/app_icons.dart';
 import 'package:status_saver/core/utils/extensions/context_extension.dart';
 import 'package:status_saver/core/utils/extensions/responsive_size.dart';
 import 'package:status_saver/core/utils/extensions/responsive_values.dart';
-import 'package:status_saver/core/utils/helpers/ui/dialog_helper.dart';
+import 'package:status_saver/core/utils/helpers/ui/status_delete_helper.dart';
 import 'package:status_saver/core/utils/helpers/ui/toast_helper.dart';
+import 'package:status_saver/features/settings/controller/settings_controller.dart';
 import 'package:status_saver/features/viewer/data/models/media_viewer_item.dart';
 import 'package:status_saver/features/viewer/presentation/controllers/media_viewer_controller.dart';
 import 'package:status_saver/features/viewer/presentation/widgets/media_viewer_app_bar.dart';
 import 'package:status_saver/features/viewer/presentation/widgets/media_viewer_content.dart';
 import 'package:status_saver/features/viewer/presentation/widgets/media_viewer_filmstrip.dart';
 import 'package:status_saver/shared/widgets/appbars/my_app_bar.dart';
-import 'package:status_saver/shared/widgets/dialogs/my_dialog.dart';
 
 export 'package:status_saver/features/viewer/data/models/media_viewer_item.dart';
 export 'package:status_saver/features/viewer/presentation/controllers/media_viewer_controller.dart';
@@ -29,6 +28,7 @@ class MediaViewerPage extends StatefulWidget {
   final Future<bool> Function(MediaViewerItem item)? onSave;
   final Future<void> Function(MediaViewerItem item)? onShare;
   final Future<bool> Function(MediaViewerItem item)? onDelete;
+  final bool closeOnDelete;
 
   const MediaViewerPage({
     super.key,
@@ -39,6 +39,7 @@ class MediaViewerPage extends StatefulWidget {
     this.onSave,
     this.onShare,
     this.onDelete,
+    this.closeOnDelete = false,
   });
 
   static Future<T?> show<T>(
@@ -50,6 +51,7 @@ class MediaViewerPage extends StatefulWidget {
     Future<bool> Function(MediaViewerItem item)? onSave,
     Future<void> Function(MediaViewerItem item)? onShare,
     Future<bool> Function(MediaViewerItem item)? onDelete,
+    bool closeOnDelete = false,
   }) {
     return Navigator.of(context).push<T>(
       PageRouteBuilder(
@@ -65,6 +67,7 @@ class MediaViewerPage extends StatefulWidget {
             onSave: onSave,
             onShare: onShare,
             onDelete: onDelete,
+            closeOnDelete: closeOnDelete,
           );
         },
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -80,6 +83,7 @@ class MediaViewerPage extends StatefulWidget {
 
 class _MediaViewerPageState extends State<MediaViewerPage> {
   late final MediaViewerController controller;
+  final Set<String> _autoSavingIds = <String>{};
 
   @override
   void initState() {
@@ -94,12 +98,43 @@ class _MediaViewerPageState extends State<MediaViewerPage> {
       onDeleteItem: widget.onDelete,
     );
     controller.onInit();
+    _checkAutoSave(widget.initialIndex);
   }
 
   @override
   void dispose() {
     controller.onClose();
     super.dispose();
+  }
+
+  void _checkAutoSave(int index) {
+    if (!Get.isRegistered<SettingsController>()) return;
+    final settings = SettingsController.to;
+    if (!settings.autoSaveOpenedStatuses.value) return;
+    if (index < 0 || index >= controller.items.length) return;
+
+    final item = controller.items[index];
+    if (item.isSaved || _autoSavingIds.contains(item.id) || widget.onSave == null) return;
+
+    _autoSavingIds.add(item.id);
+
+    // Run unawaited in background without blocking media viewing
+    Future.microtask(() async {
+      try {
+        final success = await widget.onSave!(item);
+        if (success && mounted) {
+          final idx = controller.items.indexWhere((it) => it.id == item.id);
+          if (idx != -1) {
+            controller.items[idx] = controller.items[idx].copyWith(isSaved: true);
+          }
+          ToastHelper.show(msg: context.l10n.savedSuccessfully);
+        }
+      } catch (_) {
+        // Softly handle failed saves without interrupting media viewing
+      } finally {
+        _autoSavingIds.remove(item.id);
+      }
+    });
   }
 
   Future<void> _handleSave() async {
@@ -114,22 +149,16 @@ class _MediaViewerPageState extends State<MediaViewerPage> {
     final currentItem = controller.currentItem;
     if (currentItem == null) return;
 
-    DialogHelper.show(
-      child: MyDialog(
-        title: context.l10n.deleteSavedMedia,
-        content: context.l10n.confirmDeleteMessage,
-        status: DialogStatus.danger,
-        statusIcon: AppIcons.delete,
-        primaryButton: DialogButton(
-          text: context.l10n.delete,
-          onPressed: () {
-            controller.deleteCurrentItem(
-              onCloseViewer: () => Navigator.of(context).pop(),
-            );
+    StatusDeleteHelper.confirmAndDelete(
+      context,
+      onDelete: () async {
+        return await controller.deleteCurrentItem(
+          onCloseViewer: () {
+            if (mounted) Navigator.of(context).pop();
           },
-        ),
-        secondaryButton: DialogButton(text: context.l10n.cancel),
-      ),
+          forceClose: widget.closeOnDelete,
+        );
+      },
     );
   }
 
@@ -208,6 +237,7 @@ class _MediaViewerPageState extends State<MediaViewerPage> {
                       screenWidth: MediaQuery.of(context).size.width,
                       itemWidth: itemWidth,
                     );
+                    _checkAutoSave(index);
                   },
                   itemBuilder: (context, index) {
                     final item = controller.items[index];

@@ -1,148 +1,178 @@
-Halati
+# Halati (حالاتي) — WhatsApp Status Saver
 
-Halati is a WhatsApp Status Saver application that makes it easy to browse, view, and save statuses from both WhatsApp Messenger and WhatsApp Business in one place.
+<p align="center">
+  <img src="assets/images/app_icon.png" alt="Halati Logo" width="100" />
+</p>
 
-Designed with simplicity, performance, and a clean user experience in mind, Halati provides seamless switching between WhatsApp versions, a customizable interface, and a well-structured codebase built with modern Flutter development practices.
+<p align="center">
+  A clean, modern, and high-performance WhatsApp Status Saver for Android built with Flutter & Clean Architecture.
+</p>
 
-Features
+<p align="center">
+  <img src="https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white" alt="Flutter" />
+  <img src="https://img.shields.io/badge/Dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white" alt="Dart" />
+  <img src="https://img.shields.io/badge/Android-Scoped%20Storage%20(SAF)-brightgreen?style=for-the-badge&logo=android" alt="Android SAF" />
+  <img src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge" alt="License" />
+</p>
 
-- Dual WhatsApp Support: Browse and save statuses from both WhatsApp Messenger and WhatsApp Business.
-- Seamless Switching: Smoothly switch between the two WhatsApp versions without unnecessary navigation.
-- Status Saving: Save your favorite WhatsApp statuses directly to your device.
-- Media Support: Browse and view status media, including images, videos, and audio.
-- Customizable Themes: Personalize the app with theme customization and light/dark mode support.
-- Localization: Multilingual support for a more accessible user experience.
-- Clean Architecture: Organized, maintainable, and scalable project structure.
-- Responsive UI: A clean interface designed to provide a consistent experience across different screen sizes.
+---
 
-Tech Stack
+## 🌟 Overview
 
-Technology| Purpose
-Flutter| Cross-platform UI development
-Dart| Application programming language
-GetX| State management and navigation
-Clean Architecture| Separation of concerns and maintainability
+**Halati** is an open-source WhatsApp status manager that allows users to discover, view, automatically save, and organize media statuses from both **WhatsApp Messenger** and **WhatsApp Business** seamlessly in one place.
 
-Architecture
+Built to comply fully with modern Android scoped storage requirements via the **Storage Access Framework (SAF)**, Halati delivers smooth performance without requiring deprecated broad storage permissions.
 
-Halati follows Clean Architecture principles to keep business logic independent from the presentation layer and infrastructure.
+---
 
-The project emphasizes:
+## ✨ Features
 
-- Separation of UI and business logic.
-- Reusable widgets and shared components.
-- Centralized application utilities and helpers.
-- Single Responsibility Principle (SRP).
-- SOLID principles.
-- Clean, readable, and maintainable code.
-- Feature-oriented organization.
+- **Dual WhatsApp Support**: Effortlessly toggle between WhatsApp Messenger and WhatsApp Business.
+- **Swipe Tab Navigation**: Seamless horizontal swiping between **Statuses**, **Saved**, and **Settings** tabs with state preservation.
+- **Media Support**: Full support for viewing and playing high-resolution **images**, **videos**, and **audio** statuses.
+- **One-Click & In-Viewer Save**: Download statuses directly from the grid or within the full-screen media viewer.
+- **Delete from Anywhere**: Delete saved statuses directly from the Home grid or the media viewer with an intuitive confirmation dialog.
+- **Auto-Save Opened Statuses**: Optional setting to automatically save statuses upon opening without blocking viewer interactions.
+- **Custom Save Folders**:
+  - Independent storage paths for WhatsApp and WhatsApp Business.
+  - Granular folder selection with Android SAF.
+  - Automatic organization into structured subdirectories:
+    ```text
+    Download/
+    └── Halati/
+        ├── WhatsApp/
+        │   ├── Halati Videos/
+        │   ├── Halati Images/
+        │   └── Halati Audios/
+        └── WhatsApp Business/
+            ├── Halati Videos/
+            ├── Halati Images/
+            └── Halati Audios/
+    ```
+  - Easy one-tap option to restore default locations.
+- **Offline Persistence**: Fast local caching and database tracking using **Drift (SQLite)**.
+- **Localization (i18n)**: Native **Arabic** (with RTL layout support) and **English** localization.
+- **Theme Modes**: Native system-based, Light, and Dark themes adhering to Material 3 guidelines.
 
-User Experience
+---
 
-Halati focuses on delivering a smooth and intuitive experience through:
+## 🛠️ Tech Stack & Architecture
 
-- Simple and modern interface.
-- Smooth navigation between WhatsApp versions.
-- Consistent design across application screens.
-- Theme customization.
-- Multilingual interface support.
-- Efficient media browsing and viewing.
+| Technology | Purpose |
+| :--- | :--- |
+| **Flutter & Dart** | Cross-platform UI toolkit and core language |
+| **GetX** | State management, dependency injection, and micro-navigation |
+| **Drift (SQLite)** | Reactive local database for tracking saved media metadata |
+| **Storage Access Framework (SAF)** | Native Kotlin MethodChannel handling scoped storage permissions and file streams |
+| **Video Player & Photo View** | Media inspection, zoom, and playback |
 
-Project Structure
+### Architecture Principles
 
-The project is organized to promote separation of concerns, code reuse, and scalability.
+The application strictly follows **Clean Architecture** and a feature-first folder structure:
 
+- **Presentation Layer**: UI widgets and GetX Controllers decoupled from direct data queries.
+- **Domain Layer**: Independent business entities and use cases (e.g., `SaveMediaUseCase`, `DeleteSavedMediaUseCase`, `GetStatusesUseCase`).
+- **Data Layer**: Repositories, Drift DAOs, and native SAF platform channel data sources.
+- **Shared & Core**: Reusable design system tokens, custom UI widgets, and application helpers.
+
+```text
 lib/
-├── app/
-│   ├── bindings/
-│   ├── routes/
-│   └── ...
-│
 ├── core/
-│   ├── constants/
-│   ├── helpers/
-│   ├── services/
-│   ├── theme/
-│   ├── utils/
-│   └── ...
-│
-├── shared/
-│   ├── widgets/
-│   └── ...
-│
+│   ├── database/         # Drift database schema & DAOs
+│   ├── l10n/             # ARB files & generated localization classes
+│   ├── platform/         # SAF channel method constants
+│   ├── services/         # Key-value persistent preferences (CashService)
+│   ├── theme/            # Light, dark & Material 3 extended palettes
+│   └── utils/            # Shared UI dialogs, formatters & extensions
 ├── features/
-│   ├── home/
-│   ├── media_viewer/
-│   ├── settings/
-│   └── ...
-│
-└── main.dart
+│   ├── app_shell/        # Main shell hosting swipeable PageView & bottom nav
+│   ├── home/             # Status discovery, filtering, and saving
+│   ├── saved/            # Saved status library, media management & deletion
+│   ├── settings/         # Save folder config, auto-save toggle, themes & info
+│   └── viewer/           # Full-screen media viewer with filmstrip & auto-save
+└── shared/
+    └── widgets/          # Reusable cards, buttons, switches & dialogs
+```
 
-Note: The structure above illustrates the intended architectural organization. Directory names may vary depending on the actual implementation.
+---
 
-Getting Started
+## 🚀 Getting Started
 
-Prerequisites
+### Prerequisites
 
-- Flutter SDK
-- Dart SDK
-- Android Studio or VS Code
-- Android device or emulator
+- Flutter SDK `^3.11.5` or later
+- Dart SDK `^3.11.5`
+- Android Studio / VS Code with Flutter extension
+- Android device or emulator running Android 8.0 (API 26) or newer with WhatsApp or WhatsApp Business installed
 
-Installation
+### Installation
 
-1. Clone the repository:
-   
+1. **Clone the repository:**
+   ```bash
    git clone https://github.com/luai0yk/halati.git
-
-2. Navigate to the project directory:
-   
    cd halati
+   ```
 
-3. Install dependencies:
-   
+2. **Install dependencies:**
+   ```bash
    flutter pub get
+   ```
 
-4. Run the application:
-   
+3. **Generate code (Localizations & Drift):**
+   ```bash
+   flutter gen-l10n
+   dart run build_runner build --delete-conflicting-outputs
+   ```
+
+4. **Run the app:**
+   ```bash
    flutter run
+   ```
 
-Requirements
+5. **Run tests & static analysis:**
+   ```bash
+   flutter analyze
+   flutter test
+   ```
 
-- WhatsApp Messenger and/or WhatsApp Business installed on your device.
-- Required storage or media access permissions.
-- Compatible Android version.
+---
 
-Contributing
+## 📱 Permissions & Storage Access
 
-Contributions are welcome!
+Halati conforms to **Android Scoped Storage** policies:
+1. When opening WhatsApp or WhatsApp Business for the first time, Halati prompts you to select the respective `.Statuses` folder via Android's document picker.
+2. Halati takes a persistable read permission so you don't need to grant access every time you open the app.
+3. Media is saved to public `Download/Halati/` directories or your chosen custom folder using MediaStore or SAF without requiring `MANAGE_EXTERNAL_STORAGE` or legacy permissions.
 
-If you have ideas for improvements, bug fixes, or new features, feel free to contribute.
+---
 
-1. Fork the repository.
-2. Create a new branch for your changes.
-3. Commit your changes with clear and descriptive messages.
-4. Push your branch to your fork.
-5. Open a Pull Request describing your changes.
+## 🤝 Contributing
 
-Feel free to open an issue if you encounter a bug or have a suggestion.
+Contributions are always welcome!
 
-Disclaimer
+1. Fork the project.
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`).
+3. Commit your changes (`git commit -m 'Add AmazingFeature'`).
+4. Push to the branch (`git push origin feature/AmazingFeature`).
+5. Open a Pull Request.
 
-Halati is an independent application and is not affiliated with, endorsed by, or officially connected to WhatsApp or Meta Platforms, Inc.
+---
 
-WhatsApp and WhatsApp Business are trademarks of Meta Platforms, Inc.
+## ⚠️ Disclaimer
 
-Halati accesses locally available status media on the user's device and does not claim ownership of third-party content. Users are responsible for respecting the privacy and intellectual property rights of others.
+Halati is an independent application developed for personal utility and is **not** affiliated with, endorsed by, or officially associated with WhatsApp Inc. or Meta Platforms, Inc.
 
-Author
+"WhatsApp" and "WhatsApp Business" are trademarks of Meta Platforms, Inc. Halati only accesses locally cached media present on the user's device with explicit user-granted permissions.
 
-Luai Kaleessi
+---
 
-- GitHub: "@luai0yk" (https://github.com/luai0yk)
+## 👤 Author
+
+**Luai Kaleessi**
+- GitHub: [@luai0yk](https://github.com/luai0yk)
 
 ---
 
 <p align="center">
-  Made with Flutter
+  Crafted with care using Flutter 💙
 </p>

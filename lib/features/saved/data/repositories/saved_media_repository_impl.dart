@@ -40,4 +40,23 @@ class SavedMediaRepositoryImpl implements SavedMediaRepository {
       return FailureResult(DatabaseFailure(e.toString()));
     }
   }
+
+  @override
+  Future<Result<bool, Failure>> deleteSavedMediaByOriginalUri(String originalDocumentUri) async {
+    try {
+      final savedItem = await _dataSource.getSavedMediaByOriginalUri(originalDocumentUri);
+      if (savedItem != null) {
+        if (savedItem.mediaStoreUri.isNotEmpty) {
+          try {
+            await _safDataSource.deleteFromMediaStore(savedItem.mediaStoreUri);
+          } catch (_) {}
+        }
+        final rowsDeleted = await _dataSource.deleteSavedMedia(savedItem.id);
+        return Success(rowsDeleted > 0);
+      }
+      return const Success(false);
+    } catch (e) {
+      return FailureResult(DatabaseFailure(e.toString()));
+    }
+  }
 }

@@ -346,4 +346,66 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get safPermissionExplanationBusiness =>
       'لعرض وحفظ حالات واتساب للأعمال، يرجى اختيار مجلد حالات واتساب للأعمال.';
+
+  @override
+  String get general => 'عام';
+
+  @override
+  String get storageAndDownloads => 'التخزين والتنزيل';
+
+  @override
+  String get about => 'حول التطبيق';
+
+  @override
+  String get whatsappSaveFolder => 'مجلد حفظ واتساب';
+
+  @override
+  String get whatsappBusinessSaveFolder => 'مجلد حفظ واتساب للأعمال';
+
+  @override
+  String get autoSaveOpenedStatuses => 'حفظ الحالات المفتوحة تلقائياً';
+
+  @override
+  String get autoSaveOpenedStatusesDescription =>
+      'حفظ الحالات تلقائياً إلى جهازك بمجرد فتحها وعرضها';
+
+  @override
+  String get changeFolder => 'تغيير المجلد';
+
+  @override
+  String get restoreDefaultFolder => 'استعادة المجلد الافتراضي';
+
+  @override
+  String get currentPath => 'الموقع الحالي';
+
+  @override
+  String get defaultLocation => 'افتراضي';
+
+  @override
+  String get customLocation => 'مخصص';
+
+  @override
+  String get folderUpdatedSuccessfully => 'تم تحديث المجلد بنجاح';
+
+  @override
+  String get folderRestoredSuccessfully => 'تمت استعادة المجلد الافتراضي';
+
+  @override
+  String get folderAccessError => 'تعذر الوصول إلى المجلد المحدد';
+
+  @override
+  String get aboutHalati => 'حول حالاتي';
+
+  @override
+  String get aboutHalatiSubtitle =>
+      'سياسة الخصوصية، التواصل، وتراخيص المصدر المفتوح';
+
+  @override
+  String get appVersionTitle => 'إصدار التطبيق';
+
+  @override
+  String get manageSaveFolder => 'إدارة مجلد الحفظ';
+
+  @override
+  String get savedAutomatically => 'تم الحفظ تلقائياً';
 }

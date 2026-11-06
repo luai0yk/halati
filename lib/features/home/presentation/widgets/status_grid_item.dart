@@ -6,6 +6,7 @@ import 'package:status_saver/core/constants/app_icons.dart';
 import 'package:status_saver/core/utils/extensions/context_extension.dart';
 import 'package:status_saver/core/utils/extensions/responsive_size.dart';
 import 'package:status_saver/core/utils/extensions/responsive_values.dart';
+import 'package:status_saver/core/utils/helpers/ui/status_delete_helper.dart';
 import 'package:status_saver/core/utils/helpers/ui/toast_helper.dart';
 import 'package:status_saver/features/home/domain/entities/status_media.dart';
 import 'package:status_saver/features/home/presentation/controllers/home_controller.dart';
@@ -71,7 +72,19 @@ class StatusGridItem extends StatelessWidget {
             ? context.colorScheme.primary.withValues(alpha: 0.85)
             : Colors.black.withValues(alpha: 0.55),
         onTap: () async {
-          if (isSaved || isSaving) return;
+          if (isSaving) return;
+          if (isSaved) {
+            StatusDeleteHelper.confirmAndDelete(
+              context,
+              onDelete: () => controller.deleteStatus(
+                media,
+                onError: (msg) {
+                  ToastHelper.show(msg: '${context.l10n.error}: $msg');
+                },
+              ),
+            );
+            return;
+          }
           await controller.saveStatus(
             media,
             onSuccess: () {

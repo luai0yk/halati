@@ -233,14 +233,17 @@ class MediaViewerController extends GetxController {
     await onShareItem!(item);
   }
 
-  Future<void> deleteCurrentItem({VoidCallback? onCloseViewer}) async {
+  Future<bool> deleteCurrentItem({
+    VoidCallback? onCloseViewer,
+    bool forceClose = false,
+  }) async {
     final item = currentItem;
-    if (item == null || onDeleteItem == null) return;
+    if (item == null || onDeleteItem == null) return false;
 
     final success = await onDeleteItem!(item);
     if (success) {
       items.removeWhere((it) => it.id == item.id);
-      if (items.isEmpty) {
+      if (forceClose || items.isEmpty) {
         onCloseViewer?.call();
       } else {
         if (currentIndex.value >= items.length) {
@@ -248,6 +251,8 @@ class MediaViewerController extends GetxController {
         }
         pageController.jumpToPage(currentIndex.value);
       }
+      return true;
     }
+    return false;
   }
 }

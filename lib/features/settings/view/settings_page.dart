@@ -9,10 +9,11 @@ import 'package:status_saver/core/utils/extensions/responsive_size.dart';
 import 'package:status_saver/core/utils/extensions/responsive_values.dart';
 import 'package:status_saver/core/utils/helpers/settings_helper.dart';
 import 'package:status_saver/core/utils/helpers/ui/bottom_sheet_helper.dart';
-import 'package:status_saver/features/home/presentation/controllers/home_controller.dart';
+import 'package:status_saver/core/utils/helpers/ui/toast_helper.dart';
 import 'package:status_saver/features/settings/controller/settings_controller.dart';
 import 'package:status_saver/shared/widgets/cards/my_card.dart';
 import 'package:status_saver/shared/widgets/cards/my_section_card.dart';
+import 'package:status_saver/shared/widgets/input/my_switch.dart';
 import 'package:status_saver/shared/widgets/lists/selectable_list.dart';
 import 'package:status_saver/shared/widgets/misc/my_icon.dart';
 import 'package:status_saver/shared/widgets/sheets/my_bottom_sheet.dart';
@@ -63,12 +64,13 @@ class SettingsPage extends GetView<SettingsController> {
             ),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
+                // 1. General Section
                 MySectionCard(
-                  title: context.l10n.generalSettings,
+                  title: context.l10n.general,
                   children: [
                     GetBuilder<SettingsController>(
                       id: SettingsController.themeId,
-                      builder: (controller) {
+                      builder: (ctrl) {
                         return MyListTile(
                           leading: _buildIconContainer(
                             context,
@@ -82,41 +84,35 @@ class SettingsPage extends GetView<SettingsController> {
                             SettingsHelper.currentTheme,
                           ),
                           trailingIcon: AppIcons.arrowForward(context),
-                          onTap: () =>
-                              _showThemeBottomSheet(context, controller),
+                          onTap: () => _showThemeBottomSheet(context, ctrl),
                         );
                       },
                     ),
                     GetBuilder<SettingsController>(
-                      builder: (controller) {
+                      builder: (ctrl) {
                         return MyListTile(
                           leading: _buildIconContainer(
                             context,
                             AppIcons.translate,
-                            context.colorScheme.tertiary,
+                            context.colorScheme.secondary,
                           ),
                           borderRadius: BorderRadius.zero,
                           title: context.l10n.language,
-                          subtitle: controller.selectLang.localizedName(
-                            context,
-                          ),
+                          subtitle: ctrl.selectLang.localizedName(context),
                           trailingIcon: AppIcons.arrowForward(context),
-                          onTap: () =>
-                              _showLanguageBottomSheet(context, controller),
+                          onTap: () => _showLanguageBottomSheet(context, ctrl),
                         );
                       },
                     ),
                     GetBuilder<SettingsController>(
                       id: SettingsController.whatsappSettingId,
-                      builder: (controller) {
-                        final defaultType = controller.defaultWhatsAppType;
+                      builder: (ctrl) {
+                        final defaultType = ctrl.defaultWhatsAppType;
                         return MyListTile(
                           leading: _buildIconContainer(
                             context,
-                            defaultType.isBusiness
-                                ? AppIcons.store
-                                : AppIcons.message,
-                            context.colorScheme.primary,
+                            AppIcons.whatsapp,
+                            context.colorScheme.tertiary,
                           ),
                           borderRadius: BorderRadius.zero,
                           title: context.l10n.defaultWhatsApp,
@@ -124,45 +120,110 @@ class SettingsPage extends GetView<SettingsController> {
                               ? context.l10n.whatsappBusiness
                               : context.l10n.whatsapp,
                           trailingIcon: AppIcons.arrowForward(context),
-                          onTap: () => _showDefaultWhatsAppBottomSheet(
-                            context,
-                            controller,
-                          ),
+                          onTap: () =>
+                              _showDefaultWhatsAppBottomSheet(context, ctrl),
                         );
                       },
                     ),
-                    if (Get.isRegistered<HomeController>())
-                      MyListTile(
-                        leading: _buildIconContainer(
-                          context,
-                          AppIcons.folder,
-                          context.colorScheme.secondary,
-                        ),
-                        borderRadius: BorderRadius.zero,
-                        title: context.l10n.selectFolder,
-                        subtitle:
-                            Get.find<HomeController>()
-                                .currentWhatsAppType
-                                .isBusiness
-                            ? context.l10n.safPermissionTitleBusiness
-                            : context.l10n.safPermissionTitle,
-                        trailingIcon: AppIcons.arrowForward(context),
-                        onTap: () =>
-                            Get.find<HomeController>().requestPermission(),
-                      ),
                   ],
                 ),
-                context.verticalSpace(12),
-                MyListTile(
-                  leading: _buildIconContainer(
-                    context,
-                    AppIcons.info,
-                    context.colorScheme.primary,
-                  ),
-                  tileColor: context.colorScheme.surfaceContainer,
-                  title: context.l10n.aboutStatusSaver,
-                  trailingIcon: AppIcons.arrowForward(context),
-                  onTap: () => Get.toNamed(AppRoutes.about),
+                context.verticalSpace(20),
+
+                // 2. Storage & Downloads Section
+                GetBuilder<SettingsController>(
+                  id: SettingsController.storageSettingId,
+                  builder: (ctrl) {
+                    return MySectionCard(
+                      title: context.l10n.storageAndDownloads,
+                      children: [
+                        Obx(() {
+                          final path = ctrl.getSaveFolderPath(
+                            WhatsAppType.whatsapp,
+                          );
+                          return MyListTile(
+                            leading: _buildIconContainer(
+                              context,
+                              AppIcons.folder,
+                              context.colorScheme.primary,
+                            ),
+                            borderRadius: BorderRadius.zero,
+                            title: context.l10n.whatsappSaveFolder,
+                            subtitle: path,
+                            subtitleDirection: TextDirection.ltr,
+                            trailingIcon: AppIcons.arrowForward(context),
+                            onTap: () => _showFolderManagementBottomSheet(
+                              context,
+                              ctrl,
+                              WhatsAppType.whatsapp,
+                            ),
+                          );
+                        }),
+                        Obx(() {
+                          final path = ctrl.getSaveFolderPath(
+                            WhatsAppType.business,
+                          );
+                          return MyListTile(
+                            leading: _buildIconContainer(
+                              context,
+                              AppIcons.folder,
+                              context.colorScheme.primary,
+                            ),
+                            borderRadius: BorderRadius.zero,
+                            title: context.l10n.whatsappBusinessSaveFolder,
+                            subtitle: path,
+                            subtitleDirection: TextDirection.ltr,
+                            trailingIcon: AppIcons.arrowForward(context),
+                            onTap: () => _showFolderManagementBottomSheet(
+                              context,
+                              ctrl,
+                              WhatsAppType.business,
+                            ),
+                          );
+                        }),
+                        Obx(() {
+                          final isAuto = ctrl.autoSaveOpenedStatuses.value;
+                          return MyListTile(
+                            leading: _buildIconContainer(
+                              context,
+                              AppIcons.download,
+                              context.colorScheme.secondary,
+                            ),
+                            borderRadius: BorderRadius.zero,
+                            title: context.l10n.autoSaveOpenedStatuses,
+                            subtitle:
+                                context.l10n.autoSaveOpenedStatusesDescription,
+                            trailing: MySwitch(
+                              value: isAuto,
+                              onChanged: (val) =>
+                                  ctrl.setAutoSaveOpenedStatuses(val),
+                            ),
+                            onTap: () =>
+                                ctrl.setAutoSaveOpenedStatuses(!isAuto),
+                          );
+                        }),
+                      ],
+                    );
+                  },
+                ),
+                context.verticalSpace(20),
+
+                // 3. About Section
+                MySectionCard(
+                  title: context.l10n.about,
+                  children: [
+                    MyListTile(
+                      leading: _buildIconContainer(
+                        context,
+                        AppIcons.info,
+                        context.colorScheme.primary,
+                      ),
+                      borderRadius: BorderRadius.zero,
+                      title: context.l10n.aboutHalati,
+                      subtitle: context.l10n.aboutHalatiSubtitle,
+                      trailingIcon: AppIcons.arrowForward(context),
+                      onTap: () => Get.toNamed(AppRoutes.about),
+                    ),
+                  ],
                 ),
               ]),
             ),
@@ -177,6 +238,129 @@ class SettingsPage extends GetView<SettingsController> {
       padding: EdgeInsets.all(context.spaceS),
       color: color.withValues(alpha: 0.12),
       child: MyIcon(icon: icon, color: color),
+    );
+  }
+
+  void _showFolderManagementBottomSheet(
+    BuildContext context,
+    SettingsController ctrl,
+    WhatsAppType type,
+  ) {
+    final title = type.isBusiness
+        ? context.l10n.whatsappBusinessSaveFolder
+        : context.l10n.whatsappSaveFolder;
+    final isCustom = ctrl.isCustomFolder(type);
+    final currentPath = ctrl.getSaveFolderPath(type);
+
+    BottomSheetHelper.show(
+      child: MyBottomSheet(
+        title: title,
+        padding: EdgeInsets.zero,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: context.insetsAllM,
+              child: MyCard.filled(
+                padding: context.insetsAllM,
+                color: context.colorScheme.surfaceContainerHigh,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          context.l10n.currentPath,
+                          style: context.textTheme.labelMedium?.copyWith(
+                            color: context.colorScheme.onSurfaceVariant,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: context.setSize(8),
+                            vertical: context.setSize(2),
+                          ),
+                          decoration: BoxDecoration(
+                            color: isCustom
+                                ? context.colorScheme.primaryContainer
+                                : context.colorScheme.surfaceContainerHighest,
+                            borderRadius: context.brCircular,
+                          ),
+                          child: Text(
+                            isCustom
+                                ? context.l10n.customLocation
+                                : context.l10n.defaultLocation,
+                            style: context.textTheme.labelSmall?.copyWith(
+                              color: isCustom
+                                  ? context.colorScheme.onPrimaryContainer
+                                  : context.colorScheme.onSurfaceVariant,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: context.spaceS),
+                    Directionality(
+                      textDirection: TextDirection.ltr,
+                      child: Text(
+                        currentPath,
+                        style: context.textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w500,
+                          color: context.colorScheme.onSurface,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Divider(
+              height: 1,
+              color: context.colorScheme.outlineVariant.withValues(alpha: 0.5),
+            ),
+            MyListTile(
+              borderRadius: BorderRadius.zero,
+              leading: _buildIconContainer(
+                context,
+                AppIcons.folder,
+                context.colorScheme.primary,
+              ),
+              title: context.l10n.changeFolder,
+              trailingIcon: AppIcons.arrowForward(context),
+              onTap: () async {
+                final updatedMsg = context.l10n.folderUpdatedSuccessfully;
+                Navigator.pop(context);
+                final success = await ctrl.pickCustomSaveFolder(type);
+                if (success) {
+                  ToastHelper.show(msg: updatedMsg);
+                }
+              },
+            ),
+            if (isCustom)
+              MyListTile(
+                borderRadius: BorderRadius.zero,
+                leading: _buildIconContainer(
+                  context,
+                  AppIcons.refresh,
+                  context.colorScheme.secondary,
+                ),
+                title: context.l10n.restoreDefaultFolder,
+                trailingIcon: AppIcons.arrowForward(context),
+                onTap: () async {
+                  final restoredMsg = context.l10n.folderRestoredSuccessfully;
+                  Navigator.pop(context);
+                  await ctrl.restoreDefaultSaveFolder(type);
+                  ToastHelper.show(msg: restoredMsg);
+                },
+              ),
+            SizedBox(height: context.spaceM),
+          ],
+        ),
+      ),
     );
   }
 

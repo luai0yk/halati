@@ -102,6 +102,7 @@ class AppShellBinding extends Bindings {
         getFullMediaFileUseCase: Get.find<GetFullMediaFileUseCase>(),
         saveMediaUseCase: Get.find<SaveMediaUseCase>(),
         getSavedMediaUseCase: Get.find<GetSavedMediaUseCase>(),
+        deleteSavedMediaUseCase: Get.find<DeleteSavedMediaUseCase>(),
       ),
       fenix: true,
     );

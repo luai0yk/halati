@@ -10,4 +10,8 @@ class DeleteSavedMediaUseCase {
   Future<Result<bool, Failure>> call(int id, {String? mediaStoreUri}) {
     return _repository.deleteSavedMedia(id, mediaStoreUri: mediaStoreUri);
   }
+
+  Future<Result<bool, Failure>> deleteByOriginalUri(String originalDocumentUri) {
+    return _repository.deleteSavedMediaByOriginalUri(originalDocumentUri);
+  }
 }

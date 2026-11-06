@@ -5,8 +5,10 @@ import 'package:status_saver/features/saved/data/models/saved_media_model.dart';
 abstract class SavedMediaLocalDataSource {
   Stream<List<SavedMediaModel>> watchSavedMedia();
   Future<List<SavedMediaModel>> getSavedMedia();
+  Future<SavedMediaModel?> getSavedMediaByOriginalUri(String originalDocumentUri);
   Future<int> insertSavedMedia(SavedMediaTableCompanion companion);
   Future<int> deleteSavedMedia(int id);
+  Future<int> deleteSavedMediaByOriginalUri(String originalDocumentUri);
 }
 
 class SavedMediaLocalDataSourceImpl implements SavedMediaLocalDataSource {
@@ -38,6 +40,14 @@ class SavedMediaLocalDataSourceImpl implements SavedMediaLocalDataSource {
   }
 
   @override
+  Future<SavedMediaModel?> getSavedMediaByOriginalUri(String originalDocumentUri) async {
+    final query = _database.select(_database.savedMediaTable)
+      ..where((t) => t.originalDocumentUri.equals(originalDocumentUri));
+    final row = await query.getSingleOrNull();
+    return row != null ? SavedMediaModel.fromData(row) : null;
+  }
+
+  @override
   Future<int> insertSavedMedia(SavedMediaTableCompanion companion) async {
     return await _database.into(_database.savedMediaTable).insert(companion);
   }
@@ -46,6 +56,13 @@ class SavedMediaLocalDataSourceImpl implements SavedMediaLocalDataSource {
   Future<int> deleteSavedMedia(int id) async {
     return await (_database.delete(_database.savedMediaTable)
           ..where((t) => t.id.equals(id)))
+        .go();
+  }
+
+  @override
+  Future<int> deleteSavedMediaByOriginalUri(String originalDocumentUri) async {
+    return await (_database.delete(_database.savedMediaTable)
+          ..where((t) => t.originalDocumentUri.equals(originalDocumentUri)))
         .go();
   }
 }

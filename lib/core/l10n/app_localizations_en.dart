@@ -345,4 +345,66 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get safPermissionExplanationBusiness =>
       'To view and save WhatsApp Business statuses, please select the WhatsApp Business Statuses folder.';
+
+  @override
+  String get general => 'General';
+
+  @override
+  String get storageAndDownloads => 'Storage & Downloads';
+
+  @override
+  String get about => 'About';
+
+  @override
+  String get whatsappSaveFolder => 'WhatsApp save folder';
+
+  @override
+  String get whatsappBusinessSaveFolder => 'WhatsApp Business save folder';
+
+  @override
+  String get autoSaveOpenedStatuses => 'Auto-save opened statuses';
+
+  @override
+  String get autoSaveOpenedStatusesDescription =>
+      'Automatically save statuses to your device when opened';
+
+  @override
+  String get changeFolder => 'Change folder';
+
+  @override
+  String get restoreDefaultFolder => 'Restore default folder';
+
+  @override
+  String get currentPath => 'Current location';
+
+  @override
+  String get defaultLocation => 'Default';
+
+  @override
+  String get customLocation => 'Custom';
+
+  @override
+  String get folderUpdatedSuccessfully => 'Folder updated successfully';
+
+  @override
+  String get folderRestoredSuccessfully => 'Default folder restored';
+
+  @override
+  String get folderAccessError => 'Cannot access the selected folder';
+
+  @override
+  String get aboutHalati => 'About Halati';
+
+  @override
+  String get aboutHalatiSubtitle =>
+      'Privacy policy, feedback, and open-source licenses';
+
+  @override
+  String get appVersionTitle => 'App version';
+
+  @override
+  String get manageSaveFolder => 'Manage save folder';
+
+  @override
+  String get savedAutomatically => 'Saved automatically';
 }

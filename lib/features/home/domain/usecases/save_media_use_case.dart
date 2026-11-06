@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:status_saver/core/database/app_database.dart';
+import 'package:status_saver/core/enums/whatsapp_type.dart';
 import 'package:status_saver/core/errors/failures.dart';
 import 'package:status_saver/core/utils/result.dart';
 import 'package:status_saver/features/home/domain/entities/status_media.dart';
@@ -12,8 +13,8 @@ class SaveMediaUseCase {
 
   SaveMediaUseCase(this._statusRepository, this._savedMediaDataSource);
 
-  Future<Result<String, Failure>> call(StatusMedia media) async {
-    final saveResult = await _statusRepository.saveMediaToGallery(media);
+  Future<Result<String, Failure>> call(StatusMedia media, {WhatsAppType? type}) async {
+    final saveResult = await _statusRepository.saveMediaToGallery(media, type: type);
 
     return saveResult.when(
       success: (data) async {

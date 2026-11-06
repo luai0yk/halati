@@ -9,6 +9,7 @@ import 'package:status_saver/features/home/domain/usecases/get_statuses_use_case
 import 'package:status_saver/features/home/domain/usecases/get_thumbnail_use_case.dart';
 import 'package:status_saver/features/home/domain/usecases/request_saf_access_use_case.dart';
 import 'package:status_saver/features/home/domain/usecases/save_media_use_case.dart';
+import 'package:status_saver/features/saved/domain/usecases/delete_saved_media_use_case.dart';
 import 'package:status_saver/features/saved/domain/usecases/get_saved_media_use_case.dart';
 import 'package:status_saver/features/settings/controller/settings_controller.dart';
 
@@ -20,6 +21,7 @@ class HomeController extends GetxController {
   final GetFullMediaFileUseCase _getFullMediaFileUseCase;
   final SaveMediaUseCase _saveMediaUseCase;
   final GetSavedMediaUseCase _getSavedMediaUseCase;
+  final DeleteSavedMediaUseCase _deleteSavedMediaUseCase;
 
   HomeController({
     required CheckSafAccessUseCase checkSafAccessUseCase,
@@ -29,13 +31,15 @@ class HomeController extends GetxController {
     required GetFullMediaFileUseCase getFullMediaFileUseCase,
     required SaveMediaUseCase saveMediaUseCase,
     required GetSavedMediaUseCase getSavedMediaUseCase,
+    DeleteSavedMediaUseCase? deleteSavedMediaUseCase,
   })  : _checkSafAccessUseCase = checkSafAccessUseCase,
         _requestSafAccessUseCase = requestSafAccessUseCase,
         _getStatusesUseCase = getStatusesUseCase,
         _getThumbnailUseCase = getThumbnailUseCase,
         _getFullMediaFileUseCase = getFullMediaFileUseCase,
         _saveMediaUseCase = saveMediaUseCase,
-        _getSavedMediaUseCase = getSavedMediaUseCase;
+        _getSavedMediaUseCase = getSavedMediaUseCase,
+        _deleteSavedMediaUseCase = deleteSavedMediaUseCase ?? Get.find<DeleteSavedMediaUseCase>();
 
   final RxList<StatusMedia> statuses = <StatusMedia>[].obs;
   final Rx<MediaType?> filterType = Rx<MediaType?>(null);
@@ -230,6 +234,28 @@ class HomeController extends GetxController {
         savedDocumentUris.add(media.documentUri);
         onSuccess?.call();
         return true;
+      },
+      failure: (f) {
+        onError?.call(f.message);
+        return false;
+      },
+    );
+  }
+
+  Future<bool> deleteStatus(
+    StatusMedia media, {
+    VoidCallback? onSuccess,
+    void Function(String message)? onError,
+  }) async {
+    final result = await _deleteSavedMediaUseCase.deleteByOriginalUri(media.documentUri);
+    return result.when(
+      success: (deleted) {
+        if (deleted) {
+          savedDocumentUris.remove(media.documentUri);
+          onSuccess?.call();
+          return true;
+        }
+        return false;
       },
       failure: (f) {
         onError?.call(f.message);

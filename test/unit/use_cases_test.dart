@@ -72,7 +72,10 @@ class FakeStatusRepository implements StatusRepository {
   }
 
   @override
-  Future<Result<Map<String, dynamic>, Failure>> saveMediaToGallery(StatusMedia media) async {
+  Future<Result<Map<String, dynamic>, Failure>> saveMediaToGallery(
+    StatusMedia media, {
+    WhatsAppType? type,
+  }) async {
     return const Success({'savedUri': 'content://media/1', 'relativePath': 'Pictures/StatusSaver'});
   }
 }

@@ -7,14 +7,13 @@ import 'package:status_saver/core/utils/extensions/context_extension.dart';
 import 'package:status_saver/core/utils/extensions/responsive_size.dart';
 import 'package:status_saver/core/utils/extensions/responsive_values.dart';
 import 'package:status_saver/core/utils/helpers/misc/share_helper.dart';
-import 'package:status_saver/core/utils/helpers/ui/dialog_helper.dart';
+import 'package:status_saver/core/utils/helpers/ui/status_delete_helper.dart';
 import 'package:status_saver/core/utils/helpers/ui/toast_helper.dart';
 import 'package:status_saver/features/home/domain/entities/status_media.dart';
 import 'package:status_saver/features/saved/domain/entities/saved_media.dart';
 import 'package:status_saver/features/saved/presentation/controllers/saved_controller.dart';
 import 'package:status_saver/shared/widgets/buttons/my_popup_menu.dart';
 import 'package:status_saver/shared/widgets/cards/my_card.dart';
-import 'package:status_saver/shared/widgets/dialogs/my_dialog.dart';
 import 'package:status_saver/shared/widgets/misc/my_icon.dart';
 
 class SavedGridItem extends StatelessWidget {
@@ -100,25 +99,11 @@ class SavedGridItem extends StatelessWidget {
   }
 
   void _confirmDelete(BuildContext context, SavedController controller) {
-    DialogHelper.show(
-      child: MyDialog(
-        title: context.l10n.deleteSavedMedia,
-        content: context.l10n.confirmDeleteMessage,
-        status: DialogStatus.danger,
-        statusIcon: AppIcons.delete,
-        primaryButton: DialogButton(
-          text: context.l10n.delete,
-          onPressed: () async {
-            await controller.deleteMedia(
-              media,
-              onSuccess: () =>
-                  ToastHelper.show(msg: context.l10n.deletedSuccessfully),
-              onError: (msg) =>
-                  ToastHelper.show(msg: '${context.l10n.error}: $msg'),
-            );
-          },
-        ),
-        secondaryButton: DialogButton(text: context.l10n.cancel),
+    StatusDeleteHelper.confirmAndDelete(
+      context,
+      onDelete: () => controller.deleteMedia(
+        media,
+        onError: (msg) => ToastHelper.show(msg: '${context.l10n.error}: $msg'),
       ),
     );
   }

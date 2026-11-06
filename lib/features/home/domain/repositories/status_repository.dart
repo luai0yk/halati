@@ -14,5 +14,5 @@ abstract class StatusRepository {
   Future<Result<String, Failure>> getThumbnail(String documentUri, {int width = 300, int height = 300});
   Future<Result<Map<String, dynamic>, Failure>> getMediaMetadata(String documentUri);
   Future<Result<String, Failure>> getFullMediaFile(String documentUri, String fileName);
-  Future<Result<Map<String, dynamic>, Failure>> saveMediaToGallery(StatusMedia media);
+  Future<Result<Map<String, dynamic>, Failure>> saveMediaToGallery(StatusMedia media, {WhatsAppType? type});
 }

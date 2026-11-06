@@ -739,6 +739,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'To view and save WhatsApp Business statuses, please select the WhatsApp Business Statuses folder.'**
   String get safPermissionExplanationBusiness;
+
+  /// No description provided for @general.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get general;
+
+  /// No description provided for @storageAndDownloads.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage & Downloads'**
+  String get storageAndDownloads;
+
+  /// No description provided for @about.
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get about;
+
+  /// No description provided for @whatsappSaveFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp save folder'**
+  String get whatsappSaveFolder;
+
+  /// No description provided for @whatsappBusinessSaveFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp Business save folder'**
+  String get whatsappBusinessSaveFolder;
+
+  /// No description provided for @autoSaveOpenedStatuses.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-save opened statuses'**
+  String get autoSaveOpenedStatuses;
+
+  /// No description provided for @autoSaveOpenedStatusesDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatically save statuses to your device when opened'**
+  String get autoSaveOpenedStatusesDescription;
+
+  /// No description provided for @changeFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Change folder'**
+  String get changeFolder;
+
+  /// No description provided for @restoreDefaultFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore default folder'**
+  String get restoreDefaultFolder;
+
+  /// No description provided for @currentPath.
+  ///
+  /// In en, this message translates to:
+  /// **'Current location'**
+  String get currentPath;
+
+  /// No description provided for @defaultLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get defaultLocation;
+
+  /// No description provided for @customLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get customLocation;
+
+  /// No description provided for @folderUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Folder updated successfully'**
+  String get folderUpdatedSuccessfully;
+
+  /// No description provided for @folderRestoredSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Default folder restored'**
+  String get folderRestoredSuccessfully;
+
+  /// No description provided for @folderAccessError.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot access the selected folder'**
+  String get folderAccessError;
+
+  /// No description provided for @aboutHalati.
+  ///
+  /// In en, this message translates to:
+  /// **'About Halati'**
+  String get aboutHalati;
+
+  /// No description provided for @aboutHalatiSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy policy, feedback, and open-source licenses'**
+  String get aboutHalatiSubtitle;
+
+  /// No description provided for @appVersionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'App version'**
+  String get appVersionTitle;
+
+  /// No description provided for @manageSaveFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage save folder'**
+  String get manageSaveFolder;
+
+  /// No description provided for @savedAutomatically.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved automatically'**
+  String get savedAutomatically;
 }
 
 class _AppLocalizationsDelegate

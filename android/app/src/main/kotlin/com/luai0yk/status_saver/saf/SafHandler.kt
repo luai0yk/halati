@@ -34,6 +34,7 @@ class SafHandler(
 
     companion object {
         const val REQUEST_CODE_SAF_TREE = 4210
+        const val REQUEST_CODE_SAF_SAVE_FOLDER = 4211
         private const val WHATSAPP_PACKAGE = "com.whatsapp"
         private const val WHATSAPP_BUSINESS_PACKAGE = "com.whatsapp.w4b"
         private const val STATUSES_FOLDER = ".Statuses"
@@ -51,10 +52,18 @@ class SafHandler(
                 val uriString = call.argument<String>("uri")
                 checkDirectoryAccess(uriString, result)
             }
+            "checkSaveFolderAccess" -> {
+                val uriString = call.argument<String>("uri")
+                checkSaveFolderAccess(uriString, result)
+            }
             "requestDirectorySelection" -> {
                 val initialUriHint = call.argument<String>("initialUriHint")
                 val isBusiness = call.argument<Boolean>("isBusiness") ?: false
                 requestDirectorySelection(initialUriHint, isBusiness, result)
+            }
+            "requestCustomSaveFolder" -> {
+                val initialUriHint = call.argument<String>("initialUriHint")
+                requestCustomSaveFolder(initialUriHint, result)
             }
             "releaseDirectoryAccess" -> {
                 val uriString = call.argument<String>("uri")
@@ -90,11 +99,13 @@ class SafHandler(
                 val documentUri = call.argument<String>("documentUri")
                 val mediaType = call.argument<String>("mediaType") ?: "image"
                 val fileName = call.argument<String>("fileName") ?: "status_${System.currentTimeMillis()}"
+                val isBusiness = call.argument<Boolean>("isBusiness") ?: false
+                val customTreeUri = call.argument<String>("customTreeUri")
                 if (documentUri.isNullOrEmpty()) {
                     result.error("INVALID_ARGUMENT", "documentUri is required", null)
                     return
                 }
-                saveToMediaStore(documentUri, mediaType, fileName, result)
+                saveToMediaStore(documentUri, mediaType, fileName, isBusiness, customTreeUri, result)
             }
             "getFullMediaFile" -> {
                 val documentUri = call.argument<String>("documentUri")
@@ -145,6 +156,84 @@ class SafHandler(
             result.success(mapOf("granted" to true, "accessible" to isAccessible))
         } catch (e: Exception) {
             result.success(mapOf("granted" to false, "accessible" to false, "error" to (e.message ?: "Unknown error")))
+        }
+    }
+
+    private fun checkSaveFolderAccess(uriString: String?, result: MethodChannel.Result) {
+        if (uriString.isNullOrEmpty()) {
+            result.success(mapOf("granted" to false, "accessible" to false))
+            return
+        }
+
+        try {
+            val targetUri = Uri.parse(uriString)
+            var hasPermission = false
+            for (permission in activity.contentResolver.persistedUriPermissions) {
+                if (permission.uri == targetUri && permission.isReadPermission && permission.isWritePermission) {
+                    hasPermission = true
+                    break
+                }
+            }
+
+            if (!hasPermission) {
+                result.success(mapOf("granted" to false, "accessible" to false))
+                return
+            }
+
+            val docFile = DocumentFile.fromTreeUri(activity, targetUri)
+            val isAccessible = docFile != null && docFile.exists() && docFile.canWrite()
+            val displayPath = if (isAccessible) getFriendlyPath(activity, targetUri) else ""
+
+            result.success(mapOf("granted" to true, "accessible" to isAccessible, "displayPath" to displayPath))
+        } catch (e: Exception) {
+            result.success(mapOf("granted" to false, "accessible" to false, "error" to (e.message ?: "Unknown error")))
+        }
+    }
+
+    private fun getFriendlyPath(context: Context, treeUri: Uri): String {
+        try {
+            val docId = DocumentsContract.getTreeDocumentId(treeUri)
+            val parts = docId.split(":")
+            if (parts.size > 1) {
+                val relative = parts[1]
+                if (parts[0].equals("primary", ignoreCase = true)) {
+                    return relative.ifEmpty { "Internal Storage" }
+                } else {
+                    return "${parts[0]}/$relative"
+                }
+            }
+        } catch (_: Exception) {}
+        return DocumentFile.fromTreeUri(context, treeUri)?.name ?: (treeUri.lastPathSegment ?: "Custom Folder")
+    }
+
+    private fun requestCustomSaveFolder(initialUriHint: String?, result: MethodChannel.Result) {
+        if (pendingResult != null) {
+            result.error("ALREADY_ACTIVE", "A folder selection is already in progress", null)
+            return
+        }
+
+        pendingResult = result
+
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
+            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or
+                    Intent.FLAG_GRANT_WRITE_URI_PERMISSION or
+                    Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION or
+                    Intent.FLAG_GRANT_PREFIX_URI_PERMISSION
+            putExtra("android.provider.extra.SHOW_ADVANCED", true)
+            putExtra("android.content.extra.SHOW_ADVANCED", true)
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !initialUriHint.isNullOrEmpty()) {
+            try {
+                intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, Uri.parse(initialUriHint))
+            } catch (_: Exception) {}
+        }
+
+        try {
+            activity.startActivityForResult(intent, REQUEST_CODE_SAF_SAVE_FOLDER)
+        } catch (e: Exception) {
+            pendingResult = null
+            result.error("ACTIVITY_NOT_FOUND", "Could not start folder picker: ${e.message}", null)
         }
     }
 
@@ -220,7 +309,7 @@ class SafHandler(
     }
 
     fun handleActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
-        if (requestCode != REQUEST_CODE_SAF_TREE) {
+        if (requestCode != REQUEST_CODE_SAF_TREE && requestCode != REQUEST_CODE_SAF_SAVE_FOLDER) {
             return false
         }
 
@@ -233,6 +322,33 @@ class SafHandler(
         }
 
         val treeUri = data.data!!
+
+        if (requestCode == REQUEST_CODE_SAF_SAVE_FOLDER) {
+            try {
+                val takeFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                activity.contentResolver.takePersistableUriPermission(treeUri, takeFlags)
+
+                val docFile = DocumentFile.fromTreeUri(activity, treeUri)
+                if (docFile == null || !docFile.exists() || !docFile.canWrite()) {
+                    callback.error("PERMISSION_ERROR", "The selected folder is not writable", null)
+                    return true
+                }
+
+                // Auto-create media subdirectories
+                docFile.findFile("Halati Videos") ?: docFile.createDirectory("Halati Videos")
+                docFile.findFile("Halati Images") ?: docFile.createDirectory("Halati Images")
+                docFile.findFile("Halati Audios") ?: docFile.createDirectory("Halati Audios")
+
+                val displayPath = getFriendlyPath(activity, treeUri)
+                callback.success(mapOf(
+                    "uri" to treeUri.toString(),
+                    "displayPath" to displayPath
+                ))
+            } catch (e: Exception) {
+                callback.error("PERMISSION_ERROR", "Failed to access folder: ${e.message}", null)
+            }
+            return true
+        }
 
         try {
             // Take persistable permission
@@ -640,6 +756,8 @@ class SafHandler(
         documentUriString: String,
         mediaType: String,
         fileName: String,
+        isBusiness: Boolean,
+        customTreeUri: String?,
         result: MethodChannel.Result
     ) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -654,17 +772,17 @@ class SafHandler(
 
                 when (mediaType.lowercase()) {
                     "video", "videos" -> {
-                        subFolder = "video"
+                        subFolder = "Halati Videos"
                         extension = if (fileName.contains('.')) "" else ".mp4"
                         defaultMimeType = "video/mp4"
                     }
                     "audio", "audios" -> {
-                        subFolder = "audio"
+                        subFolder = "Halati Audios"
                         extension = if (fileName.contains('.')) "" else ".ogg"
                         defaultMimeType = "audio/ogg"
                     }
                     else -> {
-                        subFolder = "images"
+                        subFolder = "Halati Images"
                         extension = if (fileName.contains('.')) "" else ".jpg"
                         defaultMimeType = "image/jpeg"
                     }
@@ -682,12 +800,48 @@ class SafHandler(
                     defaultMimeType
                 }
 
-                val relativePath = "${Environment.DIRECTORY_DOWNLOADS}/StatusSaver/$subFolder/"
                 val fullFileName = if (fileName.endsWith(extension) || extension.isEmpty()) fileName else "$fileName$extension"
+
+                // 1. Try custom folder if specified and valid
+                if (!customTreeUri.isNullOrEmpty()) {
+                    try {
+                        val treeUri = Uri.parse(customTreeUri)
+                        val parentDoc = DocumentFile.fromTreeUri(activity, treeUri)
+                        if (parentDoc != null && parentDoc.exists() && parentDoc.canWrite()) {
+                            val subDir = parentDoc.findFile(subFolder) ?: parentDoc.createDirectory(subFolder) ?: parentDoc
+                            val existing = subDir.findFile(fullFileName)
+                            val targetDoc = existing ?: subDir.createFile(mimeType, fullFileName)
+                                ?: throw Exception("Could not create file in $subFolder")
+
+                            resolver.openInputStream(sourceUri)?.use { input ->
+                                resolver.openOutputStream(targetDoc.uri)?.use { output ->
+                                    input.copyTo(output, bufferSize = 64 * 1024)
+                                } ?: throw Exception("Could not open custom output stream")
+                            } ?: throw Exception("Could not open source input stream")
+
+                            val friendlyParent = getFriendlyPath(activity, treeUri)
+                            val response = mapOf(
+                                "savedUri" to targetDoc.uri.toString(),
+                                "relativePath" to "$friendlyParent/$subFolder/",
+                                "fileName" to fullFileName
+                            )
+                            withContext(Dispatchers.Main) {
+                                result.success(response)
+                            }
+                            return@launch
+                        }
+                    } catch (_: Exception) {
+                        // Fall back to default directory
+                    }
+                }
+
+                // 2. Default directory
+                val appName = if (isBusiness) "WhatsApp Business" else "WhatsApp"
+                val relativePath = "${Environment.DIRECTORY_DOWNLOADS}/Halati/$appName/$subFolder/"
 
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                     val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                    val destDir = File(downloadsDir, "StatusSaver/$subFolder").apply {
+                    val destDir = File(downloadsDir, "Halati/$appName/$subFolder").apply {
                         if (!exists()) mkdirs()
                     }
                     val destFile = File(destDir, fullFileName)
@@ -789,8 +943,17 @@ class SafHandler(
                     if (file.exists()) {
                         file.delete()
                     }
+                } else if (DocumentsContract.isDocumentUri(activity, uri)) {
+                    DocumentsContract.deleteDocument(resolver, uri)
                 } else {
-                    resolver.delete(uri, null, null)
+                    try {
+                        resolver.delete(uri, null, null)
+                    } catch (_: Exception) {
+                        val doc = DocumentFile.fromSingleUri(activity, uri)
+                        if (doc != null && doc.exists()) {
+                            doc.delete()
+                        }
+                    }
                 }
                 withContext(Dispatchers.Main) {
                     result.success(true)

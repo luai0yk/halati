@@ -28,7 +28,7 @@ class AboutPage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: context.colorScheme.surface,
-      appBar: MyAppBar(title: context.l10n.aboutStatusSaver),
+      appBar: MyAppBar(title: context.l10n.aboutHalati),
       body: ListView(
         padding: context.insetsAllM,
         children: [
@@ -102,9 +102,9 @@ class AboutPage extends StatelessWidget {
         Text(
           context.l10n.appName,
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-            fontWeight: FontWeight.w700,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w700),
         ),
         context.verticalSpace(4),
         GetBuilder<SettingsController>(
@@ -210,4 +210,3 @@ class _FeedbackBottomSheetState extends State<_FeedbackBottomSheet> {
     );
   }
 }
-

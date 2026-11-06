@@ -15,25 +15,28 @@ class AppShellPage extends GetView<AppShellController> {
 
   @override
   Widget build(BuildContext context) {
-    final pages = const [HomePage(), SavedPage(), SettingsPage()];
+    const pages = [
+      _KeepAliveTab(child: HomePage()),
+      _KeepAliveTab(child: SavedPage()),
+      _KeepAliveTab(child: SettingsPage()),
+    ];
 
-    return Obx(() {
-      final currentIndex = controller.currentIndex.value;
-      // Get.find<CashService>().remove(CashKeys.safTreeUri);
+    return Scaffold(
+      extendBody: true,
+      body: PageView(
+        controller: controller.pageController,
+        onPageChanged: controller.onPageChanged,
+        physics: const ClampingScrollPhysics(),
+        children: pages,
+      ),
+      bottomNavigationBar: Obx(() {
+        final currentIndex = controller.currentIndex.value;
 
-      return Scaffold(
-        extendBody: true,
-        body: IndexedStack(
-          index: currentIndex,
-          clipBehavior: Clip.none,
-          children: pages,
-        ),
-        bottomNavigationBar: MyBottomNavigationBar(
+        return MyBottomNavigationBar(
           margin: context.insetsAllL,
           itemAnimation: .bounce,
           currentIndex: currentIndex,
           borderRadius: context.brCircular,
-          // backgroundColor: context.colorScheme.surface.withValues(alpha: 0.90),
           itemBorderRadius: context.brCircular,
           expandItems: true,
           elevation: 5,
@@ -59,8 +62,29 @@ class AppShellPage extends GetView<AppShellController> {
               selectedIcon: const Icon(AppIcons.settingsFilled),
             ),
           ],
-        ),
-      );
-    });
+        );
+      }),
+    );
+  }
+}
+
+class _KeepAliveTab extends StatefulWidget {
+  final Widget child;
+
+  const _KeepAliveTab({required this.child});
+
+  @override
+  State<_KeepAliveTab> createState() => _KeepAliveTabState();
+}
+
+class _KeepAliveTabState extends State<_KeepAliveTab>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return widget.child;
   }
 }
