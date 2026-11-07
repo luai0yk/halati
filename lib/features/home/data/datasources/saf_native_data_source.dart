@@ -21,6 +21,7 @@ abstract class SafNativeDataSource {
     String? customTreeUri,
   });
   Future<bool> deleteFromMediaStore(String mediaStoreUri);
+  Future<List<String>> checkMissingFiles(List<Map<String, String>> items);
 }
 
 class SafNativeDataSourceImpl implements SafNativeDataSource {
@@ -218,6 +219,22 @@ class SafNativeDataSourceImpl implements SafNativeDataSource {
       return result ?? false;
     } on PlatformException catch (e) {
       throw MediaStoreSaveFailure(e.message ?? 'Failed to delete file', e.code);
+    }
+  }
+
+  @override
+  Future<List<String>> checkMissingFiles(List<Map<String, String>> items) async {
+    try {
+      final result = await _channel.invokeListMethod<dynamic>(
+        SafChannel.checkMissingFiles,
+        {'items': items},
+      );
+      if (result == null) return [];
+      return result.map((e) => e.toString()).toList();
+    } on PlatformException catch (_) {
+      return [];
+    } catch (_) {
+      return [];
     }
   }
 }

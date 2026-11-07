@@ -12,4 +12,6 @@ class SavedMediaTable extends Table {
   IntColumn get durationMs => integer().nullable()();
   DateTimeColumn get savedAt => dateTime()();
   DateTimeColumn get sourceCreatedAt => dateTime()();
+  TextColumn get whatsAppType =>
+      text().withDefault(const Constant('whatsapp'))();
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:status_saver/core/enums/whatsapp_type.dart';
 
 enum MediaType {
   image,
@@ -17,6 +18,7 @@ class StatusMedia {
   final int lastModified;
   final String? thumbnailPath;
   final int? durationMs;
+  final WhatsAppType whatsAppType;
 
   const StatusMedia({
     required this.id,
@@ -28,6 +30,7 @@ class StatusMedia {
     required this.lastModified,
     this.thumbnailPath,
     this.durationMs,
+    this.whatsAppType = WhatsAppType.whatsapp,
   });
 
   StatusMedia copyWith({
@@ -40,6 +43,7 @@ class StatusMedia {
     int? lastModified,
     String? thumbnailPath,
     int? durationMs,
+    WhatsAppType? whatsAppType,
   }) {
     return StatusMedia(
       id: id ?? this.id,
@@ -51,6 +55,7 @@ class StatusMedia {
       lastModified: lastModified ?? this.lastModified,
       thumbnailPath: thumbnailPath ?? this.thumbnailPath,
       durationMs: durationMs ?? this.durationMs,
+      whatsAppType: whatsAppType ?? this.whatsAppType,
     );
   }
 

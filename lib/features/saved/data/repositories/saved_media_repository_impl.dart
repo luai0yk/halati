@@ -59,4 +59,38 @@ class SavedMediaRepositoryImpl implements SavedMediaRepository {
       return FailureResult(DatabaseFailure(e.toString()));
     }
   }
+
+  @override
+  Future<Result<List<int>, Failure>> syncSavedMedia() async {
+    try {
+      final items = await _dataSource.getSavedMedia();
+      if (items.isEmpty) {
+        return const Success([]);
+      }
+
+      final payload = items
+          .map((item) => {
+                'id': item.id.toString(),
+                'uri': item.mediaStoreUri,
+                'relativePath': item.relativePath,
+                'fileName': item.fileName,
+              })
+          .toList();
+
+      final missingIdStrings = await _safDataSource.checkMissingFiles(payload);
+      final prunedIds = <int>[];
+
+      for (final idStr in missingIdStrings) {
+        final id = int.tryParse(idStr);
+        if (id != null) {
+          await _dataSource.deleteSavedMedia(id);
+          prunedIds.add(id);
+        }
+      }
+
+      return Success(prunedIds);
+    } catch (e) {
+      return FailureResult(DatabaseFailure(e.toString()));
+    }
+  }
 }

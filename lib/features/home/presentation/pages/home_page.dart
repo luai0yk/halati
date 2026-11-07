@@ -45,8 +45,10 @@ class HomePage extends GetView<HomeController> {
       onResolveFullFile: (item) =>
           controller.getFullMediaFile(item.uri, item.fileName),
       onSave: (item) async {
+        final media = item.originalObject as StatusMedia;
         return await controller.saveStatus(
-          item.originalObject as StatusMedia,
+          media,
+          type: media.whatsAppType,
           onSuccess: () =>
               ToastHelper.show(msg: context.l10n.savedSuccessfully),
           onError: (msg) =>
@@ -62,10 +64,10 @@ class HomePage extends GetView<HomeController> {
       onDelete: (item) async {
         return await controller.deleteStatus(
           item.originalObject as StatusMedia,
-          onError: (msg) => ToastHelper.show(msg: '${context.l10n.error}: $msg'),
+          onError: (msg) =>
+              ToastHelper.show(msg: '${context.l10n.error}: $msg'),
         );
       },
-      closeOnDelete: true,
     );
   }
 
@@ -75,7 +77,8 @@ class HomePage extends GetView<HomeController> {
       body: Obx(() {
         final items = controller.filteredStatuses;
         final hasPerm = controller.hasPermission.value;
-        final isLoading = controller.isLoading.value && controller.statuses.isEmpty;
+        final isLoading =
+            controller.isLoading.value && controller.statuses.isEmpty;
         final error = controller.errorMessage.value;
         final isBusiness = controller.currentWhatsAppType.isBusiness;
 
@@ -120,7 +123,11 @@ class HomePage extends GetView<HomeController> {
           bodyContent = const SizedBox.shrink();
         }
 
-        final showGrid = !isLoading && hasPerm && (error == null || controller.statuses.isNotEmpty) && items.isNotEmpty;
+        final showGrid =
+            !isLoading &&
+            hasPerm &&
+            (error == null || controller.statuses.isNotEmpty) &&
+            items.isNotEmpty;
 
         return RefreshIndicator(
           onRefresh: () => controller.loadStatuses(forceRefresh: true),
@@ -144,10 +151,7 @@ class HomePage extends GetView<HomeController> {
                 ),
               ),
               if (!showGrid)
-                SliverFillRemaining(
-                  hasScrollBody: false,
-                  child: bodyContent,
-                )
+                SliverFillRemaining(hasScrollBody: false, child: bodyContent)
               else
                 SliverPadding(
                   padding: EdgeInsets.only(

@@ -15,4 +15,5 @@ class SafChannel {
   static const String saveToMediaStore = 'saveToMediaStore';
   static const String getFullMediaFile = 'getFullMediaFile';
   static const String deleteFromMediaStore = 'deleteFromMediaStore';
+  static const String checkMissingFiles = 'checkMissingFiles';
 }

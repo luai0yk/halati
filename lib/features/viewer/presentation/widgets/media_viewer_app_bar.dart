@@ -67,6 +67,16 @@ class MediaViewerAppBar extends StatelessWidget {
                       onPressed: onSave,
                     ),
                   context.horizontalSpace(8),
+                  if (onDelete != null) ...[
+                    MyIconButton.solid(
+                      icon: AppIcons.delete,
+                      iconColor: context.colorScheme.error,
+                      backgroundColor: Colors.white.withValues(alpha: 0.1),
+                      tooltip: context.l10n.delete,
+                      onPressed: onDelete,
+                    ),
+                    context.horizontalSpace(8),
+                  ],
                   if (onShare != null)
                     MyIconButton.solid(
                       icon: AppIcons.share,
@@ -75,16 +85,6 @@ class MediaViewerAppBar extends StatelessWidget {
                       tooltip: context.l10n.share,
                       onPressed: onShare,
                     ),
-                  if (onDelete != null) ...[
-                    context.horizontalSpace(8),
-                    MyIconButton.solid(
-                      icon: AppIcons.delete,
-                      iconColor: context.colorScheme.error,
-                      backgroundColor: Colors.white.withValues(alpha: 0.1),
-                      tooltip: context.l10n.delete,
-                      onPressed: onDelete,
-                    ),
-                  ],
                 ],
               ),
             ),

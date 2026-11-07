@@ -7,4 +7,5 @@ abstract class SavedMediaRepository {
   Future<Result<List<SavedMedia>, Failure>> getSavedMedia();
   Future<Result<bool, Failure>> deleteSavedMedia(int id, {String? mediaStoreUri});
   Future<Result<bool, Failure>> deleteSavedMediaByOriginalUri(String originalDocumentUri);
+  Future<Result<List<int>, Failure>> syncSavedMedia();
 }

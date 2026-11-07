@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:status_saver/core/enums/whatsapp_type.dart';
 import 'package:status_saver/features/home/domain/entities/status_media.dart';
@@ -8,6 +8,7 @@ import 'package:status_saver/features/home/domain/usecases/get_thumbnail_use_cas
 import 'package:status_saver/features/saved/domain/entities/saved_media.dart';
 import 'package:status_saver/features/saved/domain/usecases/delete_saved_media_use_case.dart';
 import 'package:status_saver/features/saved/domain/usecases/get_saved_media_use_case.dart';
+import 'package:status_saver/features/saved/domain/usecases/sync_saved_media_use_case.dart';
 import 'package:status_saver/features/settings/controller/settings_controller.dart';
 
 class SavedController extends GetxController {
@@ -15,16 +16,22 @@ class SavedController extends GetxController {
   final DeleteSavedMediaUseCase _deleteSavedMediaUseCase;
   final GetFullMediaFileUseCase _getFullMediaFileUseCase;
   final GetThumbnailUseCase _getThumbnailUseCase;
+  final SyncSavedMediaUseCase? _syncSavedMediaUseCase;
 
   SavedController({
     required GetSavedMediaUseCase getSavedMediaUseCase,
     required DeleteSavedMediaUseCase deleteSavedMediaUseCase,
     required GetFullMediaFileUseCase getFullMediaFileUseCase,
     required GetThumbnailUseCase getThumbnailUseCase,
+    SyncSavedMediaUseCase? syncSavedMediaUseCase,
   })  : _getSavedMediaUseCase = getSavedMediaUseCase,
         _deleteSavedMediaUseCase = deleteSavedMediaUseCase,
         _getFullMediaFileUseCase = getFullMediaFileUseCase,
-        _getThumbnailUseCase = getThumbnailUseCase;
+        _getThumbnailUseCase = getThumbnailUseCase,
+        _syncSavedMediaUseCase = syncSavedMediaUseCase ??
+            (Get.isRegistered<SyncSavedMediaUseCase>()
+                ? Get.find<SyncSavedMediaUseCase>()
+                : null);
 
   final RxList<SavedMedia> allSavedItems = <SavedMedia>[].obs;
   final Rx<MediaType?> filterType = Rx<MediaType?>(null);
@@ -32,11 +39,20 @@ class SavedController extends GetxController {
   final RxMap<String, String> thumbnails = <String, String>{}.obs;
 
   StreamSubscription<List<SavedMedia>>? _subscription;
+  late final AppLifecycleListener _lifecycleListener;
 
   @override
   void onInit() {
     super.onInit();
     _subscribeToSavedMedia();
+    _lifecycleListener = AppLifecycleListener(
+      onResume: syncSavedMedia,
+    );
+    syncSavedMedia();
+  }
+
+  Future<void> syncSavedMedia() async {
+    await _syncSavedMediaUseCase?.call();
   }
 
   void _subscribeToSavedMedia() {
@@ -61,14 +77,9 @@ class SavedController extends GetxController {
   List<SavedMedia> get filteredItems {
     final activeType = currentWhatsAppType;
     return allSavedItems.where((item) {
-      final uri = item.originalDocumentUri.toLowerCase();
-      final isItemBusiness = uri.contains('com.whatsapp.w4b') ||
-          uri.contains('whatsapp%20business') ||
-          uri.contains('whatsapp business');
-
-      final matchesApp =
-          activeType.isBusiness ? isItemBusiness : !isItemBusiness;
-      if (!matchesApp) return false;
+      if (item.whatsAppType != activeType) {
+        return false;
+      }
 
       if (filterType.value != null && item.mediaType != filterType.value) {
         return false;
@@ -146,6 +157,7 @@ class SavedController extends GetxController {
 
   @override
   void onClose() {
+    _lifecycleListener.dispose();
     _subscription?.cancel();
     super.onClose();
   }

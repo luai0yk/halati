@@ -99,8 +99,9 @@ class StatusRepositoryImpl implements StatusRepository {
       }
 
       final models = await _safDataSource.discoverStatuses(storedUri);
-      _cachedStatuses[type] = models;
-      return Success(models);
+      final mapped = models.map((m) => m.copyWith(whatsAppType: type)).toList();
+      _cachedStatuses[type] = mapped;
+      return Success(mapped);
     } on Failure catch (f) {
       return FailureResult(f);
     } catch (e) {
@@ -164,10 +165,11 @@ class StatusRepositoryImpl implements StatusRepository {
     WhatsAppType? type,
   }) async {
     try {
-      final isBusiness = type?.isBusiness ??
-          (media.documentUri.contains('com.whatsapp.w4b') ||
-              media.documentUri.contains('whatsapp%20business') ||
-              media.documentUri.toLowerCase().contains('whatsapp business'));
+      final decodedUri = Uri.decodeFull(media.documentUri).toLowerCase();
+      final isBusiness = (type ?? media.whatsAppType).isBusiness ||
+          decodedUri.contains('com.whatsapp.w4b') ||
+          decodedUri.contains('whatsapp business') ||
+          decodedUri.contains('w4b');
 
       final customFolderKey = isBusiness
           ? CashKeys.saveFolderCustomUriBusiness

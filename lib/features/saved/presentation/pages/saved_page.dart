@@ -69,19 +69,11 @@ class SavedPage extends GetView<SavedController> {
           return const Center(child: MyProgressIndicator());
         }
 
-        if (controller.allSavedItems.isEmpty) {
-          return Center(
-            child: MyEmptyState(
-              icon: AppIcons.download,
-              title: context.l10n.noSavedMedia,
-              subtitle: context.l10n.noDataSubtitle,
-            ),
-          );
-        }
-
         final items = controller.filteredItems;
 
-        return CustomScrollView(
+        return RefreshIndicator(
+          onRefresh: controller.syncSavedMedia,
+          child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           cacheExtent: 500,
           clipBehavior: Clip.none,
@@ -137,7 +129,8 @@ class SavedPage extends GetView<SavedController> {
                 ),
               ),
           ],
-        );
+        ),
+      );
       }),
     );
   }

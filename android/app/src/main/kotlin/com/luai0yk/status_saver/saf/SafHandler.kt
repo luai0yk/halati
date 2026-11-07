@@ -124,6 +124,10 @@ class SafHandler(
                 }
                 deleteFromMediaStore(mediaStoreUri, result)
             }
+            "checkMissingFiles" -> {
+                val items = call.argument<List<Map<String, String>>>("items") ?: emptyList()
+                checkMissingFiles(items, result)
+            }
             else -> result.notImplemented()
         }
     }
@@ -820,6 +824,28 @@ class SafHandler(
                             } ?: throw Exception("Could not open source input stream")
 
                             val friendlyParent = getFriendlyPath(activity, treeUri)
+
+                            // MediaScanner for gallery integration on custom folder
+                            try {
+                                val treeDocId = DocumentsContract.getTreeDocumentId(treeUri)
+                                if (treeDocId.startsWith("primary:", ignoreCase = true)) {
+                                    val rel = treeDocId.substringAfter(":")
+                                    val base = if (rel.isEmpty()) Environment.getExternalStorageDirectory() else File(Environment.getExternalStorageDirectory(), rel)
+                                    val f = File(base, "$subFolder/$fullFileName")
+                                    if (f.exists()) {
+                                        android.media.MediaScannerConnection.scanFile(
+                                            activity,
+                                            arrayOf(f.absolutePath),
+                                            arrayOf(mimeType),
+                                            null
+                                        )
+                                        activity.sendBroadcast(
+                                            Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(f))
+                                        )
+                                    }
+                                }
+                            } catch (_: Exception) {}
+
                             val response = mapOf(
                                 "savedUri" to targetDoc.uri.toString(),
                                 "relativePath" to "$friendlyParent/$subFolder/",
@@ -858,6 +884,11 @@ class SafHandler(
                         arrayOf(mimeType),
                         null
                     )
+                    try {
+                        activity.sendBroadcast(
+                            Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(destFile))
+                        )
+                    } catch (_: Exception) {}
 
                     val response = mapOf(
                         "savedUri" to Uri.fromFile(destFile).toString(),
@@ -909,6 +940,40 @@ class SafHandler(
                 contentValues.clear()
                 contentValues.put(MediaStore.MediaColumns.IS_PENDING, 0)
                 resolver.update(insertedUri, contentValues, null, null)
+
+                // Gallery Integration: trigger MediaScanner scan on physical path
+                try {
+                    var physicalPath: String? = null
+                    resolver.query(insertedUri, arrayOf(MediaStore.MediaColumns.DATA), null, null, null)?.use { cursor ->
+                        if (cursor.moveToFirst()) {
+                            val dataIdx = cursor.getColumnIndex(MediaStore.MediaColumns.DATA)
+                            if (dataIdx != -1) {
+                                physicalPath = cursor.getString(dataIdx)
+                            }
+                        }
+                    }
+
+                    if (physicalPath.isNullOrEmpty()) {
+                        val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                        val fallback = File(downloadsDir, "Halati/$appName/$subFolder/$fullFileName")
+                        if (fallback.exists()) {
+                            physicalPath = fallback.absolutePath
+                        }
+                    }
+
+                    if (!physicalPath.isNullOrEmpty()) {
+                        val finalPath = physicalPath!!
+                        android.media.MediaScannerConnection.scanFile(
+                            activity,
+                            arrayOf(finalPath),
+                            arrayOf(mimeType),
+                            null
+                        )
+                        activity.sendBroadcast(
+                            Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(File(finalPath)))
+                        )
+                    }
+                } catch (_: Exception) {}
 
                 val response = mapOf(
                     "savedUri" to insertedUri.toString(),
@@ -962,6 +1027,65 @@ class SafHandler(
                 withContext(Dispatchers.Main) {
                     result.error("DELETE_FAILED", "Failed to delete: ${e.message}", null)
                 }
+            }
+        }
+    }
+
+    private fun checkMissingFiles(items: List<Map<String, String>>, result: MethodChannel.Result) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val missingIds = mutableListOf<String>()
+            val resolver = activity.contentResolver
+            val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+            val extStorageDir = Environment.getExternalStorageDirectory()
+
+            for (item in items) {
+                val id = item["id"] ?: continue
+                val uriStr = item["uri"] ?: ""
+                val relativePath = item["relativePath"] ?: ""
+                val fileName = item["fileName"] ?: ""
+
+                var exists = false
+
+                // 1. Try opening content/file URI
+                if (uriStr.isNotEmpty()) {
+                    try {
+                        val uri = Uri.parse(uriStr)
+                        if (uri.scheme == "file") {
+                            val f = File(uri.path ?: "")
+                            if (f.exists() && f.length() > 0) {
+                                exists = true
+                            }
+                        } else {
+                            resolver.openAssetFileDescriptor(uri, "r")?.use {
+                                exists = true
+                            }
+                        }
+                    } catch (_: Exception) {}
+                }
+
+                // 2. Fallback check by physical path on disk if not opened via MediaStore URI
+                if (!exists && fileName.isNotEmpty()) {
+                    try {
+                        val cleanRel = relativePath.trim('/').replace('\\', '/')
+                        val f1 = File(downloadsDir, "$cleanRel/$fileName")
+                        if (f1.exists() && f1.length() > 0) {
+                            exists = true
+                        } else {
+                            val f2 = File(extStorageDir, "$cleanRel/$fileName")
+                            if (f2.exists() && f2.length() > 0) {
+                                exists = true
+                            }
+                        }
+                    } catch (_: Exception) {}
+                }
+
+                if (!exists) {
+                    missingIds.add(id)
+                }
+            }
+
+            withContext(Dispatchers.Main) {
+                result.success(missingIds)
             }
         }
     }

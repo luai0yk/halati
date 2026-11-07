@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:status_saver/core/enums/whatsapp_type.dart';
 import 'package:status_saver/features/home/domain/entities/status_media.dart';
 
 @immutable
@@ -14,6 +15,7 @@ class SavedMedia {
   final int? durationMs;
   final DateTime savedAt;
   final DateTime sourceCreatedAt;
+  final WhatsAppType whatsAppType;
 
   const SavedMedia({
     required this.id,
@@ -27,6 +29,7 @@ class SavedMedia {
     this.durationMs,
     required this.savedAt,
     required this.sourceCreatedAt,
+    this.whatsAppType = WhatsAppType.whatsapp,
   });
 
   @override

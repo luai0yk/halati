@@ -1,3 +1,4 @@
+import 'package:status_saver/core/enums/whatsapp_type.dart';
 import 'package:status_saver/features/home/domain/entities/status_media.dart';
 
 class StatusMediaModel extends StatusMedia {
@@ -11,15 +12,27 @@ class StatusMediaModel extends StatusMedia {
     required super.lastModified,
     super.thumbnailPath,
     super.durationMs,
+    super.whatsAppType,
   });
 
-  factory StatusMediaModel.fromMap(Map<dynamic, dynamic> map) {
-    final mediaTypeString = (map['mediaType'] as String?)?.toLowerCase() ?? 'image';
+  factory StatusMediaModel.fromMap(
+    Map<dynamic, dynamic> map, {
+    WhatsAppType whatsAppType = WhatsAppType.whatsapp,
+  }) {
+    final mediaTypeString =
+        (map['mediaType'] as String?)?.toLowerCase() ?? 'image';
     final mediaType = switch (mediaTypeString) {
       'video' => MediaType.video,
       'audio' => MediaType.audio,
       _ => MediaType.image,
     };
+
+    final rawType = (map['whatsAppType'] as String?)?.toLowerCase();
+    final resolvedType = rawType != null
+        ? (rawType == 'business'
+            ? WhatsAppType.business
+            : WhatsAppType.whatsapp)
+        : whatsAppType;
 
     return StatusMediaModel(
       id: (map['id'] ?? map['documentId'] ?? '') as String,
@@ -31,6 +44,7 @@ class StatusMediaModel extends StatusMedia {
       lastModified: (map['lastModified'] as num?)?.toInt() ?? 0,
       thumbnailPath: map['thumbnailPath'] as String?,
       durationMs: (map['durationMs'] as num?)?.toInt(),
+      whatsAppType: resolvedType,
     );
   }
 
@@ -45,6 +59,7 @@ class StatusMediaModel extends StatusMedia {
       'lastModified': lastModified,
       'thumbnailPath': thumbnailPath,
       'durationMs': durationMs,
+      'whatsAppType': whatsAppType.name,
     };
   }
 }

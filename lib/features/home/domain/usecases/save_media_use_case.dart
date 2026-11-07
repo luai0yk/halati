@@ -14,7 +14,8 @@ class SaveMediaUseCase {
   SaveMediaUseCase(this._statusRepository, this._savedMediaDataSource);
 
   Future<Result<String, Failure>> call(StatusMedia media, {WhatsAppType? type}) async {
-    final saveResult = await _statusRepository.saveMediaToGallery(media, type: type);
+    final targetType = type ?? media.whatsAppType;
+    final saveResult = await _statusRepository.saveMediaToGallery(media, type: targetType);
 
     return saveResult.when(
       success: (data) async {
@@ -37,6 +38,7 @@ class SaveMediaUseCase {
               sourceCreatedAt: DateTime.fromMillisecondsSinceEpoch(
                 media.lastModified > 0 ? media.lastModified : DateTime.now().millisecondsSinceEpoch,
               ),
+              whatsAppType: Value(targetType.name),
             ),
           );
         } catch (_) {

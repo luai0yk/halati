@@ -17,6 +17,7 @@ import 'package:status_saver/features/saved/data/repositories/saved_media_reposi
 import 'package:status_saver/features/saved/domain/repositories/saved_media_repository.dart';
 import 'package:status_saver/features/saved/domain/usecases/delete_saved_media_use_case.dart';
 import 'package:status_saver/features/saved/domain/usecases/get_saved_media_use_case.dart';
+import 'package:status_saver/features/saved/domain/usecases/sync_saved_media_use_case.dart';
 import 'package:status_saver/features/saved/presentation/controllers/saved_controller.dart';
 
 class AppShellBinding extends Bindings {
@@ -91,6 +92,10 @@ class AppShellBinding extends Bindings {
       () => DeleteSavedMediaUseCase(Get.find<SavedMediaRepository>()),
       fenix: true,
     );
+    Get.lazyPut<SyncSavedMediaUseCase>(
+      () => SyncSavedMediaUseCase(Get.find<SavedMediaRepository>()),
+      fenix: true,
+    );
 
     // Controllers
     Get.lazyPut<HomeController>(
@@ -103,6 +108,7 @@ class AppShellBinding extends Bindings {
         saveMediaUseCase: Get.find<SaveMediaUseCase>(),
         getSavedMediaUseCase: Get.find<GetSavedMediaUseCase>(),
         deleteSavedMediaUseCase: Get.find<DeleteSavedMediaUseCase>(),
+        syncSavedMediaUseCase: Get.find<SyncSavedMediaUseCase>(),
       ),
       fenix: true,
     );
@@ -113,6 +119,7 @@ class AppShellBinding extends Bindings {
         deleteSavedMediaUseCase: Get.find<DeleteSavedMediaUseCase>(),
         getFullMediaFileUseCase: Get.find<GetFullMediaFileUseCase>(),
         getThumbnailUseCase: Get.find<GetThumbnailUseCase>(),
+        syncSavedMediaUseCase: Get.find<SyncSavedMediaUseCase>(),
       ),
       fenix: true,
     );

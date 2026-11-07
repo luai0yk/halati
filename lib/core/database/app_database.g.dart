@@ -133,6 +133,18 @@ class $SavedMediaTableTable extends SavedMediaTable
         type: DriftSqlType.dateTime,
         requiredDuringInsert: true,
       );
+  static const VerificationMeta _whatsAppTypeMeta = const VerificationMeta(
+    'whatsAppType',
+  );
+  @override
+  late final GeneratedColumn<String> whatsAppType = GeneratedColumn<String>(
+    'whats_app_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('whatsapp'),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -146,6 +158,7 @@ class $SavedMediaTableTable extends SavedMediaTable
     durationMs,
     savedAt,
     sourceCreatedAt,
+    whatsAppType,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -252,6 +265,15 @@ class $SavedMediaTableTable extends SavedMediaTable
     } else if (isInserting) {
       context.missing(_sourceCreatedAtMeta);
     }
+    if (data.containsKey('whats_app_type')) {
+      context.handle(
+        _whatsAppTypeMeta,
+        whatsAppType.isAcceptableOrUnknown(
+          data['whats_app_type']!,
+          _whatsAppTypeMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -305,6 +327,10 @@ class $SavedMediaTableTable extends SavedMediaTable
         DriftSqlType.dateTime,
         data['${effectivePrefix}source_created_at'],
       )!,
+      whatsAppType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}whats_app_type'],
+      )!,
     );
   }
 
@@ -327,6 +353,7 @@ class SavedMediaTableData extends DataClass
   final int? durationMs;
   final DateTime savedAt;
   final DateTime sourceCreatedAt;
+  final String whatsAppType;
   const SavedMediaTableData({
     required this.id,
     required this.originalDocumentUri,
@@ -339,6 +366,7 @@ class SavedMediaTableData extends DataClass
     this.durationMs,
     required this.savedAt,
     required this.sourceCreatedAt,
+    required this.whatsAppType,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -356,6 +384,7 @@ class SavedMediaTableData extends DataClass
     }
     map['saved_at'] = Variable<DateTime>(savedAt);
     map['source_created_at'] = Variable<DateTime>(sourceCreatedAt);
+    map['whats_app_type'] = Variable<String>(whatsAppType);
     return map;
   }
 
@@ -374,6 +403,7 @@ class SavedMediaTableData extends DataClass
           : Value(durationMs),
       savedAt: Value(savedAt),
       sourceCreatedAt: Value(sourceCreatedAt),
+      whatsAppType: Value(whatsAppType),
     );
   }
 
@@ -396,6 +426,7 @@ class SavedMediaTableData extends DataClass
       durationMs: serializer.fromJson<int?>(json['durationMs']),
       savedAt: serializer.fromJson<DateTime>(json['savedAt']),
       sourceCreatedAt: serializer.fromJson<DateTime>(json['sourceCreatedAt']),
+      whatsAppType: serializer.fromJson<String>(json['whatsAppType']),
     );
   }
   @override
@@ -413,6 +444,7 @@ class SavedMediaTableData extends DataClass
       'durationMs': serializer.toJson<int?>(durationMs),
       'savedAt': serializer.toJson<DateTime>(savedAt),
       'sourceCreatedAt': serializer.toJson<DateTime>(sourceCreatedAt),
+      'whatsAppType': serializer.toJson<String>(whatsAppType),
     };
   }
 
@@ -428,6 +460,7 @@ class SavedMediaTableData extends DataClass
     Value<int?> durationMs = const Value.absent(),
     DateTime? savedAt,
     DateTime? sourceCreatedAt,
+    String? whatsAppType,
   }) => SavedMediaTableData(
     id: id ?? this.id,
     originalDocumentUri: originalDocumentUri ?? this.originalDocumentUri,
@@ -440,6 +473,7 @@ class SavedMediaTableData extends DataClass
     durationMs: durationMs.present ? durationMs.value : this.durationMs,
     savedAt: savedAt ?? this.savedAt,
     sourceCreatedAt: sourceCreatedAt ?? this.sourceCreatedAt,
+    whatsAppType: whatsAppType ?? this.whatsAppType,
   );
   SavedMediaTableData copyWithCompanion(SavedMediaTableCompanion data) {
     return SavedMediaTableData(
@@ -464,6 +498,9 @@ class SavedMediaTableData extends DataClass
       sourceCreatedAt: data.sourceCreatedAt.present
           ? data.sourceCreatedAt.value
           : this.sourceCreatedAt,
+      whatsAppType: data.whatsAppType.present
+          ? data.whatsAppType.value
+          : this.whatsAppType,
     );
   }
 
@@ -480,7 +517,8 @@ class SavedMediaTableData extends DataClass
           ..write('fileSize: $fileSize, ')
           ..write('durationMs: $durationMs, ')
           ..write('savedAt: $savedAt, ')
-          ..write('sourceCreatedAt: $sourceCreatedAt')
+          ..write('sourceCreatedAt: $sourceCreatedAt, ')
+          ..write('whatsAppType: $whatsAppType')
           ..write(')'))
         .toString();
   }
@@ -498,6 +536,7 @@ class SavedMediaTableData extends DataClass
     durationMs,
     savedAt,
     sourceCreatedAt,
+    whatsAppType,
   );
   @override
   bool operator ==(Object other) =>
@@ -513,7 +552,8 @@ class SavedMediaTableData extends DataClass
           other.fileSize == this.fileSize &&
           other.durationMs == this.durationMs &&
           other.savedAt == this.savedAt &&
-          other.sourceCreatedAt == this.sourceCreatedAt);
+          other.sourceCreatedAt == this.sourceCreatedAt &&
+          other.whatsAppType == this.whatsAppType);
 }
 
 class SavedMediaTableCompanion extends UpdateCompanion<SavedMediaTableData> {
@@ -528,6 +568,7 @@ class SavedMediaTableCompanion extends UpdateCompanion<SavedMediaTableData> {
   final Value<int?> durationMs;
   final Value<DateTime> savedAt;
   final Value<DateTime> sourceCreatedAt;
+  final Value<String> whatsAppType;
   const SavedMediaTableCompanion({
     this.id = const Value.absent(),
     this.originalDocumentUri = const Value.absent(),
@@ -540,6 +581,7 @@ class SavedMediaTableCompanion extends UpdateCompanion<SavedMediaTableData> {
     this.durationMs = const Value.absent(),
     this.savedAt = const Value.absent(),
     this.sourceCreatedAt = const Value.absent(),
+    this.whatsAppType = const Value.absent(),
   });
   SavedMediaTableCompanion.insert({
     this.id = const Value.absent(),
@@ -553,6 +595,7 @@ class SavedMediaTableCompanion extends UpdateCompanion<SavedMediaTableData> {
     this.durationMs = const Value.absent(),
     required DateTime savedAt,
     required DateTime sourceCreatedAt,
+    this.whatsAppType = const Value.absent(),
   }) : originalDocumentUri = Value(originalDocumentUri),
        mediaStoreUri = Value(mediaStoreUri),
        relativePath = Value(relativePath),
@@ -574,6 +617,7 @@ class SavedMediaTableCompanion extends UpdateCompanion<SavedMediaTableData> {
     Expression<int>? durationMs,
     Expression<DateTime>? savedAt,
     Expression<DateTime>? sourceCreatedAt,
+    Expression<String>? whatsAppType,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -588,6 +632,7 @@ class SavedMediaTableCompanion extends UpdateCompanion<SavedMediaTableData> {
       if (durationMs != null) 'duration_ms': durationMs,
       if (savedAt != null) 'saved_at': savedAt,
       if (sourceCreatedAt != null) 'source_created_at': sourceCreatedAt,
+      if (whatsAppType != null) 'whats_app_type': whatsAppType,
     });
   }
 
@@ -603,6 +648,7 @@ class SavedMediaTableCompanion extends UpdateCompanion<SavedMediaTableData> {
     Value<int?>? durationMs,
     Value<DateTime>? savedAt,
     Value<DateTime>? sourceCreatedAt,
+    Value<String>? whatsAppType,
   }) {
     return SavedMediaTableCompanion(
       id: id ?? this.id,
@@ -616,6 +662,7 @@ class SavedMediaTableCompanion extends UpdateCompanion<SavedMediaTableData> {
       durationMs: durationMs ?? this.durationMs,
       savedAt: savedAt ?? this.savedAt,
       sourceCreatedAt: sourceCreatedAt ?? this.sourceCreatedAt,
+      whatsAppType: whatsAppType ?? this.whatsAppType,
     );
   }
 
@@ -657,6 +704,9 @@ class SavedMediaTableCompanion extends UpdateCompanion<SavedMediaTableData> {
     if (sourceCreatedAt.present) {
       map['source_created_at'] = Variable<DateTime>(sourceCreatedAt.value);
     }
+    if (whatsAppType.present) {
+      map['whats_app_type'] = Variable<String>(whatsAppType.value);
+    }
     return map;
   }
 
@@ -673,7 +723,8 @@ class SavedMediaTableCompanion extends UpdateCompanion<SavedMediaTableData> {
           ..write('fileSize: $fileSize, ')
           ..write('durationMs: $durationMs, ')
           ..write('savedAt: $savedAt, ')
-          ..write('sourceCreatedAt: $sourceCreatedAt')
+          ..write('sourceCreatedAt: $sourceCreatedAt, ')
+          ..write('whatsAppType: $whatsAppType')
           ..write(')'))
         .toString();
   }
@@ -705,6 +756,7 @@ typedef $$SavedMediaTableTableCreateCompanionBuilder =
       Value<int?> durationMs,
       required DateTime savedAt,
       required DateTime sourceCreatedAt,
+      Value<String> whatsAppType,
     });
 typedef $$SavedMediaTableTableUpdateCompanionBuilder =
     SavedMediaTableCompanion Function({
@@ -719,6 +771,7 @@ typedef $$SavedMediaTableTableUpdateCompanionBuilder =
       Value<int?> durationMs,
       Value<DateTime> savedAt,
       Value<DateTime> sourceCreatedAt,
+      Value<String> whatsAppType,
     });
 
 class $$SavedMediaTableTableFilterComposer
@@ -782,6 +835,11 @@ class $$SavedMediaTableTableFilterComposer
 
   ColumnFilters<DateTime> get sourceCreatedAt => $composableBuilder(
     column: $table.sourceCreatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get whatsAppType => $composableBuilder(
+    column: $table.whatsAppType,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -849,6 +907,11 @@ class $$SavedMediaTableTableOrderingComposer
     column: $table.sourceCreatedAt,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get whatsAppType => $composableBuilder(
+    column: $table.whatsAppType,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$SavedMediaTableTableAnnotationComposer
@@ -902,6 +965,11 @@ class $$SavedMediaTableTableAnnotationComposer
     column: $table.sourceCreatedAt,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get whatsAppType => $composableBuilder(
+    column: $table.whatsAppType,
+    builder: (column) => column,
+  );
 }
 
 class $$SavedMediaTableTableTableManager
@@ -952,6 +1020,7 @@ class $$SavedMediaTableTableTableManager
                 Value<int?> durationMs = const Value.absent(),
                 Value<DateTime> savedAt = const Value.absent(),
                 Value<DateTime> sourceCreatedAt = const Value.absent(),
+                Value<String> whatsAppType = const Value.absent(),
               }) => SavedMediaTableCompanion(
                 id: id,
                 originalDocumentUri: originalDocumentUri,
@@ -964,6 +1033,7 @@ class $$SavedMediaTableTableTableManager
                 durationMs: durationMs,
                 savedAt: savedAt,
                 sourceCreatedAt: sourceCreatedAt,
+                whatsAppType: whatsAppType,
               ),
           createCompanionCallback:
               ({
@@ -978,6 +1048,7 @@ class $$SavedMediaTableTableTableManager
                 Value<int?> durationMs = const Value.absent(),
                 required DateTime savedAt,
                 required DateTime sourceCreatedAt,
+                Value<String> whatsAppType = const Value.absent(),
               }) => SavedMediaTableCompanion.insert(
                 id: id,
                 originalDocumentUri: originalDocumentUri,
@@ -990,6 +1061,7 @@ class $$SavedMediaTableTableTableManager
                 durationMs: durationMs,
                 savedAt: savedAt,
                 sourceCreatedAt: sourceCreatedAt,
+                whatsAppType: whatsAppType,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

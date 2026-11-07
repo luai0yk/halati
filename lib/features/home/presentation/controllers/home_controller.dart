@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:status_saver/core/enums/whatsapp_type.dart';
 import 'package:status_saver/features/home/domain/entities/status_media.dart';
@@ -11,6 +11,7 @@ import 'package:status_saver/features/home/domain/usecases/request_saf_access_us
 import 'package:status_saver/features/home/domain/usecases/save_media_use_case.dart';
 import 'package:status_saver/features/saved/domain/usecases/delete_saved_media_use_case.dart';
 import 'package:status_saver/features/saved/domain/usecases/get_saved_media_use_case.dart';
+import 'package:status_saver/features/saved/domain/usecases/sync_saved_media_use_case.dart';
 import 'package:status_saver/features/settings/controller/settings_controller.dart';
 
 class HomeController extends GetxController {
@@ -22,6 +23,7 @@ class HomeController extends GetxController {
   final SaveMediaUseCase _saveMediaUseCase;
   final GetSavedMediaUseCase _getSavedMediaUseCase;
   final DeleteSavedMediaUseCase _deleteSavedMediaUseCase;
+  final SyncSavedMediaUseCase? _syncSavedMediaUseCase;
 
   HomeController({
     required CheckSafAccessUseCase checkSafAccessUseCase,
@@ -32,6 +34,7 @@ class HomeController extends GetxController {
     required SaveMediaUseCase saveMediaUseCase,
     required GetSavedMediaUseCase getSavedMediaUseCase,
     DeleteSavedMediaUseCase? deleteSavedMediaUseCase,
+    SyncSavedMediaUseCase? syncSavedMediaUseCase,
   })  : _checkSafAccessUseCase = checkSafAccessUseCase,
         _requestSafAccessUseCase = requestSafAccessUseCase,
         _getStatusesUseCase = getStatusesUseCase,
@@ -39,7 +42,11 @@ class HomeController extends GetxController {
         _getFullMediaFileUseCase = getFullMediaFileUseCase,
         _saveMediaUseCase = saveMediaUseCase,
         _getSavedMediaUseCase = getSavedMediaUseCase,
-        _deleteSavedMediaUseCase = deleteSavedMediaUseCase ?? Get.find<DeleteSavedMediaUseCase>();
+        _deleteSavedMediaUseCase = deleteSavedMediaUseCase ?? Get.find<DeleteSavedMediaUseCase>(),
+        _syncSavedMediaUseCase = syncSavedMediaUseCase ??
+            (Get.isRegistered<SyncSavedMediaUseCase>()
+                ? Get.find<SyncSavedMediaUseCase>()
+                : null);
 
   final RxList<StatusMedia> statuses = <StatusMedia>[].obs;
   final Rx<MediaType?> filterType = Rx<MediaType?>(null);
@@ -51,6 +58,7 @@ class HomeController extends GetxController {
   final RxSet<String> savingDocumentUris = <String>{}.obs;
 
   StreamSubscription? _savedSubscription;
+  late final AppLifecycleListener _lifecycleListener;
 
   List<StatusMedia> get filteredStatuses {
     if (filterType.value == null) {
@@ -80,12 +88,20 @@ class HomeController extends GetxController {
   void onInit() {
     super.onInit();
     _subscribeSavedMedia();
+    _lifecycleListener = AppLifecycleListener(
+      onResume: syncSavedMedia,
+    );
     if (Get.isRegistered<SettingsController>()) {
       ever(SettingsController.to.activeWhatsAppType, (type) {
         checkAccessAndLoadStatuses(type);
       });
     }
     initSafStatus();
+    syncSavedMedia();
+  }
+
+  Future<void> syncSavedMedia() async {
+    await _syncSavedMediaUseCase?.call();
   }
 
   void _subscribeSavedMedia() {
@@ -96,6 +112,7 @@ class HomeController extends GetxController {
 
   @override
   void onClose() {
+    _lifecycleListener.dispose();
     _savedSubscription?.cancel();
     super.onClose();
   }
@@ -153,6 +170,9 @@ class HomeController extends GetxController {
     WhatsAppType? type,
   }) async {
     final targetType = type ?? currentWhatsAppType;
+    if (forceRefresh) {
+      syncSavedMedia();
+    }
     isLoading.value = true;
     errorMessage.value = null;
 
@@ -215,6 +235,7 @@ class HomeController extends GetxController {
 
   Future<bool> saveStatus(
     StatusMedia media, {
+    WhatsAppType? type,
     VoidCallback? onSuccess,
     void Function(String message)? onError,
   }) async {
@@ -225,7 +246,8 @@ class HomeController extends GetxController {
 
     savingDocumentUris.add(media.documentUri);
 
-    final result = await _saveMediaUseCase(media);
+    final targetType = type ?? media.whatsAppType;
+    final result = await _saveMediaUseCase(media, type: targetType);
 
     savingDocumentUris.remove(media.documentUri);
 
