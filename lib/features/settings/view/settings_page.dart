@@ -15,7 +15,6 @@ import 'package:status_saver/shared/widgets/cards/my_card.dart';
 import 'package:status_saver/shared/widgets/cards/my_section_card.dart';
 import 'package:status_saver/shared/widgets/input/my_switch.dart';
 import 'package:status_saver/shared/widgets/lists/selectable_list.dart';
-import 'package:status_saver/shared/widgets/misc/my_icon.dart';
 import 'package:status_saver/shared/widgets/sheets/my_bottom_sheet.dart';
 import 'package:status_saver/shared/widgets/slivers/sliver_filter_delegate.dart';
 import 'package:status_saver/shared/widgets/tiles/my_list_tile.dart';
@@ -64,182 +63,11 @@ class SettingsPage extends GetView<SettingsController> {
             ),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
-                // 1. General Section
-                MySectionCard(
-                  title: context.l10n.general,
-                  children: [
-                    GetBuilder<SettingsController>(
-                      id: SettingsController.themeId,
-                      builder: (ctrl) {
-                        return MyListTile(
-                          leading: _buildIconContainer(
-                            context,
-                            AppIcons.brightness,
-                            context.colorScheme.primary,
-                          ),
-                          borderRadius: BorderRadius.zero,
-                          title: context.l10n.theme,
-                          subtitle: SettingsHelper.getThemeName(
-                            context,
-                            SettingsHelper.currentTheme,
-                          ),
-                          trailingIcon: AppIcons.arrowForward(context),
-                          onTap: () => _showThemeBottomSheet(context, ctrl),
-                        );
-                      },
-                    ),
-                    GetBuilder<SettingsController>(
-                      builder: (ctrl) {
-                        return MyListTile(
-                          leading: _buildIconContainer(
-                            context,
-                            AppIcons.translate,
-                            context.colorScheme.secondary,
-                          ),
-                          borderRadius: BorderRadius.zero,
-                          title: context.l10n.language,
-                          subtitle: ctrl.selectLang.localizedName(context),
-                          trailingIcon: AppIcons.arrowForward(context),
-                          onTap: () => _showLanguageBottomSheet(context, ctrl),
-                        );
-                      },
-                    ),
-                    GetBuilder<SettingsController>(
-                      id: SettingsController.whatsappSettingId,
-                      builder: (ctrl) {
-                        final defaultType = ctrl.defaultWhatsAppType;
-                        return MyListTile(
-                          leading: _buildIconContainer(
-                            context,
-                            AppIcons.whatsapp,
-                            context.colorScheme.tertiary,
-                          ),
-                          borderRadius: BorderRadius.zero,
-                          title: context.l10n.defaultWhatsApp,
-                          subtitle: defaultType.isBusiness
-                              ? context.l10n.whatsappBusiness
-                              : context.l10n.whatsapp,
-                          trailingIcon: AppIcons.arrowForward(context),
-                          onTap: () =>
-                              _showDefaultWhatsAppBottomSheet(context, ctrl),
-                        );
-                      },
-                    ),
-                  ],
-                ),
+                _buildPreferencesSection(context),
                 context.verticalSpace(20),
-
-                // 2. Storage & Downloads Section
-                GetBuilder<SettingsController>(
-                  id: SettingsController.storageSettingId,
-                  builder: (ctrl) {
-                    return MySectionCard(
-                      title: context.l10n.storageAndDownloads,
-                      children: [
-                        Obx(() {
-                          final path = ctrl.getSaveFolderPath(
-                            WhatsAppType.whatsapp,
-                          );
-                          return MyListTile(
-                            leading: _buildIconContainer(
-                              context,
-                              AppIcons.folder,
-                              context.colorScheme.primary,
-                            ),
-                            borderRadius: BorderRadius.zero,
-                            title: context.l10n.whatsappSaveFolder,
-                            subtitle: path,
-                            subtitleDirection: TextDirection.ltr,
-                            trailingIcon: AppIcons.arrowForward(context),
-                            onTap: () => _showFolderManagementBottomSheet(
-                              context,
-                              ctrl,
-                              WhatsAppType.whatsapp,
-                            ),
-                          );
-                        }),
-                        Obx(() {
-                          final path = ctrl.getSaveFolderPath(
-                            WhatsAppType.business,
-                          );
-                          return MyListTile(
-                            leading: _buildIconContainer(
-                              context,
-                              AppIcons.folder,
-                              context.colorScheme.primary,
-                            ),
-                            borderRadius: BorderRadius.zero,
-                            title: context.l10n.whatsappBusinessSaveFolder,
-                            subtitle: path,
-                            subtitleDirection: TextDirection.ltr,
-                            trailingIcon: AppIcons.arrowForward(context),
-                            onTap: () => _showFolderManagementBottomSheet(
-                              context,
-                              ctrl,
-                              WhatsAppType.business,
-                            ),
-                          );
-                        }),
-                        Obx(() {
-                          final isAuto = ctrl.autoSaveOpenedStatuses.value;
-                          return MyListTile(
-                            leading: _buildIconContainer(
-                              context,
-                              AppIcons.download,
-                              context.colorScheme.secondary,
-                            ),
-                            borderRadius: BorderRadius.zero,
-                            title: context.l10n.autoSaveOpenedStatuses,
-                            subtitle:
-                                context.l10n.autoSaveOpenedStatusesDescription,
-                            trailing: MySwitch(
-                              value: isAuto,
-                              onChanged: (val) =>
-                                  ctrl.setAutoSaveOpenedStatuses(val),
-                            ),
-                            onTap: () =>
-                                ctrl.setAutoSaveOpenedStatuses(!isAuto),
-                          );
-                        }),
-                      ],
-                    );
-                  },
-                ),
+                _buildStorageSection(context),
                 context.verticalSpace(20),
-
-                // 3. About Section
-                MySectionCard(
-                  title: context.l10n.about,
-                  children: [
-                    GetBuilder<SettingsController>(
-                      id: SettingsController.aboutInfoId,
-                      builder: (ctrl) {
-                        return MyListTile(
-                          leading: _buildIconContainer(
-                            context,
-                            AppIcons.info,
-                            context.colorScheme.tertiary,
-                          ),
-                          borderRadius: BorderRadius.zero,
-                          title: context.l10n.appVersionTitle,
-                          subtitle: ctrl.appVersionWithBuild,
-                        );
-                      },
-                    ),
-                    MyListTile(
-                      leading: _buildIconContainer(
-                        context,
-                        AppIcons.status,
-                        context.colorScheme.primary,
-                      ),
-                      borderRadius: BorderRadius.zero,
-                      title: context.l10n.aboutHalati,
-                      subtitle: context.l10n.aboutHalatiSubtitle,
-                      trailingIcon: AppIcons.arrowForward(context),
-                      onTap: () => Get.toNamed(AppRoutes.about),
-                    ),
-                  ],
-                ),
+                _buildAboutSection(context),
               ]),
             ),
           ),
@@ -248,14 +76,230 @@ class SettingsPage extends GetView<SettingsController> {
     );
   }
 
-  Widget _buildIconContainer(BuildContext context, IconData icon, Color color) {
-    return MyCard.filled(
-      padding: EdgeInsets.all(context.spaceS),
-      color: color.withValues(alpha: 0.12),
-      child: MyIcon(icon: icon, color: color),
+  // --- Sections ---
+  Widget _buildPreferencesSection(BuildContext context) {
+    return MySectionCard(
+      title: context.l10n.preferences,
+      showDividers: false,
+      children: [
+        GetBuilder<SettingsController>(
+          id: SettingsController.themeId,
+          builder: (ctrl) {
+            return _buildTile(
+              context,
+              leadingIcon: AppIcons.brightness,
+              title: context.l10n.theme,
+              trailing: _buildValueTrailing(
+                context,
+                SettingsHelper.getThemeName(
+                  context,
+                  SettingsHelper.currentTheme,
+                ),
+              ),
+              onTap: () {
+                _showSelectionBottomSheet<ThemeMode>(
+                  context: context,
+                  title: context.l10n.selectTheme,
+                  items: const [
+                    ThemeMode.system,
+                    ThemeMode.light,
+                    ThemeMode.dark,
+                  ],
+                  initialSelected: SettingsHelper.currentTheme,
+                  itemLabel: (label) =>
+                      SettingsHelper.getThemeName(context, label),
+                  onSelected: controller.changeTheme,
+                );
+              },
+            );
+          },
+        ),
+        GetBuilder<SettingsController>(
+          builder: (ctrl) {
+            return _buildTile(
+              context,
+              leadingIcon: AppIcons.translate,
+              title: context.l10n.language,
+              trailing: _buildValueTrailing(
+                context,
+                ctrl.selectLang.localizedName(context),
+              ),
+              onTap: () {
+                _showSelectionBottomSheet<LangCode>(
+                  context: context,
+                  title: context.l10n.selectLanguage,
+                  items: const [LangCode.system, LangCode.en, LangCode.ar],
+                  initialSelected: controller.selectLang,
+                  itemLabel: (label) => label.localizedName(context),
+                  onSelected: controller.changeLocale,
+                );
+              },
+            );
+          },
+        ),
+        GetBuilder<SettingsController>(
+          id: SettingsController.whatsappSettingId,
+          builder: (ctrl) {
+            final defaultType = ctrl.defaultWhatsAppType;
+            return _buildTile(
+              context,
+              leadingIcon: AppIcons.whatsapp,
+              title: context.l10n.defaultWhatsApp,
+              trailing: _buildValueTrailing(
+                context,
+                defaultType.isBusiness
+                    ? context.l10n.whatsappBusiness
+                    : context.l10n.whatsapp,
+              ),
+              onTap: () {
+                _showSelectionBottomSheet<WhatsAppType>(
+                  context: context,
+                  title: context.l10n.selectDefaultWhatsApp,
+                  items: const [WhatsAppType.whatsapp, WhatsAppType.business],
+                  initialSelected: controller.defaultWhatsAppType,
+                  itemLabel: (type) => type.isBusiness
+                      ? context.l10n.whatsappBusiness
+                      : context.l10n.whatsapp,
+                  onSelected: controller.setDefaultWhatsAppType,
+                );
+              },
+            );
+          },
+        ),
+      ],
     );
   }
 
+  Widget _buildStorageSection(BuildContext context) {
+    return GetBuilder<SettingsController>(
+      id: SettingsController.storageSettingId,
+      builder: (ctrl) {
+        return MySectionCard(
+          title: context.l10n.storageAndDownloads,
+          children: [
+            _buildFolderTile(context, ctrl, WhatsAppType.whatsapp),
+            _buildFolderTile(context, ctrl, WhatsAppType.business),
+            _buildAutoSaveTile(context, ctrl),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildFolderTile(
+    BuildContext context,
+    SettingsController ctrl,
+    WhatsAppType type,
+  ) {
+    return Obx(() {
+      final title = type.isBusiness
+          ? context.l10n.whatsappBusinessSaveFolder
+          : context.l10n.whatsappSaveFolder;
+      final path = ctrl.getSaveFolderPath(type);
+
+      return _buildTile(
+        context,
+        leadingIcon: AppIcons.folder,
+        title: title,
+        subtitle: path,
+        subtitleDirection: TextDirection.ltr,
+        showArrow: true,
+        onTap: () => _showFolderManagementBottomSheet(context, ctrl, type),
+      );
+    });
+  }
+
+  Widget _buildAutoSaveTile(BuildContext context, SettingsController ctrl) {
+    return Obx(() {
+      final isAuto = ctrl.autoSaveOpenedStatuses.value;
+      return _buildTile(
+        context,
+        leadingIcon: AppIcons.download,
+        title: context.l10n.autoSaveOpenedStatuses,
+        trailing: MySwitch(
+          value: isAuto,
+          onChanged: ctrl.setAutoSaveOpenedStatuses,
+        ),
+        onTap: () => ctrl.setAutoSaveOpenedStatuses(!isAuto),
+      );
+    });
+  }
+
+  Widget _buildAboutSection(BuildContext context) {
+    return MySectionCard(
+      title: context.l10n.about,
+      children: [
+        _buildTile(
+          context,
+          leadingIcon: AppIcons.info,
+          title: context.l10n.aboutHalati,
+          showArrow: true,
+          onTap: () => Get.toNamed(AppRoutes.about),
+        ),
+      ],
+    );
+  }
+
+  // Reusable UI Helpers
+  Widget _buildTile(
+    BuildContext context, {
+    required String title,
+    IconData? leadingIcon,
+    String? subtitle,
+    TextDirection? subtitleDirection,
+    Widget? trailing,
+    bool showArrow = false,
+    VoidCallback? onTap,
+  }) {
+    return MyListTile(
+      leadingIcon: leadingIcon,
+      title: title,
+      subtitle: subtitle,
+      subtitleDirection: subtitleDirection,
+      trailing: trailing,
+      trailingIcon: showArrow ? AppIcons.arrowForward(context) : null,
+      subtitleColor: context.colorScheme.primary,
+      borderRadius: BorderRadius.zero,
+      onTap: onTap,
+    );
+  }
+
+  Widget _buildValueTrailing(BuildContext context, String value) {
+    return Text(
+      value,
+      style: context.textTheme.labelSmall?.copyWith(
+        color: context.colorScheme.primary,
+      ),
+    );
+  }
+
+  // Selection Bottom Sheets
+  void _showSelectionBottomSheet<T>({
+    required BuildContext context,
+    required String title,
+    required List<T> items,
+    required T initialSelected,
+    required String Function(T) itemLabel,
+    required ValueChanged<T> onSelected,
+  }) {
+    BottomSheetHelper.show(
+      child: MyBottomSheet(
+        title: title,
+        padding: EdgeInsets.zero,
+        child: SelectableList<T>.single(
+          items: items,
+          initialSelected: initialSelected,
+          itemLabel: itemLabel,
+          onChanged: (value) {
+            onSelected(value);
+            Navigator.pop(context);
+          },
+        ),
+      ),
+    );
+  }
+
+  // Folder Management
   void _showFolderManagementBottomSheet(
     BuildContext context,
     SettingsController ctrl,
@@ -275,76 +319,20 @@ class SettingsPage extends GetView<SettingsController> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Padding(
-              padding: context.insetsAllM,
-              child: MyCard.filled(
-                padding: context.insetsAllM,
-                color: context.colorScheme.surfaceContainerHigh,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          context.l10n.currentPath,
-                          style: context.textTheme.labelMedium?.copyWith(
-                            color: context.colorScheme.onSurfaceVariant,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: context.setSize(8),
-                            vertical: context.setSize(2),
-                          ),
-                          decoration: BoxDecoration(
-                            color: isCustom
-                                ? context.colorScheme.primaryContainer
-                                : context.colorScheme.surfaceContainerHighest,
-                            borderRadius: context.brCircular,
-                          ),
-                          child: Text(
-                            isCustom
-                                ? context.l10n.customLocation
-                                : context.l10n.defaultLocation,
-                            style: context.textTheme.labelSmall?.copyWith(
-                              color: isCustom
-                                  ? context.colorScheme.onPrimaryContainer
-                                  : context.colorScheme.onSurfaceVariant,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: context.spaceS),
-                    Directionality(
-                      textDirection: TextDirection.ltr,
-                      child: Text(
-                        currentPath,
-                        style: context.textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w500,
-                          color: context.colorScheme.onSurface,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+            _buildPathInfoCard(
+              context,
+              currentPath: currentPath,
+              isCustom: isCustom,
             ),
             Divider(
               height: 1,
               color: context.colorScheme.outlineVariant.withValues(alpha: 0.5),
             ),
-            MyListTile(
-              leading: _buildIconContainer(
-                context,
-                AppIcons.folder,
-                context.colorScheme.primary,
-              ),
+            _buildTile(
+              context,
               title: context.l10n.changeFolder,
-              trailingIcon: AppIcons.arrowForward(context),
+              leadingIcon: AppIcons.folder,
+              showArrow: true,
               onTap: () async {
                 final updatedMsg = context.l10n.folderUpdatedSuccessfully;
                 Navigator.pop(context);
@@ -355,14 +343,11 @@ class SettingsPage extends GetView<SettingsController> {
               },
             ),
             if (isCustom)
-              MyListTile(
-                leading: _buildIconContainer(
-                  context,
-                  AppIcons.refresh,
-                  context.colorScheme.secondary,
-                ),
+              _buildTile(
+                context,
                 title: context.l10n.restoreDefaultFolder,
-                trailingIcon: AppIcons.arrowForward(context),
+                leadingIcon: AppIcons.undo,
+                showArrow: false,
                 onTap: () async {
                   final restoredMsg = context.l10n.folderRestoredSuccessfully;
                   Navigator.pop(context);
@@ -377,67 +362,60 @@ class SettingsPage extends GetView<SettingsController> {
     );
   }
 
-  void _showThemeBottomSheet(
-    BuildContext context,
-    SettingsController controller,
-  ) {
-    BottomSheetHelper.show(
-      child: MyBottomSheet(
-        padding: EdgeInsets.zero,
-        title: context.l10n.selectTheme,
-        child: SelectableList<ThemeMode>.single(
-          items: const [ThemeMode.system, ThemeMode.light, ThemeMode.dark],
-          initialSelected: SettingsHelper.currentTheme,
-          itemLabel: (label) => SettingsHelper.getThemeName(context, label),
-          onChanged: (value) {
-            controller.changeTheme(value);
-            Navigator.pop(context);
-          },
-        ),
-      ),
-    );
-  }
-
-  void _showLanguageBottomSheet(
-    BuildContext context,
-    SettingsController controller,
-  ) {
-    BottomSheetHelper.show(
-      child: MyBottomSheet(
-        title: context.l10n.selectLanguage,
-        padding: EdgeInsets.zero,
-        child: SelectableList<LangCode>.single(
-          items: const [LangCode.system, LangCode.en, LangCode.ar],
-          initialSelected: controller.selectLang,
-          itemLabel: (label) => label.localizedName(context),
-          onChanged: (value) {
-            controller.changeLocale(value);
-            Navigator.pop(context);
-          },
-        ),
-      ),
-    );
-  }
-
-  void _showDefaultWhatsAppBottomSheet(
-    BuildContext context,
-    SettingsController controller,
-  ) {
-    BottomSheetHelper.show(
-      child: MyBottomSheet(
-        title: context.l10n.selectDefaultWhatsApp,
-        padding: EdgeInsets.zero,
-        child: SelectableList<WhatsAppType>.single(
-          items: const [WhatsAppType.whatsapp, WhatsAppType.business],
-          initialSelected: controller.defaultWhatsAppType,
-          itemLabel: (type) => type.isBusiness
-              ? context.l10n.whatsappBusiness
-              : context.l10n.whatsapp,
-          onChanged: (value) {
-            controller.setDefaultWhatsAppType(value);
-            Navigator.pop(context);
-          },
-        ),
+  Widget _buildPathInfoCard(
+    BuildContext context, {
+    required String currentPath,
+    required bool isCustom,
+  }) {
+    return MyCard.filled(
+      margin: context.insetsAllM,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                context.l10n.currentPath,
+                style: context.textTheme.labelMedium?.copyWith(
+                  color: context.colorScheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              MyCard.filled(
+                padding: EdgeInsets.symmetric(
+                  horizontal: context.setSize(8),
+                  vertical: context.setSize(2),
+                ),
+                color: isCustom
+                    ? context.colorScheme.primaryContainer
+                    : context.colorScheme.surfaceContainerHighest,
+                child: Text(
+                  isCustom
+                      ? context.l10n.customLocation
+                      : context.l10n.defaultLocation,
+                  style: context.textTheme.labelSmall?.copyWith(
+                    color: isCustom
+                        ? context.colorScheme.onPrimaryContainer
+                        : context.colorScheme.onSurfaceVariant,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: context.spaceS),
+          Directionality(
+            textDirection: TextDirection.ltr,
+            child: Text(
+              currentPath,
+              style: context.textTheme.bodyMedium?.copyWith(
+                color: context.colorScheme.primary,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
