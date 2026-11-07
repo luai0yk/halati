@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:status_saver/features/home/domain/entities/status_media.dart';
+import 'package:halati/features/home/domain/entities/status_media.dart';
 
 @immutable
 class MediaViewerItem {

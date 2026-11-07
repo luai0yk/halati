@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide ContextExtensionss;
-import 'package:status_saver/core/constants/app_icons.dart';
-import 'package:status_saver/core/utils/extensions/context_extension.dart';
-import 'package:status_saver/core/utils/extensions/responsive_values.dart';
-import 'package:status_saver/features/settings/controller/licenses_controller.dart';
-import 'package:status_saver/shared/widgets/appbars/my_app_bar.dart';
-import 'package:status_saver/shared/widgets/input/my_text_field.dart';
-import 'package:status_saver/shared/widgets/misc/my_empty_state.dart';
-import 'package:status_saver/shared/widgets/misc/my_progress_indicator.dart';
-import 'package:status_saver/shared/widgets/tiles/my_list_tile.dart';
+import 'package:halati/core/constants/app_icons.dart';
+import 'package:halati/core/utils/extensions/context_extension.dart';
+import 'package:halati/core/utils/extensions/responsive_values.dart';
+import 'package:halati/features/settings/controller/licenses_controller.dart';
+import 'package:halati/shared/widgets/appbars/my_app_bar.dart';
+import 'package:halati/shared/widgets/input/my_text_field.dart';
+import 'package:halati/shared/widgets/misc/my_empty_state.dart';
+import 'package:halati/shared/widgets/misc/my_progress_indicator.dart';
+import 'package:halati/shared/widgets/tiles/my_list_tile.dart';
 
 /// A production-ready page displaying third-party open-source software licenses.
 ///
@@ -119,4 +119,3 @@ class LicensesPage extends StatelessWidget {
     );
   }
 }
-

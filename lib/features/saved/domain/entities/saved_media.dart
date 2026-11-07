@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:status_saver/core/enums/whatsapp_type.dart';
-import 'package:status_saver/features/home/domain/entities/status_media.dart';
+import 'package:halati/core/enums/whatsapp_type.dart';
+import 'package:halati/features/home/domain/entities/status_media.dart';
 
 @immutable
 class SavedMedia {
@@ -35,9 +35,7 @@ class SavedMedia {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is SavedMedia &&
-          runtimeType == other.runtimeType &&
-          id == other.id;
+      other is SavedMedia && runtimeType == other.runtimeType && id == other.id;
 
   @override
   int get hashCode => id.hashCode;

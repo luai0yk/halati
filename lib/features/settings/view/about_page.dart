@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide ContextExtensionss;
-import 'package:status_saver/core/constants/app_assets.dart';
-import 'package:status_saver/core/constants/app_icons.dart';
-import 'package:status_saver/core/routes/app_routes.dart';
-import 'package:status_saver/core/utils/extensions/context_extension.dart';
-import 'package:status_saver/core/utils/extensions/responsive_size.dart';
-import 'package:status_saver/core/utils/extensions/responsive_values.dart';
-import 'package:status_saver/core/utils/helpers/ui/bottom_sheet_helper.dart';
-import 'package:status_saver/core/utils/helpers/ui/toast_helper.dart';
-import 'package:status_saver/features/settings/controller/settings_controller.dart';
-import 'package:status_saver/shared/widgets/appbars/my_app_bar.dart';
-import 'package:status_saver/shared/widgets/cards/my_section_card.dart';
-import 'package:status_saver/shared/widgets/images/my_image.dart';
-import 'package:status_saver/shared/widgets/input/my_text_field.dart';
-import 'package:status_saver/shared/widgets/misc/my_toast.dart';
-import 'package:status_saver/shared/widgets/sheets/my_bottom_sheet.dart';
-import 'package:status_saver/shared/widgets/tiles/my_list_tile.dart';
+import 'package:halati/core/constants/app_assets.dart';
+import 'package:halati/core/constants/app_icons.dart';
+import 'package:halati/core/routes/app_routes.dart';
+import 'package:halati/core/utils/extensions/context_extension.dart';
+import 'package:halati/core/utils/extensions/responsive_size.dart';
+import 'package:halati/core/utils/extensions/responsive_values.dart';
+import 'package:halati/core/utils/helpers/ui/bottom_sheet_helper.dart';
+import 'package:halati/core/utils/helpers/ui/toast_helper.dart';
+import 'package:halati/features/settings/controller/settings_controller.dart';
+import 'package:halati/shared/widgets/appbars/my_app_bar.dart';
+import 'package:halati/shared/widgets/cards/my_section_card.dart';
+import 'package:halati/shared/widgets/images/my_image.dart';
+import 'package:halati/shared/widgets/input/my_text_field.dart';
+import 'package:halati/shared/widgets/misc/my_toast.dart';
+import 'package:halati/shared/widgets/sheets/my_bottom_sheet.dart';
+import 'package:halati/shared/widgets/tiles/my_list_tile.dart';
 
 class AboutPage extends StatelessWidget {
   const AboutPage({super.key});
@@ -140,13 +140,8 @@ class AboutPage extends StatelessWidget {
     }
   }
 
-  void _openFeedbackSheet(
-    BuildContext context,
-    SettingsController controller,
-  ) {
-    BottomSheetHelper.show(
-      child: _FeedbackBottomSheet(controller: controller),
-    );
+  void _openFeedbackSheet(BuildContext context, SettingsController controller) {
+    BottomSheetHelper.show(child: _FeedbackBottomSheet(controller: controller));
   }
 }
 

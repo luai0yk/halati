@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:status_saver/core/utils/helpers/ui/app_navigator.dart';
-import 'package:status_saver/shared/widgets/misc/my_toast.dart';
+import 'package:halati/core/utils/helpers/ui/app_navigator.dart';
+import 'package:halati/shared/widgets/misc/my_toast.dart';
 
 class ToastHelper {
   ToastHelper._();

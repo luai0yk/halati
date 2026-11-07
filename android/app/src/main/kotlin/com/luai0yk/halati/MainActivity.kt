@@ -1,7 +1,7 @@
-package com.luai0yk.status_saver
+package com.luai0yk.halati
 
 import android.content.Intent
-import com.luai0yk.status_saver.saf.SafHandler
+import com.luai0yk.halati.saf.SafHandler
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
@@ -11,7 +11,7 @@ class MainActivity : FlutterActivity() {
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
-        val channel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "com.luai0yk.status_saver/saf")
+        val channel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "com.luai0yk.halati/saf")
         safHandler = SafHandler(this, channel)
     }
 

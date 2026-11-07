@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:status_saver/core/utils/extensions/context_extension.dart';
-import 'package:status_saver/core/utils/extensions/responsive_values.dart';
-import 'package:status_saver/features/home/domain/entities/status_media.dart';
-import 'package:status_saver/shared/widgets/chips/animated_chip.dart';
+import 'package:halati/core/utils/extensions/context_extension.dart';
+import 'package:halati/core/utils/extensions/responsive_values.dart';
+import 'package:halati/features/home/domain/entities/status_media.dart';
+import 'package:halati/shared/widgets/chips/animated_chip.dart';
 
 class MediaFilterBar extends StatelessWidget {
   final MediaType? selectedType;
@@ -20,7 +20,8 @@ class MediaFilterBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      padding: padding ??
+      padding:
+          padding ??
           EdgeInsets.symmetric(
             horizontal: context.spaceM,
             vertical: context.spaceXs,

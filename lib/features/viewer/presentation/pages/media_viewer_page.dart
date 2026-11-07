@@ -3,22 +3,22 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:status_saver/core/constants/app_durations.dart';
-import 'package:status_saver/core/utils/extensions/context_extension.dart';
-import 'package:status_saver/core/utils/extensions/responsive_size.dart';
-import 'package:status_saver/core/utils/extensions/responsive_values.dart';
-import 'package:status_saver/core/utils/helpers/ui/status_delete_helper.dart';
-import 'package:status_saver/core/utils/helpers/ui/toast_helper.dart';
-import 'package:status_saver/features/settings/controller/settings_controller.dart';
-import 'package:status_saver/features/viewer/data/models/media_viewer_item.dart';
-import 'package:status_saver/features/viewer/presentation/controllers/media_viewer_controller.dart';
-import 'package:status_saver/features/viewer/presentation/widgets/media_viewer_app_bar.dart';
-import 'package:status_saver/features/viewer/presentation/widgets/media_viewer_content.dart';
-import 'package:status_saver/features/viewer/presentation/widgets/media_viewer_filmstrip.dart';
-import 'package:status_saver/shared/widgets/appbars/my_app_bar.dart';
+import 'package:halati/core/constants/app_durations.dart';
+import 'package:halati/core/utils/extensions/context_extension.dart';
+import 'package:halati/core/utils/extensions/responsive_size.dart';
+import 'package:halati/core/utils/extensions/responsive_values.dart';
+import 'package:halati/core/utils/helpers/ui/status_delete_helper.dart';
+import 'package:halati/core/utils/helpers/ui/toast_helper.dart';
+import 'package:halati/features/settings/controller/settings_controller.dart';
+import 'package:halati/features/viewer/data/models/media_viewer_item.dart';
+import 'package:halati/features/viewer/presentation/controllers/media_viewer_controller.dart';
+import 'package:halati/features/viewer/presentation/widgets/media_viewer_app_bar.dart';
+import 'package:halati/features/viewer/presentation/widgets/media_viewer_content.dart';
+import 'package:halati/features/viewer/presentation/widgets/media_viewer_filmstrip.dart';
+import 'package:halati/shared/widgets/appbars/my_app_bar.dart';
 
-export 'package:status_saver/features/viewer/data/models/media_viewer_item.dart';
-export 'package:status_saver/features/viewer/presentation/controllers/media_viewer_controller.dart';
+export 'package:halati/features/viewer/data/models/media_viewer_item.dart';
+export 'package:halati/features/viewer/presentation/controllers/media_viewer_controller.dart';
 
 class MediaViewerPage extends StatefulWidget {
   final List<MediaViewerItem> items;
@@ -114,7 +114,10 @@ class _MediaViewerPageState extends State<MediaViewerPage> {
     if (index < 0 || index >= controller.items.length) return;
 
     final item = controller.items[index];
-    if (item.isSaved || _autoSavingIds.contains(item.id) || widget.onSave == null) return;
+    if (item.isSaved ||
+        _autoSavingIds.contains(item.id) ||
+        widget.onSave == null)
+      return;
 
     _autoSavingIds.add(item.id);
 
@@ -125,7 +128,9 @@ class _MediaViewerPageState extends State<MediaViewerPage> {
         if (success && mounted) {
           final idx = controller.items.indexWhere((it) => it.id == item.id);
           if (idx != -1) {
-            controller.items[idx] = controller.items[idx].copyWith(isSaved: true);
+            controller.items[idx] = controller.items[idx].copyWith(
+              isSaved: true,
+            );
           }
           ToastHelper.show(msg: context.l10n.savedSuccessfully);
         }
@@ -241,8 +246,7 @@ class _MediaViewerPageState extends State<MediaViewerPage> {
                   },
                   itemBuilder: (context, index) {
                     final item = controller.items[index];
-                    final resolvedPath =
-                        controller.resolvedPaths[item.uri];
+                    final resolvedPath = controller.resolvedPaths[item.uri];
                     final thumbPath =
                         controller.thumbnails[item.uri] ?? item.thumbnailPath;
 
@@ -268,8 +272,8 @@ class _MediaViewerPageState extends State<MediaViewerPage> {
                       : null,
                   onDelete:
                       controller.onDeleteItem != null && currentItem.isSaved
-                          ? _confirmDelete
-                          : null,
+                      ? _confirmDelete
+                      : null,
                 ),
 
                 // Floating Bottom Gallery Filmstrip

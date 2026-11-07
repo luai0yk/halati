@@ -1,16 +1,17 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:status_saver/core/enums/whatsapp_type.dart';
-import 'package:status_saver/core/errors/failures.dart';
-import 'package:status_saver/core/utils/result.dart';
-import 'package:status_saver/features/home/domain/entities/status_media.dart';
-import 'package:status_saver/features/home/domain/repositories/status_repository.dart';
-import 'package:status_saver/features/home/domain/usecases/check_saf_access_use_case.dart';
-import 'package:status_saver/features/home/domain/usecases/get_statuses_use_case.dart';
-import 'package:status_saver/features/home/domain/usecases/request_saf_access_use_case.dart';
+import 'package:halati/core/enums/whatsapp_type.dart';
+import 'package:halati/core/errors/failures.dart';
+import 'package:halati/core/utils/result.dart';
+import 'package:halati/features/home/domain/entities/status_media.dart';
+import 'package:halati/features/home/domain/repositories/status_repository.dart';
+import 'package:halati/features/home/domain/usecases/check_saf_access_use_case.dart';
+import 'package:halati/features/home/domain/usecases/get_statuses_use_case.dart';
+import 'package:halati/features/home/domain/usecases/request_saf_access_use_case.dart';
 
 class FakeStatusRepository implements StatusRepository {
   bool hasAccess = false;
-  String? requestResultUri = 'content://tree/primary:Android/media/com.whatsapp/WhatsApp/Media/.Statuses';
+  String? requestResultUri =
+      'content://tree/primary:Android/media/com.whatsapp/WhatsApp/Media/.Statuses';
   List<StatusMedia> statuses = [];
   Failure? failure;
   WhatsAppType? lastRequestedType;
@@ -57,17 +58,26 @@ class FakeStatusRepository implements StatusRepository {
   }
 
   @override
-  Future<Result<String, Failure>> getThumbnail(String documentUri, {int width = 300, int height = 300}) async {
+  Future<Result<String, Failure>> getThumbnail(
+    String documentUri, {
+    int width = 300,
+    int height = 300,
+  }) async {
     return const Success('/cache/thumb.jpg');
   }
 
   @override
-  Future<Result<Map<String, dynamic>, Failure>> getMediaMetadata(String documentUri) async {
+  Future<Result<Map<String, dynamic>, Failure>> getMediaMetadata(
+    String documentUri,
+  ) async {
     return const Success({'durationMs': 10000});
   }
 
   @override
-  Future<Result<String, Failure>> getFullMediaFile(String documentUri, String fileName) async {
+  Future<Result<String, Failure>> getFullMediaFile(
+    String documentUri,
+    String fileName,
+  ) async {
     return const Success('/cache/full_media.jpg');
   }
 
@@ -76,7 +86,10 @@ class FakeStatusRepository implements StatusRepository {
     StatusMedia media, {
     WhatsAppType? type,
   }) async {
-    return const Success({'savedUri': 'content://media/1', 'relativePath': 'Pictures/StatusSaver'});
+    return const Success({
+      'savedUri': 'content://media/1',
+      'relativePath': 'Pictures/Halati',
+    });
   }
 }
 

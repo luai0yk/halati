@@ -1,7 +1,7 @@
 class SafChannel {
   SafChannel._();
 
-  static const String channelName = 'com.luai0yk.status_saver/saf';
+  static const String channelName = 'com.luai0yk.halati/saf';
 
   // Methods
   static const String checkDirectoryAccess = 'checkDirectoryAccess';

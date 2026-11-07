@@ -1,13 +1,13 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:status_saver/core/constants/app_icons.dart';
-import 'package:status_saver/core/utils/extensions/context_extension.dart';
-import 'package:status_saver/core/utils/extensions/responsive_size.dart';
-import 'package:status_saver/core/utils/extensions/responsive_values.dart';
-import 'package:status_saver/shared/widgets/buttons/my_icon_button.dart';
-import 'package:status_saver/shared/widgets/cards/my_card.dart';
-import 'package:status_saver/shared/widgets/misc/my_icon.dart';
+import 'package:halati/core/constants/app_icons.dart';
+import 'package:halati/core/utils/extensions/context_extension.dart';
+import 'package:halati/core/utils/extensions/responsive_size.dart';
+import 'package:halati/core/utils/extensions/responsive_values.dart';
+import 'package:halati/shared/widgets/buttons/my_icon_button.dart';
+import 'package:halati/shared/widgets/cards/my_card.dart';
+import 'package:halati/shared/widgets/misc/my_icon.dart';
 import 'package:video_player/video_player.dart';
 
 class AudioViewerContent extends StatefulWidget {
@@ -104,9 +104,7 @@ class _AudioViewerContentState extends State<AudioViewerContent> {
       child: SingleChildScrollView(
         padding: context.insetsAllXl,
         child: ConstrainedBox(
-          constraints: BoxConstraints(
-            maxWidth: context.setSize(300),
-          ),
+          constraints: BoxConstraints(maxWidth: context.setSize(300)),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -120,10 +118,12 @@ class _AudioViewerContentState extends State<AudioViewerContent> {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      context.colorScheme.primaryContainer
-                          .withValues(alpha: 0.8),
-                      context.colorScheme.secondaryContainer
-                          .withValues(alpha: 0.9),
+                      context.colorScheme.primaryContainer.withValues(
+                        alpha: 0.8,
+                      ),
+                      context.colorScheme.secondaryContainer.withValues(
+                        alpha: 0.9,
+                      ),
                     ],
                   ),
                   child: Column(
@@ -131,8 +131,9 @@ class _AudioViewerContentState extends State<AudioViewerContent> {
                     children: [
                       MyCard.filled(
                         padding: context.insetsAllM,
-                        color:
-                            context.colorScheme.surface.withValues(alpha: 0.2),
+                        color: context.colorScheme.surface.withValues(
+                          alpha: 0.2,
+                        ),
                         borderRadius: context.brCircular,
                         child: MyIcon(
                           icon: AppIcons.waveform,
@@ -181,22 +182,23 @@ class _AudioViewerContentState extends State<AudioViewerContent> {
                         activeTrackColor: context.colorScheme.primary,
                         inactiveTrackColor: Colors.white24,
                         thumbColor: context.colorScheme.primary,
-                        overlayColor:
-                            context.colorScheme.primary.withValues(alpha: 0.2),
+                        overlayColor: context.colorScheme.primary.withValues(
+                          alpha: 0.2,
+                        ),
                       ),
                       child: Slider(
                         value: duration.inMilliseconds > 0
                             ? (position.inMilliseconds /
-                                    duration.inMilliseconds)
-                                .clamp(0.0, 1.0)
+                                      duration.inMilliseconds)
+                                  .clamp(0.0, 1.0)
                             : 0.0,
                         onChanged: (val) {
                           if (controller != null &&
                               duration.inMilliseconds > 0) {
                             controller.seekTo(
                               Duration(
-                                milliseconds:
-                                    (val * duration.inMilliseconds).toInt(),
+                                milliseconds: (val * duration.inMilliseconds)
+                                    .toInt(),
                               ),
                             );
                           }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:status_saver/core/utils/extensions/context_extension.dart';
-import 'package:status_saver/core/utils/extensions/responsive_values.dart';
-import 'package:status_saver/shared/widgets/misc/my_icon.dart';
+import 'package:halati/core/utils/extensions/context_extension.dart';
+import 'package:halati/core/utils/extensions/responsive_values.dart';
+import 'package:halati/shared/widgets/misc/my_icon.dart';
 
 class MyListTile extends StatelessWidget {
   final String title;

@@ -1,12 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:status_saver/features/home/domain/entities/status_media.dart';
-import 'package:status_saver/features/viewer/data/models/media_viewer_item.dart';
-import 'package:status_saver/features/viewer/presentation/widgets/audio_viewer_content.dart';
-import 'package:status_saver/features/viewer/presentation/widgets/image_viewer_content.dart';
-import 'package:status_saver/features/viewer/presentation/widgets/video_viewer_content.dart';
-import 'package:status_saver/shared/widgets/misc/my_progress_indicator.dart';
+import 'package:halati/features/home/domain/entities/status_media.dart';
+import 'package:halati/features/viewer/data/models/media_viewer_item.dart';
+import 'package:halati/features/viewer/presentation/widgets/audio_viewer_content.dart';
+import 'package:halati/features/viewer/presentation/widgets/image_viewer_content.dart';
+import 'package:halati/features/viewer/presentation/widgets/video_viewer_content.dart';
+import 'package:halati/shared/widgets/misc/my_progress_indicator.dart';
 
 class MediaViewerContent extends StatelessWidget {
   final MediaViewerItem item;
@@ -43,10 +43,7 @@ class MediaViewerContent extends StatelessWidget {
             fit: StackFit.expand,
             children: [
               Center(
-                child: Image.file(
-                  File(thumbnailPath!),
-                  fit: BoxFit.contain,
-                ),
+                child: Image.file(File(thumbnailPath!), fit: BoxFit.contain),
               ),
               const Center(child: MyProgressIndicator()),
             ],

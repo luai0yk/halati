@@ -2,20 +2,20 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:status_saver/core/constants/app_icons.dart';
-import 'package:status_saver/core/utils/extensions/context_extension.dart';
-import 'package:status_saver/core/utils/extensions/responsive_size.dart';
-import 'package:status_saver/core/utils/extensions/responsive_values.dart';
-import 'package:status_saver/core/utils/helpers/misc/share_helper.dart';
-import 'package:status_saver/core/utils/helpers/ui/toast_helper.dart';
-import 'package:status_saver/features/saved/domain/entities/saved_media.dart';
-import 'package:status_saver/features/saved/presentation/controllers/saved_controller.dart';
-import 'package:status_saver/features/saved/presentation/widgets/saved_grid_item.dart';
-import 'package:status_saver/features/viewer/presentation/pages/media_viewer_page.dart';
-import 'package:status_saver/shared/widgets/misc/my_empty_state.dart';
-import 'package:status_saver/shared/widgets/misc/my_progress_indicator.dart';
-import 'package:status_saver/shared/widgets/slivers/media_page_header.dart';
-import 'package:status_saver/shared/widgets/slivers/sliver_filter_delegate.dart';
+import 'package:halati/core/constants/app_icons.dart';
+import 'package:halati/core/utils/extensions/context_extension.dart';
+import 'package:halati/core/utils/extensions/responsive_size.dart';
+import 'package:halati/core/utils/extensions/responsive_values.dart';
+import 'package:halati/core/utils/helpers/misc/share_helper.dart';
+import 'package:halati/core/utils/helpers/ui/toast_helper.dart';
+import 'package:halati/features/saved/domain/entities/saved_media.dart';
+import 'package:halati/features/saved/presentation/controllers/saved_controller.dart';
+import 'package:halati/features/saved/presentation/widgets/saved_grid_item.dart';
+import 'package:halati/features/viewer/presentation/pages/media_viewer_page.dart';
+import 'package:halati/shared/widgets/misc/my_empty_state.dart';
+import 'package:halati/shared/widgets/misc/my_progress_indicator.dart';
+import 'package:halati/shared/widgets/slivers/media_page_header.dart';
+import 'package:halati/shared/widgets/slivers/sliver_filter_delegate.dart';
 
 class SavedPage extends GetView<SavedController> {
   const SavedPage({super.key});
@@ -74,63 +74,64 @@ class SavedPage extends GetView<SavedController> {
         return RefreshIndicator(
           onRefresh: controller.syncSavedMedia,
           child: CustomScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          cacheExtent: 500,
-          clipBehavior: Clip.none,
-          slivers: [
-            SliverPersistentHeader(
-              floating: true,
-              delegate: SliverFilterDelegate(
-                height: MediaQuery.paddingOf(context).top + context.setSize(90),
-                child: MediaPageHeader(
-                  title: context.l10n.saved,
-                  selectedType: controller.filterType.value,
-                  onFilterChanged: controller.setFilter,
-                  currentWhatsAppType: controller.currentWhatsAppType,
-                  onWhatsAppTypeChanged: controller.switchWhatsAppType,
-                ),
-              ),
-            ),
-            if (items.isEmpty)
-              SliverFillRemaining(
-                hasScrollBody: false,
-                child: Center(
-                  child: MyEmptyState(
-                    icon: AppIcons.download,
-                    title: context.l10n.noSavedMedia,
-                    subtitle: context.l10n.noDataSubtitle,
+            physics: const AlwaysScrollableScrollPhysics(),
+            cacheExtent: 500,
+            clipBehavior: Clip.none,
+            slivers: [
+              SliverPersistentHeader(
+                floating: true,
+                delegate: SliverFilterDelegate(
+                  height:
+                      MediaQuery.paddingOf(context).top + context.setSize(90),
+                  child: MediaPageHeader(
+                    title: context.l10n.saved,
+                    selectedType: controller.filterType.value,
+                    onFilterChanged: controller.setFilter,
+                    currentWhatsAppType: controller.currentWhatsAppType,
+                    onWhatsAppTypeChanged: controller.switchWhatsAppType,
                   ),
                 ),
-              )
-            else
-              SliverPadding(
-                padding: EdgeInsets.only(
-                  left: context.spaceM,
-                  right: context.spaceM,
-                  top: context.spaceS,
-                  bottom:
-                      context.setSize(95) +
-                      MediaQuery.paddingOf(context).bottom,
-                ),
-                sliver: SliverGrid(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    childAspectRatio: 1.0,
-                    crossAxisSpacing: context.setSize(6),
-                    mainAxisSpacing: context.setSize(6),
-                  ),
-                  delegate: SliverChildBuilderDelegate((context, index) {
-                    final media = items[index];
-                    return SavedGridItem(
-                      media: media,
-                      onTap: () => _openViewer(context, index),
-                    );
-                  }, childCount: items.length),
-                ),
               ),
-          ],
-        ),
-      );
+              if (items.isEmpty)
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Center(
+                    child: MyEmptyState(
+                      icon: AppIcons.download,
+                      title: context.l10n.noSavedMedia,
+                      subtitle: context.l10n.noDataSubtitle,
+                    ),
+                  ),
+                )
+              else
+                SliverPadding(
+                  padding: EdgeInsets.only(
+                    left: context.spaceM,
+                    right: context.spaceM,
+                    top: context.spaceS,
+                    bottom:
+                        context.setSize(95) +
+                        MediaQuery.paddingOf(context).bottom,
+                  ),
+                  sliver: SliverGrid(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      childAspectRatio: 1.0,
+                      crossAxisSpacing: context.setSize(6),
+                      mainAxisSpacing: context.setSize(6),
+                    ),
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final media = items[index];
+                      return SavedGridItem(
+                        media: media,
+                        onTap: () => _openViewer(context, index),
+                      );
+                    }, childCount: items.length),
+                  ),
+                ),
+            ],
+          ),
+        );
       }),
     );
   }

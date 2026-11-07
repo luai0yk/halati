@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:halati/core/constants/app_constants.dart';
+import 'package:halati/core/enums/whatsapp_type.dart';
+import 'package:halati/core/l10n/app_locales.dart';
+import 'package:halati/core/services/cash/cash_keys.dart';
+import 'package:halati/core/services/cash/cash_service.dart';
+import 'package:halati/core/utils/helpers/misc/url_helper.dart';
+import 'package:halati/core/utils/helpers/settings_helper.dart';
+import 'package:halati/features/home/data/datasources/saf_native_data_source.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:status_saver/core/constants/app_constants.dart';
-import 'package:status_saver/core/enums/whatsapp_type.dart';
-import 'package:status_saver/core/l10n/app_locales.dart';
-import 'package:status_saver/core/services/cash/cash_keys.dart';
-import 'package:status_saver/core/services/cash/cash_service.dart';
-import 'package:status_saver/core/utils/helpers/misc/url_helper.dart';
-import 'package:status_saver/core/utils/helpers/settings_helper.dart';
-import 'package:status_saver/features/home/data/datasources/saf_native_data_source.dart';
 
 class SettingsController extends GetxController {
   static SettingsController get to => Get.find<SettingsController>();
@@ -16,8 +16,8 @@ class SettingsController extends GetxController {
   final CashService _cash = Get.find<CashService>();
   SafNativeDataSource? get _safDataSource =>
       Get.isRegistered<SafNativeDataSource>()
-          ? Get.find<SafNativeDataSource>()
-          : null;
+      ? Get.find<SafNativeDataSource>()
+      : null;
 
   static const String themeId = 'theme';
   static const String aboutInfoId = 'aboutInfo';
@@ -25,7 +25,8 @@ class SettingsController extends GetxController {
   static const String storageSettingId = 'storageSetting';
 
   static const String defaultWhatsAppSavePath = 'Download/Halati/WhatsApp';
-  static const String defaultBusinessSavePath = 'Download/Halati/WhatsApp Business';
+  static const String defaultBusinessSavePath =
+      'Download/Halati/WhatsApp Business';
 
   late final Rx<WhatsAppType> activeWhatsAppType;
 
@@ -49,8 +50,9 @@ class SettingsController extends GetxController {
   void onInit() {
     super.onInit();
     activeWhatsAppType = defaultWhatsAppType.obs;
-    autoSaveOpenedStatuses.value =
-        _cash.getBool(CashKeys.autoSaveOpenedStatuses);
+    autoSaveOpenedStatuses.value = _cash.getBool(
+      CashKeys.autoSaveOpenedStatuses,
+    );
     _initStorageSettings();
     loadAppInfo();
   }
@@ -58,7 +60,10 @@ class SettingsController extends GetxController {
   void _initStorageSettings() {
     final waPath = _cash.getString(CashKeys.saveFolderCustomPath);
     final waUri = _cash.getString(CashKeys.saveFolderCustomUri);
-    if (waUri != null && waUri.isNotEmpty && waPath != null && waPath.isNotEmpty) {
+    if (waUri != null &&
+        waUri.isNotEmpty &&
+        waPath != null &&
+        waPath.isNotEmpty) {
       saveFolderWhatsApp.value = waPath;
       isCustomFolderWhatsApp.value = true;
       _validateFolderAccess(waUri, WhatsAppType.whatsapp);
@@ -69,7 +74,10 @@ class SettingsController extends GetxController {
 
     final bizPath = _cash.getString(CashKeys.saveFolderCustomPathBusiness);
     final bizUri = _cash.getString(CashKeys.saveFolderCustomUriBusiness);
-    if (bizUri != null && bizUri.isNotEmpty && bizPath != null && bizPath.isNotEmpty) {
+    if (bizUri != null &&
+        bizUri.isNotEmpty &&
+        bizPath != null &&
+        bizPath.isNotEmpty) {
       saveFolderBusiness.value = bizPath;
       isCustomFolderBusiness.value = true;
       _validateFolderAccess(bizUri, WhatsAppType.business);
@@ -122,7 +130,10 @@ class SettingsController extends GetxController {
 
       if (type.isBusiness) {
         await _cash.setString(CashKeys.saveFolderCustomUriBusiness, uri);
-        await _cash.setString(CashKeys.saveFolderCustomPathBusiness, displayPath);
+        await _cash.setString(
+          CashKeys.saveFolderCustomPathBusiness,
+          displayPath,
+        );
         saveFolderBusiness.value = displayPath;
         isCustomFolderBusiness.value = true;
       } else {
@@ -138,7 +149,10 @@ class SettingsController extends GetxController {
     }
   }
 
-  Future<void> restoreDefaultSaveFolder(WhatsAppType type, {bool notify = true}) async {
+  Future<void> restoreDefaultSaveFolder(
+    WhatsAppType type, {
+    bool notify = true,
+  }) async {
     try {
       final ds = _safDataSource;
       final uriKey = type.isBusiness

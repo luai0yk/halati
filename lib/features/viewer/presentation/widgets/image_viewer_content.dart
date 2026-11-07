@@ -1,22 +1,18 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:halati/core/constants/app_durations.dart';
+import 'package:halati/core/constants/app_icons.dart';
+import 'package:halati/core/utils/extensions/responsive_size.dart';
+import 'package:halati/shared/widgets/misc/my_icon.dart';
+import 'package:halati/shared/widgets/misc/my_progress_indicator.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:status_saver/core/constants/app_durations.dart';
-import 'package:status_saver/core/constants/app_icons.dart';
-import 'package:status_saver/core/utils/extensions/responsive_size.dart';
-import 'package:status_saver/shared/widgets/misc/my_icon.dart';
-import 'package:status_saver/shared/widgets/misc/my_progress_indicator.dart';
 
 class ImageViewerContent extends StatefulWidget {
   final String? filePath;
   final String? thumbnailPath;
 
-  const ImageViewerContent({
-    super.key,
-    this.filePath,
-    this.thumbnailPath,
-  });
+  const ImageViewerContent({super.key, this.filePath, this.thumbnailPath});
 
   @override
   State<ImageViewerContent> createState() => _ImageViewerContentState();
@@ -93,8 +89,7 @@ class _ImageViewerContentState extends State<ImageViewerContent> {
   Widget build(BuildContext context) {
     final hasThumbnail =
         widget.thumbnailPath != null && widget.thumbnailPath!.isNotEmpty;
-    final hasFilePath =
-        widget.filePath != null && widget.filePath!.isNotEmpty;
+    final hasFilePath = widget.filePath != null && widget.filePath!.isNotEmpty;
 
     if (!hasThumbnail && !hasFilePath) {
       return const Center(child: MyProgressIndicator());
@@ -126,8 +121,9 @@ class _ImageViewerContentState extends State<ImageViewerContent> {
               curve: Curves.easeOutCubic,
               child: PhotoView(
                 imageProvider: FileImage(File(widget.filePath!)),
-                backgroundDecoration:
-                    const BoxDecoration(color: Colors.transparent),
+                backgroundDecoration: const BoxDecoration(
+                  color: Colors.transparent,
+                ),
                 minScale: PhotoViewComputedScale.contained,
                 maxScale: PhotoViewComputedScale.covered * 3,
                 gaplessPlayback: true,

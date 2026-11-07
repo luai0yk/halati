@@ -1,10 +1,10 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:status_saver/core/services/cash/cash_keys.dart';
-import 'package:status_saver/core/services/cash/cash_service.dart';
-import 'package:status_saver/core/utils/extensions/context_extension.dart';
 import 'package:get/get.dart';
+import 'package:halati/core/services/cash/cash_keys.dart';
+import 'package:halati/core/services/cash/cash_service.dart';
+import 'package:halati/core/utils/extensions/context_extension.dart';
 
 class SettingsHelper {
   SettingsHelper._();

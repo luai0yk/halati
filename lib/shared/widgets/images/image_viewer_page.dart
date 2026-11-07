@@ -3,14 +3,14 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:halati/core/constants/app_durations.dart';
+import 'package:halati/core/constants/app_icons.dart';
+import 'package:halati/core/utils/extensions/context_extension.dart';
+import 'package:halati/core/utils/extensions/responsive_size.dart';
+import 'package:halati/shared/widgets/appbars/my_app_bar.dart';
+import 'package:halati/shared/widgets/buttons/my_icon_button.dart';
+import 'package:halati/shared/widgets/misc/my_icon.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:status_saver/core/constants/app_durations.dart';
-import 'package:status_saver/core/constants/app_icons.dart';
-import 'package:status_saver/core/utils/extensions/context_extension.dart';
-import 'package:status_saver/core/utils/extensions/responsive_size.dart';
-import 'package:status_saver/shared/widgets/appbars/my_app_bar.dart';
-import 'package:status_saver/shared/widgets/buttons/my_icon_button.dart';
-import 'package:status_saver/shared/widgets/misc/my_icon.dart';
 
 class ImageViewerPage extends StatefulWidget {
   const ImageViewerPage({

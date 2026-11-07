@@ -1,11 +1,7 @@
 import 'package:flutter/foundation.dart';
-import 'package:status_saver/core/enums/whatsapp_type.dart';
+import 'package:halati/core/enums/whatsapp_type.dart';
 
-enum MediaType {
-  image,
-  video,
-  audio,
-}
+enum MediaType { image, video, audio }
 
 @immutable
 class StatusMedia {

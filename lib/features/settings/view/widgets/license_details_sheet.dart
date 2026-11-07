@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:status_saver/core/utils/extensions/context_extension.dart';
-import 'package:status_saver/core/utils/extensions/responsive_size.dart';
-import 'package:status_saver/core/utils/extensions/responsive_values.dart';
-import 'package:status_saver/features/settings/data/models/package_license_data.dart';
-import 'package:status_saver/shared/widgets/sheets/my_bottom_sheet.dart';
+import 'package:halati/core/utils/extensions/context_extension.dart';
+import 'package:halati/core/utils/extensions/responsive_size.dart';
+import 'package:halati/core/utils/extensions/responsive_values.dart';
+import 'package:halati/features/settings/data/models/package_license_data.dart';
+import 'package:halati/shared/widgets/sheets/my_bottom_sheet.dart';
 
 /// Bottom sheet displaying the full license details for a specific package.
 class LicenseDetailsSheet extends StatelessWidget {
@@ -106,4 +106,3 @@ class LicenseDetailsSheet extends StatelessWidget {
     );
   }
 }
-

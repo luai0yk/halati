@@ -1,11 +1,13 @@
 import 'package:drift/drift.dart';
-import 'package:status_saver/core/database/app_database.dart';
-import 'package:status_saver/features/saved/data/models/saved_media_model.dart';
+import 'package:halati/core/database/app_database.dart';
+import 'package:halati/features/saved/data/models/saved_media_model.dart';
 
 abstract class SavedMediaLocalDataSource {
   Stream<List<SavedMediaModel>> watchSavedMedia();
   Future<List<SavedMediaModel>> getSavedMedia();
-  Future<SavedMediaModel?> getSavedMediaByOriginalUri(String originalDocumentUri);
+  Future<SavedMediaModel?> getSavedMediaByOriginalUri(
+    String originalDocumentUri,
+  );
   Future<int> insertSavedMedia(SavedMediaTableCompanion companion);
   Future<int> deleteSavedMedia(int id);
   Future<int> deleteSavedMediaByOriginalUri(String originalDocumentUri);
@@ -24,8 +26,8 @@ class SavedMediaLocalDataSourceImpl implements SavedMediaLocalDataSource {
       ]);
 
     return query.watch().map(
-          (rows) => rows.map((r) => SavedMediaModel.fromData(r)).toList(),
-        );
+      (rows) => rows.map((r) => SavedMediaModel.fromData(r)).toList(),
+    );
   }
 
   @override
@@ -40,7 +42,9 @@ class SavedMediaLocalDataSourceImpl implements SavedMediaLocalDataSource {
   }
 
   @override
-  Future<SavedMediaModel?> getSavedMediaByOriginalUri(String originalDocumentUri) async {
+  Future<SavedMediaModel?> getSavedMediaByOriginalUri(
+    String originalDocumentUri,
+  ) async {
     final query = _database.select(_database.savedMediaTable)
       ..where((t) => t.originalDocumentUri.equals(originalDocumentUri));
     final row = await query.getSingleOrNull();
@@ -54,15 +58,15 @@ class SavedMediaLocalDataSourceImpl implements SavedMediaLocalDataSource {
 
   @override
   Future<int> deleteSavedMedia(int id) async {
-    return await (_database.delete(_database.savedMediaTable)
-          ..where((t) => t.id.equals(id)))
-        .go();
+    return await (_database.delete(
+      _database.savedMediaTable,
+    )..where((t) => t.id.equals(id))).go();
   }
 
   @override
   Future<int> deleteSavedMediaByOriginalUri(String originalDocumentUri) async {
-    return await (_database.delete(_database.savedMediaTable)
-          ..where((t) => t.originalDocumentUri.equals(originalDocumentUri)))
-        .go();
+    return await (_database.delete(
+      _database.savedMediaTable,
+    )..where((t) => t.originalDocumentUri.equals(originalDocumentUri))).go();
   }
 }

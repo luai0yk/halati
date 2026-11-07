@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:status_saver/core/constants/app_durations.dart';
-import 'package:status_saver/core/constants/app_icons.dart';
-import 'package:status_saver/core/utils/extensions/context_extension.dart';
-import 'package:status_saver/core/utils/extensions/responsive_values.dart';
-import 'package:status_saver/features/viewer/data/models/media_viewer_item.dart';
-import 'package:status_saver/shared/widgets/appbars/my_app_bar.dart';
-import 'package:status_saver/shared/widgets/buttons/my_icon_button.dart';
+import 'package:halati/core/constants/app_durations.dart';
+import 'package:halati/core/constants/app_icons.dart';
+import 'package:halati/core/utils/extensions/context_extension.dart';
+import 'package:halati/core/utils/extensions/responsive_values.dart';
+import 'package:halati/features/viewer/data/models/media_viewer_item.dart';
+import 'package:halati/shared/widgets/appbars/my_app_bar.dart';
+import 'package:halati/shared/widgets/buttons/my_icon_button.dart';
 
 class MediaViewerAppBar extends StatelessWidget {
   final String title;

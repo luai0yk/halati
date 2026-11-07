@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:status_saver/core/constants/app_durations.dart';
-import 'package:status_saver/core/l10n/app_localizations.dart';
-import 'package:status_saver/core/services/cash/cash_keys.dart';
-import 'package:status_saver/core/services/cash/cash_service.dart';
-import 'package:status_saver/core/utils/extensions/context_extension.dart';
-import 'package:status_saver/core/utils/extensions/responsive_size.dart';
-import 'package:status_saver/core/utils/helpers/ui/bottom_sheet_helper.dart';
-import 'package:status_saver/core/utils/helpers/ui/toast_helper.dart';
-import 'package:status_saver/shared/widgets/cards/my_card.dart';
-import 'package:status_saver/shared/widgets/input/my_text_field.dart';
-import 'package:status_saver/shared/widgets/misc/my_toast.dart';
-import 'package:status_saver/shared/widgets/sheets/my_bottom_sheet.dart';
 import 'package:get/get.dart';
+import 'package:halati/core/constants/app_durations.dart';
+import 'package:halati/core/l10n/app_localizations.dart';
+import 'package:halati/core/services/cash/cash_keys.dart';
+import 'package:halati/core/services/cash/cash_service.dart';
+import 'package:halati/core/utils/extensions/context_extension.dart';
+import 'package:halati/core/utils/extensions/responsive_size.dart';
+import 'package:halati/core/utils/helpers/ui/bottom_sheet_helper.dart';
+import 'package:halati/core/utils/helpers/ui/toast_helper.dart';
+import 'package:halati/shared/widgets/cards/my_card.dart';
+import 'package:halati/shared/widgets/input/my_text_field.dart';
+import 'package:halati/shared/widgets/misc/my_toast.dart';
+import 'package:halati/shared/widgets/sheets/my_bottom_sheet.dart';
 
 class MyColorPicker extends StatefulWidget {
   final Color initialColor;

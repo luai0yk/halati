@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
-import 'package:status_saver/core/utils/extensions/context_extension.dart';
-import 'package:status_saver/core/utils/extensions/responsive_values.dart';
-import 'package:status_saver/core/utils/helpers/ui/bottom_sheet_helper.dart';
-import 'package:status_saver/shared/widgets/cards/my_card.dart';
-import 'package:status_saver/shared/widgets/misc/my_icon.dart';
-import 'package:status_saver/shared/widgets/sheets/my_bottom_sheet.dart';
+import 'package:halati/core/utils/extensions/context_extension.dart';
+import 'package:halati/core/utils/extensions/responsive_values.dart';
+import 'package:halati/core/utils/helpers/ui/bottom_sheet_helper.dart';
+import 'package:halati/shared/widgets/cards/my_card.dart';
+import 'package:halati/shared/widgets/misc/my_icon.dart';
+import 'package:halati/shared/widgets/sheets/my_bottom_sheet.dart';
 
 class MyIconPicker extends StatelessWidget {
   final IconData? selectedIcon;

@@ -1,5 +1,5 @@
-import 'package:status_saver/core/enums/whatsapp_type.dart';
-import 'package:status_saver/features/home/domain/entities/status_media.dart';
+import 'package:halati/core/enums/whatsapp_type.dart';
+import 'package:halati/features/home/domain/entities/status_media.dart';
 
 class StatusMediaModel extends StatusMedia {
   const StatusMediaModel({
@@ -30,8 +30,8 @@ class StatusMediaModel extends StatusMedia {
     final rawType = (map['whatsAppType'] as String?)?.toLowerCase();
     final resolvedType = rawType != null
         ? (rawType == 'business'
-            ? WhatsAppType.business
-            : WhatsAppType.whatsapp)
+              ? WhatsAppType.business
+              : WhatsAppType.whatsapp)
         : whatsAppType;
 
     return StatusMediaModel(

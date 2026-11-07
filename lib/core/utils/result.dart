@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:status_saver/core/errors/failures.dart';
+import 'package:halati/core/errors/failures.dart';
 
 @immutable
 sealed class Result<S, F extends Failure> {

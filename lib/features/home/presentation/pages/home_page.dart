@@ -2,20 +2,20 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:status_saver/core/constants/app_icons.dart';
-import 'package:status_saver/core/utils/extensions/context_extension.dart';
-import 'package:status_saver/core/utils/extensions/responsive_size.dart';
-import 'package:status_saver/core/utils/extensions/responsive_values.dart';
-import 'package:status_saver/core/utils/helpers/misc/share_helper.dart';
-import 'package:status_saver/core/utils/helpers/ui/toast_helper.dart';
-import 'package:status_saver/features/home/domain/entities/status_media.dart';
-import 'package:status_saver/features/home/presentation/controllers/home_controller.dart';
-import 'package:status_saver/features/home/presentation/widgets/status_grid_item.dart';
-import 'package:status_saver/features/viewer/presentation/pages/media_viewer_page.dart';
-import 'package:status_saver/shared/widgets/misc/my_empty_state.dart';
-import 'package:status_saver/shared/widgets/misc/my_progress_indicator.dart';
-import 'package:status_saver/shared/widgets/slivers/media_page_header.dart';
-import 'package:status_saver/shared/widgets/slivers/sliver_filter_delegate.dart';
+import 'package:halati/core/constants/app_icons.dart';
+import 'package:halati/core/utils/extensions/context_extension.dart';
+import 'package:halati/core/utils/extensions/responsive_size.dart';
+import 'package:halati/core/utils/extensions/responsive_values.dart';
+import 'package:halati/core/utils/helpers/misc/share_helper.dart';
+import 'package:halati/core/utils/helpers/ui/toast_helper.dart';
+import 'package:halati/features/home/domain/entities/status_media.dart';
+import 'package:halati/features/home/presentation/controllers/home_controller.dart';
+import 'package:halati/features/home/presentation/widgets/status_grid_item.dart';
+import 'package:halati/features/viewer/presentation/pages/media_viewer_page.dart';
+import 'package:halati/shared/widgets/misc/my_empty_state.dart';
+import 'package:halati/shared/widgets/misc/my_progress_indicator.dart';
+import 'package:halati/shared/widgets/slivers/media_page_header.dart';
+import 'package:halati/shared/widgets/slivers/sliver_filter_delegate.dart';
 
 class HomePage extends GetView<HomeController> {
   const HomePage({super.key});

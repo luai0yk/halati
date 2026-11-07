@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:status_saver/core/constants/app_icons.dart';
-import 'package:status_saver/core/utils/extensions/context_extension.dart';
-import 'package:status_saver/core/utils/extensions/responsive_size.dart';
-import 'package:status_saver/core/utils/extensions/responsive_values.dart';
-import 'package:status_saver/features/app_shell/controller/app_shell_controller.dart';
-import 'package:status_saver/features/home/presentation/pages/home_page.dart';
-import 'package:status_saver/features/saved/presentation/pages/saved_page.dart';
-import 'package:status_saver/features/settings/view/settings_page.dart';
-import 'package:status_saver/shared/widgets/misc/my_bottom_navigation_bar.dart';
+import 'package:halati/core/constants/app_icons.dart';
+import 'package:halati/core/utils/extensions/context_extension.dart';
+import 'package:halati/core/utils/extensions/responsive_size.dart';
+import 'package:halati/core/utils/extensions/responsive_values.dart';
+import 'package:halati/features/app_shell/controller/app_shell_controller.dart';
+import 'package:halati/features/home/presentation/pages/home_page.dart';
+import 'package:halati/features/saved/presentation/pages/saved_page.dart';
+import 'package:halati/features/settings/view/settings_page.dart';
+import 'package:halati/shared/widgets/misc/my_bottom_navigation_bar.dart';
 
 class AppShellPage extends GetView<AppShellController> {
   const AppShellPage({super.key});

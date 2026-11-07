@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide ContextExtensionss;
-import 'package:status_saver/core/enums/whatsapp_type.dart';
-import 'package:status_saver/core/utils/extensions/context_extension.dart';
-import 'package:status_saver/core/utils/extensions/responsive_size.dart';
-import 'package:status_saver/core/utils/extensions/responsive_values.dart';
-import 'package:status_saver/features/home/domain/entities/status_media.dart';
-import 'package:status_saver/features/settings/controller/settings_controller.dart';
-import 'package:status_saver/shared/widgets/buttons/whatsapp_type_switch.dart';
-import 'package:status_saver/shared/widgets/chips/media_filter_bar.dart';
+import 'package:halati/core/enums/whatsapp_type.dart';
+import 'package:halati/core/utils/extensions/context_extension.dart';
+import 'package:halati/core/utils/extensions/responsive_size.dart';
+import 'package:halati/core/utils/extensions/responsive_values.dart';
+import 'package:halati/features/home/domain/entities/status_media.dart';
+import 'package:halati/features/settings/controller/settings_controller.dart';
+import 'package:halati/shared/widgets/buttons/whatsapp_type_switch.dart';
+import 'package:halati/shared/widgets/chips/media_filter_bar.dart';
 
 class MediaPageHeader extends StatelessWidget {
   final String title;

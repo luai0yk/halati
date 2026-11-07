@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:status_saver/core/constants/app_icons.dart';
-import 'package:status_saver/core/utils/extensions/context_extension.dart';
-import 'package:status_saver/core/utils/helpers/ui/dialog_helper.dart';
-import 'package:status_saver/core/utils/helpers/ui/toast_helper.dart';
-import 'package:status_saver/shared/widgets/dialogs/my_dialog.dart';
+import 'package:halati/core/constants/app_icons.dart';
+import 'package:halati/core/utils/extensions/context_extension.dart';
+import 'package:halati/core/utils/helpers/ui/dialog_helper.dart';
+import 'package:halati/core/utils/helpers/ui/toast_helper.dart';
+import 'package:halati/shared/widgets/dialogs/my_dialog.dart';
 
 class StatusDeleteHelper {
   StatusDeleteHelper._();

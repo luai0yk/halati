@@ -2,17 +2,17 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide ContextExtensionss;
-import 'package:status_saver/core/constants/app_icons.dart';
-import 'package:status_saver/core/utils/extensions/context_extension.dart';
-import 'package:status_saver/core/utils/extensions/responsive_size.dart';
-import 'package:status_saver/core/utils/extensions/responsive_values.dart';
-import 'package:status_saver/core/utils/helpers/ui/status_delete_helper.dart';
-import 'package:status_saver/core/utils/helpers/ui/toast_helper.dart';
-import 'package:status_saver/features/home/domain/entities/status_media.dart';
-import 'package:status_saver/features/home/presentation/controllers/home_controller.dart';
-import 'package:status_saver/shared/widgets/cards/my_card.dart';
-import 'package:status_saver/shared/widgets/misc/my_icon.dart';
-import 'package:status_saver/shared/widgets/misc/my_progress_indicator.dart';
+import 'package:halati/core/constants/app_icons.dart';
+import 'package:halati/core/utils/extensions/context_extension.dart';
+import 'package:halati/core/utils/extensions/responsive_size.dart';
+import 'package:halati/core/utils/extensions/responsive_values.dart';
+import 'package:halati/core/utils/helpers/ui/status_delete_helper.dart';
+import 'package:halati/core/utils/helpers/ui/toast_helper.dart';
+import 'package:halati/features/home/domain/entities/status_media.dart';
+import 'package:halati/features/home/presentation/controllers/home_controller.dart';
+import 'package:halati/shared/widgets/cards/my_card.dart';
+import 'package:halati/shared/widgets/misc/my_icon.dart';
+import 'package:halati/shared/widgets/misc/my_progress_indicator.dart';
 
 class StatusGridItem extends StatelessWidget {
   final StatusMedia media;

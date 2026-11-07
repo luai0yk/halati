@@ -73,9 +73,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cancel => 'Cancel';
 
   @override
-  String get generalSettings => 'Preferences';
-
-  @override
   String get theme => 'Theme';
 
   @override
@@ -107,9 +104,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noResultsFound => 'No results found';
-
-  @override
-  String get tryDifferentSearchTerms => 'Try different search terms';
 
   @override
   String get tryAdjustingSearch => 'Try adjusting search terms';
@@ -181,9 +175,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get refresh => 'Refresh';
 
   @override
-  String get grantPermission => 'Grant Permission';
-
-  @override
   String get safPermissionTitle => 'WhatsApp Status Folder Access';
 
   @override
@@ -235,34 +226,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get counterOf => 'of';
 
   @override
-  String get mediaViewer => 'Media Viewer';
-
-  @override
-  String get failedToLoadMedia => 'Failed to load media';
-
-  @override
-  String get itemDeleted => 'Item deleted';
-
-  @override
-  String get play => 'Play';
-
-  @override
-  String get pause => 'Pause';
-
-  @override
-  String get playingAudio => 'Playing audio';
-
-  @override
-  String get paused => 'Paused';
-
-  @override
-  String get unableToPlayAudio => 'Unable to play audio format';
-
-  @override
-  String get aboutStatusSaver => 'About Status Saver';
-
-  @override
-  String get appName => 'Status Saver';
+  String get appName => 'Halati';
 
   @override
   String appVersion(String version, String build) {
@@ -337,17 +301,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get selectDefaultWhatsApp => 'Select Default WhatsApp';
 
   @override
-  String get defaultWhatsAppSubtitle => 'Set default app for Status Saver';
-
-  @override
   String get safPermissionTitleBusiness => 'WhatsApp Business Status Access';
 
   @override
   String get safPermissionExplanationBusiness =>
       'To view and save WhatsApp Business statuses, please select the WhatsApp Business Statuses folder.';
-
-  @override
-  String get general => 'General';
 
   @override
   String get storageAndDownloads => 'Storage & Downloads';
@@ -363,10 +321,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get autoSaveOpenedStatuses => 'Auto-save opened statuses';
-
-  @override
-  String get autoSaveOpenedStatusesDescription =>
-      'Automatically save statuses to your device when opened';
 
   @override
   String get changeFolder => 'Change folder';
@@ -390,21 +344,5 @@ class AppLocalizationsEn extends AppLocalizations {
   String get folderRestoredSuccessfully => 'Default folder restored';
 
   @override
-  String get folderAccessError => 'Cannot access the selected folder';
-
-  @override
   String get aboutHalati => 'About Halati';
-
-  @override
-  String get aboutHalatiSubtitle =>
-      'Privacy policy, feedback, and open-source licenses';
-
-  @override
-  String get appVersionTitle => 'App version';
-
-  @override
-  String get manageSaveFolder => 'Manage save folder';
-
-  @override
-  String get savedAutomatically => 'Saved automatically';
 }

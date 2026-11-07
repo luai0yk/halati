@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:status_saver/core/constants/app_icons.dart';
-import 'package:status_saver/core/utils/extensions/context_extension.dart';
-import 'package:status_saver/core/utils/extensions/responsive_size.dart';
-import 'package:status_saver/core/utils/extensions/responsive_values.dart';
-import 'package:status_saver/shared/widgets/animations/my_animated_fade_switcher.dart';
-import 'package:status_saver/shared/widgets/cards/my_card.dart';
-import 'package:status_saver/shared/widgets/misc/my_icon.dart';
+import 'package:halati/core/constants/app_icons.dart';
+import 'package:halati/core/utils/extensions/context_extension.dart';
+import 'package:halati/core/utils/extensions/responsive_size.dart';
+import 'package:halati/core/utils/extensions/responsive_values.dart';
+import 'package:halati/shared/widgets/animations/my_animated_fade_switcher.dart';
+import 'package:halati/shared/widgets/cards/my_card.dart';
+import 'package:halati/shared/widgets/misc/my_icon.dart';
 
 class AnimatedChip extends StatelessWidget {
   final String text;

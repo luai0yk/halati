@@ -2,9 +2,9 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:get/get_utils/src/extensions/context_extensions.dart';
-import 'package:status_saver/core/constants/app_durations.dart';
-import 'package:status_saver/core/utils/extensions/responsive_size.dart';
-import 'package:status_saver/core/utils/extensions/responsive_values.dart';
+import 'package:halati/core/constants/app_durations.dart';
+import 'package:halati/core/utils/extensions/responsive_size.dart';
+import 'package:halati/core/utils/extensions/responsive_values.dart';
 
 enum MyBottomNavigationBarDisplayMode { iconOnly, titleOnly, both }
 
@@ -126,8 +126,7 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
         _lastDirectionality != currentDirectionality;
     final bool isLocaleChanged =
         _lastLocale != null && _lastLocale != currentLocale;
-    final bool isSizeChanged =
-        _lastSize != null && _lastSize != currentSize;
+    final bool isSizeChanged = _lastSize != null && _lastSize != currentSize;
 
     _lastDirectionality = currentDirectionality;
     _lastLocale = currentLocale;
@@ -313,13 +312,11 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
               top: _indicatorTop,
               width: _indicatorWidth,
               height: _indicatorHeight,
-              duration:
-                  _skipNextAnimation ? Duration.zero : AppDurations.slow,
+              duration: _skipNextAnimation ? Duration.zero : AppDurations.slow,
               curve:
-                  widget.itemAnimation ==
-                          MyBottomNavigationBarAnimation.bounce
-                      ? Curves.easeOutBack
-                      : Curves.easeOutQuint,
+                  widget.itemAnimation == MyBottomNavigationBarAnimation.bounce
+                  ? Curves.easeOutBack
+                  : Curves.easeOutQuint,
               child: Container(
                 decoration: BoxDecoration(
                   color:
@@ -379,10 +376,7 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
     }
 
     return SafeArea(
-      child: Padding(
-        padding: widget.margin ?? EdgeInsets.zero,
-        child: content,
-      ),
+      child: Padding(padding: widget.margin ?? EdgeInsets.zero, child: content),
     );
   }
 }

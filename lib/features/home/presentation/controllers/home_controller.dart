@@ -1,18 +1,19 @@
 import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:status_saver/core/enums/whatsapp_type.dart';
-import 'package:status_saver/features/home/domain/entities/status_media.dart';
-import 'package:status_saver/features/home/domain/usecases/check_saf_access_use_case.dart';
-import 'package:status_saver/features/home/domain/usecases/get_full_media_file_use_case.dart';
-import 'package:status_saver/features/home/domain/usecases/get_statuses_use_case.dart';
-import 'package:status_saver/features/home/domain/usecases/get_thumbnail_use_case.dart';
-import 'package:status_saver/features/home/domain/usecases/request_saf_access_use_case.dart';
-import 'package:status_saver/features/home/domain/usecases/save_media_use_case.dart';
-import 'package:status_saver/features/saved/domain/usecases/delete_saved_media_use_case.dart';
-import 'package:status_saver/features/saved/domain/usecases/get_saved_media_use_case.dart';
-import 'package:status_saver/features/saved/domain/usecases/sync_saved_media_use_case.dart';
-import 'package:status_saver/features/settings/controller/settings_controller.dart';
+import 'package:halati/core/enums/whatsapp_type.dart';
+import 'package:halati/features/home/domain/entities/status_media.dart';
+import 'package:halati/features/home/domain/usecases/check_saf_access_use_case.dart';
+import 'package:halati/features/home/domain/usecases/get_full_media_file_use_case.dart';
+import 'package:halati/features/home/domain/usecases/get_statuses_use_case.dart';
+import 'package:halati/features/home/domain/usecases/get_thumbnail_use_case.dart';
+import 'package:halati/features/home/domain/usecases/request_saf_access_use_case.dart';
+import 'package:halati/features/home/domain/usecases/save_media_use_case.dart';
+import 'package:halati/features/saved/domain/usecases/delete_saved_media_use_case.dart';
+import 'package:halati/features/saved/domain/usecases/get_saved_media_use_case.dart';
+import 'package:halati/features/saved/domain/usecases/sync_saved_media_use_case.dart';
+import 'package:halati/features/settings/controller/settings_controller.dart';
 
 class HomeController extends GetxController {
   final CheckSafAccessUseCase _checkSafAccessUseCase;
@@ -35,18 +36,20 @@ class HomeController extends GetxController {
     required GetSavedMediaUseCase getSavedMediaUseCase,
     DeleteSavedMediaUseCase? deleteSavedMediaUseCase,
     SyncSavedMediaUseCase? syncSavedMediaUseCase,
-  })  : _checkSafAccessUseCase = checkSafAccessUseCase,
-        _requestSafAccessUseCase = requestSafAccessUseCase,
-        _getStatusesUseCase = getStatusesUseCase,
-        _getThumbnailUseCase = getThumbnailUseCase,
-        _getFullMediaFileUseCase = getFullMediaFileUseCase,
-        _saveMediaUseCase = saveMediaUseCase,
-        _getSavedMediaUseCase = getSavedMediaUseCase,
-        _deleteSavedMediaUseCase = deleteSavedMediaUseCase ?? Get.find<DeleteSavedMediaUseCase>(),
-        _syncSavedMediaUseCase = syncSavedMediaUseCase ??
-            (Get.isRegistered<SyncSavedMediaUseCase>()
-                ? Get.find<SyncSavedMediaUseCase>()
-                : null);
+  }) : _checkSafAccessUseCase = checkSafAccessUseCase,
+       _requestSafAccessUseCase = requestSafAccessUseCase,
+       _getStatusesUseCase = getStatusesUseCase,
+       _getThumbnailUseCase = getThumbnailUseCase,
+       _getFullMediaFileUseCase = getFullMediaFileUseCase,
+       _saveMediaUseCase = saveMediaUseCase,
+       _getSavedMediaUseCase = getSavedMediaUseCase,
+       _deleteSavedMediaUseCase =
+           deleteSavedMediaUseCase ?? Get.find<DeleteSavedMediaUseCase>(),
+       _syncSavedMediaUseCase =
+           syncSavedMediaUseCase ??
+           (Get.isRegistered<SyncSavedMediaUseCase>()
+               ? Get.find<SyncSavedMediaUseCase>()
+               : null);
 
   final RxList<StatusMedia> statuses = <StatusMedia>[].obs;
   final Rx<MediaType?> filterType = Rx<MediaType?>(null);
@@ -73,10 +76,9 @@ class HomeController extends GetxController {
     filterType.value = type;
   }
 
-  WhatsAppType get currentWhatsAppType =>
-      Get.isRegistered<SettingsController>()
-          ? SettingsController.to.activeWhatsAppType.value
-          : WhatsAppType.whatsapp;
+  WhatsAppType get currentWhatsAppType => Get.isRegistered<SettingsController>()
+      ? SettingsController.to.activeWhatsAppType.value
+      : WhatsAppType.whatsapp;
 
   void switchWhatsAppType(WhatsAppType type) {
     if (Get.isRegistered<SettingsController>()) {
@@ -88,9 +90,7 @@ class HomeController extends GetxController {
   void onInit() {
     super.onInit();
     _subscribeSavedMedia();
-    _lifecycleListener = AppLifecycleListener(
-      onResume: syncSavedMedia,
-    );
+    _lifecycleListener = AppLifecycleListener(onResume: syncSavedMedia);
     if (Get.isRegistered<SettingsController>()) {
       ever(SettingsController.to.activeWhatsAppType, (type) {
         checkAccessAndLoadStatuses(type);
@@ -227,10 +227,7 @@ class HomeController extends GetxController {
 
   Future<String?> getFullMediaFile(String documentUri, String fileName) async {
     final result = await _getFullMediaFileUseCase(documentUri, fileName);
-    return result.when(
-      success: (path) => path,
-      failure: (_) => null,
-    );
+    return result.when(success: (path) => path, failure: (_) => null);
   }
 
   Future<bool> saveStatus(
@@ -269,7 +266,9 @@ class HomeController extends GetxController {
     VoidCallback? onSuccess,
     void Function(String message)? onError,
   }) async {
-    final result = await _deleteSavedMediaUseCase.deleteByOriginalUri(media.documentUri);
+    final result = await _deleteSavedMediaUseCase.deleteByOriginalUri(
+      media.documentUri,
+    );
     return result.when(
       success: (deleted) {
         if (deleted) {

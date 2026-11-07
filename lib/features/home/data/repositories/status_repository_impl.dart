@@ -1,11 +1,11 @@
-import 'package:status_saver/core/enums/whatsapp_type.dart';
-import 'package:status_saver/core/errors/failures.dart';
-import 'package:status_saver/core/services/cash/cash_keys.dart';
-import 'package:status_saver/core/services/cash/cash_service.dart';
-import 'package:status_saver/core/utils/result.dart';
-import 'package:status_saver/features/home/data/datasources/saf_native_data_source.dart';
-import 'package:status_saver/features/home/domain/entities/status_media.dart';
-import 'package:status_saver/features/home/domain/repositories/status_repository.dart';
+import 'package:halati/core/enums/whatsapp_type.dart';
+import 'package:halati/core/errors/failures.dart';
+import 'package:halati/core/services/cash/cash_keys.dart';
+import 'package:halati/core/services/cash/cash_service.dart';
+import 'package:halati/core/utils/result.dart';
+import 'package:halati/features/home/data/datasources/saf_native_data_source.dart';
+import 'package:halati/features/home/domain/entities/status_media.dart';
+import 'package:halati/features/home/domain/repositories/status_repository.dart';
 
 class StatusRepositoryImpl implements StatusRepository {
   final SafNativeDataSource _safDataSource;
@@ -16,8 +16,8 @@ class StatusRepositoryImpl implements StatusRepository {
   StatusRepositoryImpl({
     required SafNativeDataSource safDataSource,
     required CashService cashService,
-  })  : _safDataSource = safDataSource,
-        _cashService = cashService;
+  }) : _safDataSource = safDataSource,
+       _cashService = cashService;
 
   String _safKey(WhatsAppType type) =>
       type.isBusiness ? CashKeys.safTreeUriBusiness : CashKeys.safTreeUri;
@@ -88,14 +88,18 @@ class StatusRepositoryImpl implements StatusRepository {
     bool forceRefresh = false,
     WhatsAppType type = WhatsAppType.whatsapp,
   }) async {
-    if (!forceRefresh && _cachedStatuses.containsKey(type) && _cachedStatuses[type] != null) {
+    if (!forceRefresh &&
+        _cachedStatuses.containsKey(type) &&
+        _cachedStatuses[type] != null) {
       return Success(_cachedStatuses[type]!);
     }
 
     try {
       final storedUri = _cashService.getString(_safKey(type));
       if (storedUri == null || storedUri.isEmpty) {
-        return const FailureResult(SafPermissionDeniedFailure('No SAF folder configured'));
+        return const FailureResult(
+          SafPermissionDeniedFailure('No SAF folder configured'),
+        );
       }
 
       final models = await _safDataSource.discoverStatuses(storedUri);
@@ -133,7 +137,9 @@ class StatusRepositoryImpl implements StatusRepository {
   }
 
   @override
-  Future<Result<Map<String, dynamic>, Failure>> getMediaMetadata(String documentUri) async {
+  Future<Result<Map<String, dynamic>, Failure>> getMediaMetadata(
+    String documentUri,
+  ) async {
     try {
       final metadata = await _safDataSource.getMediaMetadata(documentUri);
       return Success(metadata);
@@ -145,11 +151,16 @@ class StatusRepositoryImpl implements StatusRepository {
   }
 
   @override
-  Future<Result<String, Failure>> getFullMediaFile(String documentUri, String fileName) async {
+  Future<Result<String, Failure>> getFullMediaFile(
+    String documentUri,
+    String fileName,
+  ) async {
     try {
       final path = await _safDataSource.getFullMediaFile(documentUri, fileName);
       if (path == null) {
-        return const FailureResult(MediaReadFailure('Failed to load full media file'));
+        return const FailureResult(
+          MediaReadFailure('Failed to load full media file'),
+        );
       }
       return Success(path);
     } on Failure catch (f) {
@@ -166,7 +177,8 @@ class StatusRepositoryImpl implements StatusRepository {
   }) async {
     try {
       final decodedUri = Uri.decodeFull(media.documentUri).toLowerCase();
-      final isBusiness = (type ?? media.whatsAppType).isBusiness ||
+      final isBusiness =
+          (type ?? media.whatsAppType).isBusiness ||
           decodedUri.contains('com.whatsapp.w4b') ||
           decodedUri.contains('whatsapp business') ||
           decodedUri.contains('w4b');
@@ -191,4 +203,3 @@ class StatusRepositoryImpl implements StatusRepository {
     }
   }
 }
-

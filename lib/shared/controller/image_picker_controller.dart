@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:status_saver/core/utils/helpers/misc/recent_image_store.dart';
+import 'package:halati/core/utils/helpers/misc/recent_image_store.dart';
 
 class ImagePickerController extends ChangeNotifier {
   static const int maxRecentImages = 10;

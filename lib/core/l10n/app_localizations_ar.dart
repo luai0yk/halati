@@ -72,9 +72,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get cancel => 'إلغاء';
 
   @override
-  String get generalSettings => 'التفضيلات';
-
-  @override
   String get theme => 'السمة';
 
   @override
@@ -106,9 +103,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get noResultsFound => 'لم يتم العثور على نتائج';
-
-  @override
-  String get tryDifferentSearchTerms => 'جرّب كلمات بحث مختلفة';
 
   @override
   String get tryAdjustingSearch => 'حاول تعديل كلمات البحث';
@@ -180,9 +174,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get refresh => 'تحديث';
 
   @override
-  String get grantPermission => 'منح الإذن';
-
-  @override
   String get safPermissionTitle => 'الوصول إلى مجلد حالات واتساب';
 
   @override
@@ -232,34 +223,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get counterOf => 'من';
 
   @override
-  String get mediaViewer => 'عارض الوسائط';
-
-  @override
-  String get failedToLoadMedia => 'فشل تحميل الوسائط';
-
-  @override
-  String get itemDeleted => 'تم حذف العنصر';
-
-  @override
-  String get play => 'تشغيل';
-
-  @override
-  String get pause => 'إيقاف مؤقت';
-
-  @override
-  String get playingAudio => 'جارٍ تشغيل الصوت';
-
-  @override
-  String get paused => 'متوقف مؤقتاً';
-
-  @override
-  String get unableToPlayAudio => 'تعذر تشغيل هذا التنسيق الصوتي';
-
-  @override
-  String get aboutStatusSaver => 'حول التطبيق';
-
-  @override
-  String get appName => 'حافظ الحالات';
+  String get appName => 'حالاتي';
 
   @override
   String appVersion(String version, String build) {
@@ -337,18 +301,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get selectDefaultWhatsApp => 'اختر واتساب الافتراضي';
 
   @override
-  String get defaultWhatsAppSubtitle => 'تعيين التطبيق الافتراضي لحافظ الحالات';
-
-  @override
   String get safPermissionTitleBusiness =>
       'الوصول إلى مجلد حالات واتساب للأعمال';
 
   @override
   String get safPermissionExplanationBusiness =>
       'لعرض وحفظ حالات واتساب للأعمال، يرجى اختيار مجلد حالات واتساب للأعمال.';
-
-  @override
-  String get general => 'عام';
 
   @override
   String get storageAndDownloads => 'التخزين والتنزيل';
@@ -364,10 +322,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get autoSaveOpenedStatuses => 'حفظ الحالات المفتوحة تلقائياً';
-
-  @override
-  String get autoSaveOpenedStatusesDescription =>
-      'حفظ الحالات تلقائياً إلى جهازك بمجرد فتحها وعرضها';
 
   @override
   String get changeFolder => 'تغيير المجلد';
@@ -391,21 +345,5 @@ class AppLocalizationsAr extends AppLocalizations {
   String get folderRestoredSuccessfully => 'تمت استعادة المجلد الافتراضي';
 
   @override
-  String get folderAccessError => 'تعذر الوصول إلى المجلد المحدد';
-
-  @override
   String get aboutHalati => 'حول حالاتي';
-
-  @override
-  String get aboutHalatiSubtitle =>
-      'سياسة الخصوصية، التواصل، وتراخيص المصدر المفتوح';
-
-  @override
-  String get appVersionTitle => 'إصدار التطبيق';
-
-  @override
-  String get manageSaveFolder => 'إدارة مجلد الحفظ';
-
-  @override
-  String get savedAutomatically => 'تم الحفظ تلقائياً';
 }

@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:status_saver/core/constants/app_durations.dart';
-import 'package:status_saver/features/viewer/data/models/media_viewer_item.dart';
+import 'package:halati/core/constants/app_durations.dart';
+import 'package:halati/features/viewer/data/models/media_viewer_item.dart';
 
 class MediaViewerController extends GetxController {
   final Future<String?> Function(MediaViewerItem item)? onLoadThumbnailCallback;
@@ -54,8 +54,8 @@ class MediaViewerController extends GetxController {
 
   MediaViewerItem? get currentItem =>
       items.isNotEmpty && currentIndex.value < items.length
-          ? items[currentIndex.value]
-          : null;
+      ? items[currentIndex.value]
+      : null;
 
   @override
   void onInit() {

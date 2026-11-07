@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:status_saver/core/constants/app_icons.dart';
-import 'package:status_saver/core/utils/extensions/context_extension.dart';
-import 'package:status_saver/core/utils/extensions/responsive_size.dart';
-import 'package:status_saver/core/utils/extensions/responsive_values.dart';
-import 'package:status_saver/shared/controller/selectable_list_controller.dart';
-import 'package:status_saver/shared/widgets/animations/my_animated_scale_switcher.dart';
-import 'package:status_saver/shared/widgets/input/my_text_field.dart';
-import 'package:status_saver/shared/widgets/misc/my_empty_state.dart';
-import 'package:status_saver/shared/widgets/misc/my_icon.dart';
-import 'package:status_saver/shared/widgets/texts/text_separator.dart';
-import 'package:status_saver/shared/widgets/tiles/my_list_tile.dart';
+import 'package:halati/core/constants/app_icons.dart';
+import 'package:halati/core/utils/extensions/context_extension.dart';
+import 'package:halati/core/utils/extensions/responsive_size.dart';
+import 'package:halati/core/utils/extensions/responsive_values.dart';
+import 'package:halati/shared/controller/selectable_list_controller.dart';
+import 'package:halati/shared/widgets/animations/my_animated_scale_switcher.dart';
+import 'package:halati/shared/widgets/input/my_text_field.dart';
+import 'package:halati/shared/widgets/misc/my_empty_state.dart';
+import 'package:halati/shared/widgets/misc/my_icon.dart';
+import 'package:halati/shared/widgets/texts/text_separator.dart';
+import 'package:halati/shared/widgets/tiles/my_list_tile.dart';
 
 class SelectableList<T> extends StatefulWidget {
   final SelectableListType _type;

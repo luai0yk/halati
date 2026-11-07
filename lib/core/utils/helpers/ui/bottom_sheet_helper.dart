@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:status_saver/core/utils/helpers/ui/app_navigator.dart';
+import 'package:halati/core/utils/helpers/ui/app_navigator.dart';
 
 class BottomSheetHelper {
   BottomSheetHelper._();

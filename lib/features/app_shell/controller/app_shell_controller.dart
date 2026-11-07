@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:status_saver/core/constants/app_durations.dart';
+import 'package:halati/core/constants/app_durations.dart';
 
 class AppShellController extends GetxController {
   final RxInt currentIndex = 0.obs;

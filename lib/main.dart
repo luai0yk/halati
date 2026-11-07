@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:status_saver/core/constants/app_constants.dart';
-import 'package:status_saver/core/utils/helpers/ui/app_navigator.dart';
 import 'package:get/get.dart';
+import 'package:halati/core/constants/app_constants.dart';
+import 'package:halati/core/utils/helpers/ui/app_navigator.dart';
 
 import 'core/l10n/app_locale_config.dart';
 import 'core/routes/app_pages.dart';
@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       navigatorKey: AppNavigator.key,
-      title: 'StatusSaver',
+      title: 'Halati',
       debugShowCheckedModeBanner: false,
       theme: const MaterialTheme().light(),
       darkTheme: const MaterialTheme().dark(),

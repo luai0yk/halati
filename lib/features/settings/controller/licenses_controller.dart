@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide ContextExtensionss;
-import 'package:status_saver/core/utils/helpers/ui/bottom_sheet_helper.dart';
-import 'package:status_saver/features/settings/data/models/package_license_data.dart';
-import 'package:status_saver/features/settings/data/services/licenses_service.dart';
-import 'package:status_saver/features/settings/view/widgets/license_details_sheet.dart';
+import 'package:halati/core/utils/helpers/ui/bottom_sheet_helper.dart';
+import 'package:halati/features/settings/data/models/package_license_data.dart';
+import 'package:halati/features/settings/data/services/licenses_service.dart';
+import 'package:halati/features/settings/view/widgets/license_details_sheet.dart';
 
 /// GetX controller managing license loading, filtering, and detail navigation.
 class LicensesController extends GetxController {
@@ -81,4 +81,3 @@ class LicensesController extends GetxController {
     BottomSheetHelper.show(child: LicenseDetailsSheet(package: package));
   }
 }
-

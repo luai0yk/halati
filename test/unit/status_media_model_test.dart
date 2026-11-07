@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:status_saver/features/home/data/models/status_media_model.dart';
-import 'package:status_saver/features/home/domain/entities/status_media.dart';
+import 'package:halati/features/home/data/models/status_media_model.dart';
+import 'package:halati/features/home/domain/entities/status_media.dart';
 
 void main() {
   group('StatusMediaModel Classification and Serialization', () {

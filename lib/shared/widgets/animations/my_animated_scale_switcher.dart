@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:status_saver/core/constants/app_durations.dart';
+import 'package:halati/core/constants/app_durations.dart';
 
 /// An [AnimatedSwitcher] that automatically applies a scale transition.
 class MyAnimatedScaleSwitcher extends StatelessWidget {

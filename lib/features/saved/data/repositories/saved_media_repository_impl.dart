@@ -1,9 +1,9 @@
-import 'package:status_saver/core/errors/failures.dart';
-import 'package:status_saver/core/utils/result.dart';
-import 'package:status_saver/features/home/data/datasources/saf_native_data_source.dart';
-import 'package:status_saver/features/saved/data/datasources/saved_media_local_data_source.dart';
-import 'package:status_saver/features/saved/domain/entities/saved_media.dart';
-import 'package:status_saver/features/saved/domain/repositories/saved_media_repository.dart';
+import 'package:halati/core/errors/failures.dart';
+import 'package:halati/core/utils/result.dart';
+import 'package:halati/features/home/data/datasources/saf_native_data_source.dart';
+import 'package:halati/features/saved/data/datasources/saved_media_local_data_source.dart';
+import 'package:halati/features/saved/domain/entities/saved_media.dart';
+import 'package:halati/features/saved/domain/repositories/saved_media_repository.dart';
 
 class SavedMediaRepositoryImpl implements SavedMediaRepository {
   final SavedMediaLocalDataSource _dataSource;
@@ -27,7 +27,10 @@ class SavedMediaRepositoryImpl implements SavedMediaRepository {
   }
 
   @override
-  Future<Result<bool, Failure>> deleteSavedMedia(int id, {String? mediaStoreUri}) async {
+  Future<Result<bool, Failure>> deleteSavedMedia(
+    int id, {
+    String? mediaStoreUri,
+  }) async {
     try {
       if (mediaStoreUri != null && mediaStoreUri.isNotEmpty) {
         try {
@@ -42,9 +45,13 @@ class SavedMediaRepositoryImpl implements SavedMediaRepository {
   }
 
   @override
-  Future<Result<bool, Failure>> deleteSavedMediaByOriginalUri(String originalDocumentUri) async {
+  Future<Result<bool, Failure>> deleteSavedMediaByOriginalUri(
+    String originalDocumentUri,
+  ) async {
     try {
-      final savedItem = await _dataSource.getSavedMediaByOriginalUri(originalDocumentUri);
+      final savedItem = await _dataSource.getSavedMediaByOriginalUri(
+        originalDocumentUri,
+      );
       if (savedItem != null) {
         if (savedItem.mediaStoreUri.isNotEmpty) {
           try {
@@ -69,12 +76,14 @@ class SavedMediaRepositoryImpl implements SavedMediaRepository {
       }
 
       final payload = items
-          .map((item) => {
-                'id': item.id.toString(),
-                'uri': item.mediaStoreUri,
-                'relativePath': item.relativePath,
-                'fileName': item.fileName,
-              })
+          .map(
+            (item) => {
+              'id': item.id.toString(),
+              'uri': item.mediaStoreUri,
+              'relativePath': item.relativePath,
+              'fileName': item.fileName,
+            },
+          )
           .toList();
 
       final missingIdStrings = await _safDataSource.checkMissingFiles(payload);

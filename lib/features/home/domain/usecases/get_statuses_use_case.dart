@@ -1,8 +1,8 @@
-import 'package:status_saver/core/enums/whatsapp_type.dart';
-import 'package:status_saver/core/errors/failures.dart';
-import 'package:status_saver/core/utils/result.dart';
-import 'package:status_saver/features/home/domain/entities/status_media.dart';
-import 'package:status_saver/features/home/domain/repositories/status_repository.dart';
+import 'package:halati/core/enums/whatsapp_type.dart';
+import 'package:halati/core/errors/failures.dart';
+import 'package:halati/core/utils/result.dart';
+import 'package:halati/features/home/domain/entities/status_media.dart';
+import 'package:halati/features/home/domain/repositories/status_repository.dart';
 
 class GetStatusesUseCase {
   final StatusRepository _repository;
@@ -13,6 +13,9 @@ class GetStatusesUseCase {
     bool forceRefresh = false,
     WhatsAppType type = WhatsAppType.whatsapp,
   }) async {
-    return await _repository.getStatuses(forceRefresh: forceRefresh, type: type);
+    return await _repository.getStatuses(
+      forceRefresh: forceRefresh,
+      type: type,
+    );
   }
 }

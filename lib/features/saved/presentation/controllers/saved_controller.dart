@@ -1,15 +1,16 @@
 import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:status_saver/core/enums/whatsapp_type.dart';
-import 'package:status_saver/features/home/domain/entities/status_media.dart';
-import 'package:status_saver/features/home/domain/usecases/get_full_media_file_use_case.dart';
-import 'package:status_saver/features/home/domain/usecases/get_thumbnail_use_case.dart';
-import 'package:status_saver/features/saved/domain/entities/saved_media.dart';
-import 'package:status_saver/features/saved/domain/usecases/delete_saved_media_use_case.dart';
-import 'package:status_saver/features/saved/domain/usecases/get_saved_media_use_case.dart';
-import 'package:status_saver/features/saved/domain/usecases/sync_saved_media_use_case.dart';
-import 'package:status_saver/features/settings/controller/settings_controller.dart';
+import 'package:halati/core/enums/whatsapp_type.dart';
+import 'package:halati/features/home/domain/entities/status_media.dart';
+import 'package:halati/features/home/domain/usecases/get_full_media_file_use_case.dart';
+import 'package:halati/features/home/domain/usecases/get_thumbnail_use_case.dart';
+import 'package:halati/features/saved/domain/entities/saved_media.dart';
+import 'package:halati/features/saved/domain/usecases/delete_saved_media_use_case.dart';
+import 'package:halati/features/saved/domain/usecases/get_saved_media_use_case.dart';
+import 'package:halati/features/saved/domain/usecases/sync_saved_media_use_case.dart';
+import 'package:halati/features/settings/controller/settings_controller.dart';
 
 class SavedController extends GetxController {
   final GetSavedMediaUseCase _getSavedMediaUseCase;
@@ -24,14 +25,15 @@ class SavedController extends GetxController {
     required GetFullMediaFileUseCase getFullMediaFileUseCase,
     required GetThumbnailUseCase getThumbnailUseCase,
     SyncSavedMediaUseCase? syncSavedMediaUseCase,
-  })  : _getSavedMediaUseCase = getSavedMediaUseCase,
-        _deleteSavedMediaUseCase = deleteSavedMediaUseCase,
-        _getFullMediaFileUseCase = getFullMediaFileUseCase,
-        _getThumbnailUseCase = getThumbnailUseCase,
-        _syncSavedMediaUseCase = syncSavedMediaUseCase ??
-            (Get.isRegistered<SyncSavedMediaUseCase>()
-                ? Get.find<SyncSavedMediaUseCase>()
-                : null);
+  }) : _getSavedMediaUseCase = getSavedMediaUseCase,
+       _deleteSavedMediaUseCase = deleteSavedMediaUseCase,
+       _getFullMediaFileUseCase = getFullMediaFileUseCase,
+       _getThumbnailUseCase = getThumbnailUseCase,
+       _syncSavedMediaUseCase =
+           syncSavedMediaUseCase ??
+           (Get.isRegistered<SyncSavedMediaUseCase>()
+               ? Get.find<SyncSavedMediaUseCase>()
+               : null);
 
   final RxList<SavedMedia> allSavedItems = <SavedMedia>[].obs;
   final Rx<MediaType?> filterType = Rx<MediaType?>(null);
@@ -45,9 +47,7 @@ class SavedController extends GetxController {
   void onInit() {
     super.onInit();
     _subscribeToSavedMedia();
-    _lifecycleListener = AppLifecycleListener(
-      onResume: syncSavedMedia,
-    );
+    _lifecycleListener = AppLifecycleListener(onResume: syncSavedMedia);
     syncSavedMedia();
   }
 
@@ -63,10 +63,9 @@ class SavedController extends GetxController {
     });
   }
 
-  WhatsAppType get currentWhatsAppType =>
-      Get.isRegistered<SettingsController>()
-          ? SettingsController.to.activeWhatsAppType.value
-          : WhatsAppType.whatsapp;
+  WhatsAppType get currentWhatsAppType => Get.isRegistered<SettingsController>()
+      ? SettingsController.to.activeWhatsAppType.value
+      : WhatsAppType.whatsapp;
 
   void switchWhatsAppType(WhatsAppType type) {
     if (Get.isRegistered<SettingsController>()) {
@@ -125,12 +124,12 @@ class SavedController extends GetxController {
     }
   }
 
-  Future<String?> getFullMediaFile(String mediaStoreUri, String fileName) async {
+  Future<String?> getFullMediaFile(
+    String mediaStoreUri,
+    String fileName,
+  ) async {
     final result = await _getFullMediaFileUseCase(mediaStoreUri, fileName);
-    return result.when(
-      success: (path) => path,
-      failure: (_) => null,
-    );
+    return result.when(success: (path) => path, failure: (_) => null);
   }
 
   Future<bool> deleteMedia(

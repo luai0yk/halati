@@ -1,24 +1,24 @@
 import 'package:get/get.dart';
-import 'package:status_saver/core/database/app_database.dart';
-import 'package:status_saver/core/services/cash/cash_service.dart';
-import 'package:status_saver/features/app_shell/controller/app_shell_controller.dart';
-import 'package:status_saver/features/home/data/datasources/saf_native_data_source.dart';
-import 'package:status_saver/features/home/data/repositories/status_repository_impl.dart';
-import 'package:status_saver/features/home/domain/repositories/status_repository.dart';
-import 'package:status_saver/features/home/domain/usecases/check_saf_access_use_case.dart';
-import 'package:status_saver/features/home/domain/usecases/get_full_media_file_use_case.dart';
-import 'package:status_saver/features/home/domain/usecases/get_statuses_use_case.dart';
-import 'package:status_saver/features/home/domain/usecases/get_thumbnail_use_case.dart';
-import 'package:status_saver/features/home/domain/usecases/request_saf_access_use_case.dart';
-import 'package:status_saver/features/home/domain/usecases/save_media_use_case.dart';
-import 'package:status_saver/features/home/presentation/controllers/home_controller.dart';
-import 'package:status_saver/features/saved/data/datasources/saved_media_local_data_source.dart';
-import 'package:status_saver/features/saved/data/repositories/saved_media_repository_impl.dart';
-import 'package:status_saver/features/saved/domain/repositories/saved_media_repository.dart';
-import 'package:status_saver/features/saved/domain/usecases/delete_saved_media_use_case.dart';
-import 'package:status_saver/features/saved/domain/usecases/get_saved_media_use_case.dart';
-import 'package:status_saver/features/saved/domain/usecases/sync_saved_media_use_case.dart';
-import 'package:status_saver/features/saved/presentation/controllers/saved_controller.dart';
+import 'package:halati/core/database/app_database.dart';
+import 'package:halati/core/services/cash/cash_service.dart';
+import 'package:halati/features/app_shell/controller/app_shell_controller.dart';
+import 'package:halati/features/home/data/datasources/saf_native_data_source.dart';
+import 'package:halati/features/home/data/repositories/status_repository_impl.dart';
+import 'package:halati/features/home/domain/repositories/status_repository.dart';
+import 'package:halati/features/home/domain/usecases/check_saf_access_use_case.dart';
+import 'package:halati/features/home/domain/usecases/get_full_media_file_use_case.dart';
+import 'package:halati/features/home/domain/usecases/get_statuses_use_case.dart';
+import 'package:halati/features/home/domain/usecases/get_thumbnail_use_case.dart';
+import 'package:halati/features/home/domain/usecases/request_saf_access_use_case.dart';
+import 'package:halati/features/home/domain/usecases/save_media_use_case.dart';
+import 'package:halati/features/home/presentation/controllers/home_controller.dart';
+import 'package:halati/features/saved/data/datasources/saved_media_local_data_source.dart';
+import 'package:halati/features/saved/data/repositories/saved_media_repository_impl.dart';
+import 'package:halati/features/saved/domain/repositories/saved_media_repository.dart';
+import 'package:halati/features/saved/domain/usecases/delete_saved_media_use_case.dart';
+import 'package:halati/features/saved/domain/usecases/get_saved_media_use_case.dart';
+import 'package:halati/features/saved/domain/usecases/sync_saved_media_use_case.dart';
+import 'package:halati/features/saved/presentation/controllers/saved_controller.dart';
 
 class AppShellBinding extends Bindings {
   @override
@@ -124,9 +124,6 @@ class AppShellBinding extends Bindings {
       fenix: true,
     );
 
-    Get.lazyPut<AppShellController>(
-      () => AppShellController(),
-      fenix: true,
-    );
+    Get.lazyPut<AppShellController>(() => AppShellController(), fenix: true);
   }
 }

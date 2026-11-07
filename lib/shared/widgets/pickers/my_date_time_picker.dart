@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
-import 'package:status_saver/core/l10n/app_localizations.dart';
-import 'package:status_saver/core/utils/extensions/responsive_size.dart';
-import 'package:status_saver/core/utils/helpers/ui/bottom_sheet_helper.dart';
-import 'package:status_saver/shared/widgets/sheets/my_bottom_sheet.dart';
+import 'package:halati/core/l10n/app_localizations.dart';
+import 'package:halati/core/utils/extensions/responsive_size.dart';
+import 'package:halati/core/utils/helpers/ui/bottom_sheet_helper.dart';
+import 'package:halati/shared/widgets/sheets/my_bottom_sheet.dart';
 
 enum MyDateBottomPickerMode { date, dateTime, time }
 

@@ -1,5 +1,5 @@
-import 'package:status_saver/features/saved/domain/entities/saved_media.dart';
-import 'package:status_saver/features/saved/domain/repositories/saved_media_repository.dart';
+import 'package:halati/features/saved/domain/entities/saved_media.dart';
+import 'package:halati/features/saved/domain/repositories/saved_media_repository.dart';
 
 class GetSavedMediaUseCase {
   final SavedMediaRepository _repository;

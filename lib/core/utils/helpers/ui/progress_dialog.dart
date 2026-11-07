@@ -1,4 +1,4 @@
-import 'package:status_saver/shared/widgets/dialogs/my_progress_dialog.dart';
+import 'package:halati/shared/widgets/dialogs/my_progress_dialog.dart';
 
 import 'dialog_helper.dart';
 

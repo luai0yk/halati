@@ -1,5 +1,5 @@
-name: status_saver
-description: "A Status Saver."
+name: halati
+description: "Halati is an for saving WhatsApp Stauses."
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 

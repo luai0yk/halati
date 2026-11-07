@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:status_saver/features/settings/data/models/package_license_data.dart';
+import 'package:halati/features/settings/data/models/package_license_data.dart';
 
 /// Service responsible for loading and aggregating license data from [LicenseRegistry].
 ///
@@ -49,4 +49,3 @@ class LicensesService {
     _cachedLicenses = null;
   }
 }
-

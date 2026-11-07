@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
+import 'package:halati/core/enums/whatsapp_type.dart';
+import 'package:halati/core/l10n/app_localizations.dart';
+import 'package:halati/core/services/cash/cash_keys.dart';
+import 'package:halati/core/services/cash/cash_service.dart';
+import 'package:halati/features/settings/controller/settings_controller.dart';
+import 'package:halati/shared/widgets/buttons/whatsapp_type_switch.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:status_saver/core/enums/whatsapp_type.dart';
-import 'package:status_saver/core/l10n/app_localizations.dart';
-import 'package:status_saver/core/services/cash/cash_keys.dart';
-import 'package:status_saver/core/services/cash/cash_service.dart';
-import 'package:status_saver/features/settings/controller/settings_controller.dart';
-import 'package:status_saver/shared/widgets/buttons/whatsapp_type_switch.dart';
 
 void main() {
   group('WhatsAppType & SettingsController Tests', () {
@@ -30,21 +30,39 @@ void main() {
 
     test('defaultWhatsAppType defaults to whatsapp', () {
       expect(settingsController.defaultWhatsAppType, WhatsAppType.whatsapp);
-      expect(settingsController.activeWhatsAppType.value, WhatsAppType.whatsapp);
+      expect(
+        settingsController.activeWhatsAppType.value,
+        WhatsAppType.whatsapp,
+      );
     });
 
-    test('setDefaultWhatsAppType updates preferences and active type', () async {
-      await settingsController.setDefaultWhatsAppType(WhatsAppType.business);
+    test(
+      'setDefaultWhatsAppType updates preferences and active type',
+      () async {
+        await settingsController.setDefaultWhatsAppType(WhatsAppType.business);
 
-      expect(settingsController.defaultWhatsAppType, WhatsAppType.business);
-      expect(settingsController.activeWhatsAppType.value, WhatsAppType.business);
-      expect(cashService.getString(CashKeys.defaultWhatsAppType), WhatsAppType.business.name);
-    });
+        expect(settingsController.defaultWhatsAppType, WhatsAppType.business);
+        expect(
+          settingsController.activeWhatsAppType.value,
+          WhatsAppType.business,
+        );
+        expect(
+          cashService.getString(CashKeys.defaultWhatsAppType),
+          WhatsAppType.business.name,
+        );
+      },
+    );
 
     test('setActiveWhatsAppType changes active WhatsApp type', () {
-      expect(settingsController.activeWhatsAppType.value, WhatsAppType.whatsapp);
+      expect(
+        settingsController.activeWhatsAppType.value,
+        WhatsAppType.whatsapp,
+      );
       settingsController.setActiveWhatsAppType(WhatsAppType.business);
-      expect(settingsController.activeWhatsAppType.value, WhatsAppType.business);
+      expect(
+        settingsController.activeWhatsAppType.value,
+        WhatsAppType.business,
+      );
     });
   });
 
@@ -99,7 +117,9 @@ void main() {
       expect(selected, WhatsAppType.whatsapp);
     });
 
-    testWidgets('supports swiping to switch between WhatsApp and Business', (tester) async {
+    testWidgets('supports swiping to switch between WhatsApp and Business', (
+      tester,
+    ) async {
       WhatsAppType selected = WhatsAppType.whatsapp;
 
       await tester.pumpWidget(
@@ -147,4 +167,3 @@ void main() {
     });
   });
 }
-

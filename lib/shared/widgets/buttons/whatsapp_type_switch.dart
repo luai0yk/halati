@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:status_saver/core/constants/app_durations.dart';
-import 'package:status_saver/core/enums/whatsapp_type.dart';
-import 'package:status_saver/core/utils/extensions/context_extension.dart';
-import 'package:status_saver/core/utils/extensions/responsive_size.dart';
-import 'package:status_saver/core/utils/extensions/responsive_values.dart';
+import 'package:halati/core/constants/app_durations.dart';
+import 'package:halati/core/enums/whatsapp_type.dart';
+import 'package:halati/core/utils/extensions/context_extension.dart';
+import 'package:halati/core/utils/extensions/responsive_size.dart';
+import 'package:halati/core/utils/extensions/responsive_values.dart';
 
 class WhatsAppTypeSwitch extends StatefulWidget {
   final WhatsAppType currentType;
@@ -67,8 +67,9 @@ class _WhatsAppTypeSwitchState extends State<WhatsAppTypeSwitch>
 
   void _onHorizontalDragEnd(DragEndDetails details) {
     final shouldBeBusiness = _controller.value >= 0.5;
-    final targetType =
-        shouldBeBusiness ? WhatsAppType.business : WhatsAppType.whatsapp;
+    final targetType = shouldBeBusiness
+        ? WhatsAppType.business
+        : WhatsAppType.whatsapp;
 
     if (shouldBeBusiness) {
       _controller.forward();
@@ -132,10 +133,16 @@ class _WhatsAppTypeSwitchState extends State<WhatsAppTypeSwitch>
                 final activeColor = colors.onPrimary;
                 final inactiveColor = colors.onSurfaceVariant;
 
-                final whatsappTextColor =
-                    Color.lerp(activeColor, inactiveColor, animValue)!;
-                final businessTextColor =
-                    Color.lerp(inactiveColor, activeColor, animValue)!;
+                final whatsappTextColor = Color.lerp(
+                  activeColor,
+                  inactiveColor,
+                  animValue,
+                )!;
+                final businessTextColor = Color.lerp(
+                  inactiveColor,
+                  activeColor,
+                  animValue,
+                )!;
 
                 return Stack(
                   children: [
@@ -146,8 +153,7 @@ class _WhatsAppTypeSwitchState extends State<WhatsAppTypeSwitch>
                         height: double.infinity,
                         decoration: BoxDecoration(
                           color: colors.primary,
-                          borderRadius:
-                              BorderRadius.circular((height - 4) / 2),
+                          borderRadius: BorderRadius.circular((height - 4) / 2),
                           boxShadow: [
                             BoxShadow(
                               color: colors.primary.withValues(alpha: 0.25),
