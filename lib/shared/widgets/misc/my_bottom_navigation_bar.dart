@@ -99,14 +99,47 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
   double _indicatorWidth = 0;
   double _indicatorHeight = 0;
   bool _isInitialized = false;
+  bool _skipNextAnimation = false;
+
+  TextDirection? _lastDirectionality;
+  Locale? _lastLocale;
+  Size? _lastSize;
 
   @override
   void initState() {
     super.initState();
     _keys = List.generate(widget.items.length, (_) => GlobalKey());
     WidgetsBinding.instance.addPostFrameCallback(
-      (_) => _updateIndicatorPosition(),
+      (_) => _updateIndicatorPosition(immediate: true),
     );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final currentDirectionality = Directionality.of(context);
+    final currentLocale = Localizations.maybeLocaleOf(context);
+    final currentSize = MediaQuery.sizeOf(context);
+
+    final bool isDirectionalityChanged =
+        _lastDirectionality != null &&
+        _lastDirectionality != currentDirectionality;
+    final bool isLocaleChanged =
+        _lastLocale != null && _lastLocale != currentLocale;
+    final bool isSizeChanged =
+        _lastSize != null && _lastSize != currentSize;
+
+    _lastDirectionality = currentDirectionality;
+    _lastLocale = currentLocale;
+    _lastSize = currentSize;
+
+    if (isDirectionalityChanged || isLocaleChanged || isSizeChanged) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _updateIndicatorPosition(immediate: true);
+        }
+      });
+    }
   }
 
   @override
@@ -116,41 +149,82 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
       _keys = List.generate(widget.items.length, (_) => GlobalKey());
     }
 
-    if (oldWidget.currentIndex != widget.currentIndex ||
-        oldWidget.items.length != widget.items.length ||
+    final bool itemsCountChanged =
+        oldWidget.items.length != widget.items.length;
+    final bool layoutPropsChanged =
         oldWidget.expandItems != widget.expandItems ||
         oldWidget.displayMode != widget.displayMode ||
-        oldWidget.itemOrientation != widget.itemOrientation) {
-      if (oldWidget.items.length != widget.items.length ||
-          oldWidget.expandItems != widget.expandItems ||
-          oldWidget.displayMode != widget.displayMode ||
-          oldWidget.itemOrientation != widget.itemOrientation) {
-        WidgetsBinding.instance.addPostFrameCallback(
-          (_) => _updateIndicatorPosition(),
-        );
-      } else {
-        _updateIndicatorPosition();
+        oldWidget.itemOrientation != widget.itemOrientation;
+    final bool selectionChanged = oldWidget.currentIndex != widget.currentIndex;
+
+    bool itemsContentChanged = false;
+    if (oldWidget.items.length == widget.items.length) {
+      for (int i = 0; i < widget.items.length; i++) {
+        if (oldWidget.items[i].title != widget.items[i].title) {
+          itemsContentChanged = true;
+          break;
+        }
       }
+    }
+
+    if (itemsCountChanged || layoutPropsChanged || itemsContentChanged) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _updateIndicatorPosition(
+            immediate: itemsContentChanged || layoutPropsChanged,
+          );
+        }
+      });
+    } else if (selectionChanged) {
+      _updateIndicatorPosition();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _updateIndicatorPosition();
+        }
+      });
     }
   }
 
-  void _updateIndicatorPosition() {
+  void _updateIndicatorPosition({bool immediate = false}) {
     if (!mounted) return;
     if (widget.currentIndex >= 0 && widget.currentIndex < _keys.length) {
       final keyContext = _keys[widget.currentIndex].currentContext;
       final rowContext = _rowKey.currentContext;
       if (keyContext != null && rowContext != null) {
-        final rowBox = rowContext.findRenderObject() as RenderBox;
-        final itemBox = keyContext.findRenderObject() as RenderBox;
-        final offset = itemBox.localToGlobal(Offset.zero, ancestor: rowBox);
-        setState(() {
-          _indicatorLeft = offset.dx;
-          _indicatorTop = offset.dy;
-          _indicatorWidth = itemBox.size.width;
-          _indicatorHeight = itemBox.size.height;
-          _isInitialized = true;
-        });
+        final rowBox = rowContext.findRenderObject() as RenderBox?;
+        final itemBox = keyContext.findRenderObject() as RenderBox?;
+        if (rowBox != null &&
+            itemBox != null &&
+            rowBox.attached &&
+            itemBox.attached &&
+            rowBox.hasSize &&
+            itemBox.hasSize) {
+          final offset = itemBox.localToGlobal(Offset.zero, ancestor: rowBox);
+          setState(() {
+            _indicatorLeft = offset.dx;
+            _indicatorTop = offset.dy;
+            _indicatorWidth = itemBox.size.width;
+            _indicatorHeight = itemBox.size.height;
+            _isInitialized = true;
+            _skipNextAnimation = immediate;
+          });
+          if (immediate) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted && _skipNextAnimation) {
+                setState(() {
+                  _skipNextAnimation = false;
+                });
+              }
+            });
+          }
+          return;
+        }
       }
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _updateIndicatorPosition(immediate: immediate);
+        }
+      });
     }
   }
 
@@ -239,7 +313,8 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
               top: _indicatorTop,
               width: _indicatorWidth,
               height: _indicatorHeight,
-              duration: AppDurations.slow,
+              duration:
+                  _skipNextAnimation ? Duration.zero : AppDurations.slow,
               curve:
                   widget.itemAnimation ==
                           MyBottomNavigationBarAnimation.bounce
@@ -258,7 +333,7 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
           NotificationListener<SizeChangedLayoutNotification>(
             onNotification: (n) {
               WidgetsBinding.instance.addPostFrameCallback(
-                (_) => _updateIndicatorPosition(),
+                (_) => _updateIndicatorPosition(immediate: true),
               );
               return true;
             },

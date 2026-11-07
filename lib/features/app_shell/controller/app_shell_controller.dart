@@ -5,6 +5,7 @@ import 'package:status_saver/core/constants/app_durations.dart';
 class AppShellController extends GetxController {
   final RxInt currentIndex = 0.obs;
   late final PageController pageController;
+  int? _targetPageIndex;
 
   @override
   void onInit() {
@@ -12,19 +13,33 @@ class AppShellController extends GetxController {
     pageController = PageController(initialPage: currentIndex.value);
   }
 
-  void changeTab(int index) {
+  Future<void> changeTab(int index) async {
     if (currentIndex.value == index) return;
     currentIndex.value = index;
+    _targetPageIndex = index;
+
     if (pageController.hasClients) {
-      pageController.animateToPage(
-        index,
-        duration: AppDurations.medium,
-        curve: Curves.easeInOut,
-      );
+      try {
+        await pageController.animateToPage(
+          index,
+          duration: AppDurations.medium,
+          curve: Curves.easeInOut,
+        );
+      } finally {
+        if (_targetPageIndex == index) {
+          _targetPageIndex = null;
+        }
+      }
     }
   }
 
   void onPageChanged(int index) {
+    if (_targetPageIndex != null) {
+      if (index == _targetPageIndex) {
+        _targetPageIndex = null;
+      }
+      return;
+    }
     currentIndex.value = index;
   }
 

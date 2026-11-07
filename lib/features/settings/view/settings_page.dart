@@ -211,10 +211,25 @@ class SettingsPage extends GetView<SettingsController> {
                 MySectionCard(
                   title: context.l10n.about,
                   children: [
+                    GetBuilder<SettingsController>(
+                      id: SettingsController.aboutInfoId,
+                      builder: (ctrl) {
+                        return MyListTile(
+                          leading: _buildIconContainer(
+                            context,
+                            AppIcons.info,
+                            context.colorScheme.tertiary,
+                          ),
+                          borderRadius: BorderRadius.zero,
+                          title: context.l10n.appVersionTitle,
+                          subtitle: ctrl.appVersionWithBuild,
+                        );
+                      },
+                    ),
                     MyListTile(
                       leading: _buildIconContainer(
                         context,
-                        AppIcons.info,
+                        AppIcons.status,
                         context.colorScheme.primary,
                       ),
                       borderRadius: BorderRadius.zero,
@@ -323,7 +338,6 @@ class SettingsPage extends GetView<SettingsController> {
               color: context.colorScheme.outlineVariant.withValues(alpha: 0.5),
             ),
             MyListTile(
-              borderRadius: BorderRadius.zero,
               leading: _buildIconContainer(
                 context,
                 AppIcons.folder,
@@ -342,7 +356,6 @@ class SettingsPage extends GetView<SettingsController> {
             ),
             if (isCustom)
               MyListTile(
-                borderRadius: BorderRadius.zero,
                 leading: _buildIconContainer(
                   context,
                   AppIcons.refresh,

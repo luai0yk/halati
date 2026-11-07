@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,6 +24,7 @@ import 'package:status_saver/features/saved/domain/repositories/saved_media_repo
 import 'package:status_saver/features/saved/domain/usecases/delete_saved_media_use_case.dart';
 import 'package:status_saver/features/saved/domain/usecases/get_saved_media_use_case.dart';
 import 'package:status_saver/features/settings/controller/settings_controller.dart';
+import 'package:status_saver/shared/widgets/misc/my_bottom_navigation_bar.dart';
 
 class FakeSavedMediaRepository implements SavedMediaRepository {
   final List<String> deletedOriginalUris = [];
@@ -82,6 +84,23 @@ void main() {
     test('changeTab updates currentIndex', () {
       controller.changeTab(2);
       expect(controller.currentIndex.value, 2);
+    });
+
+    test('changeTab ignores intermediate onPageChanged events during animation', () {
+      controller.changeTab(2);
+      expect(controller.currentIndex.value, 2);
+
+      // Simulating intermediate page event fired by PageView while scrolling past page 1
+      controller.onPageChanged(1);
+      expect(controller.currentIndex.value, 2, reason: 'Intermediate page 1 should not overwrite target page 2');
+
+      // Once the target page is reached
+      controller.onPageChanged(2);
+      expect(controller.currentIndex.value, 2);
+
+      // Subsequent user swipe should work normally
+      controller.onPageChanged(1);
+      expect(controller.currentIndex.value, 1);
     });
   });
 
@@ -208,6 +227,72 @@ void main() {
 
       // Verify business remains unaffected
       expect(controller.getSaveFolderPath(WhatsAppType.business), 'Download/Halati/WhatsApp Business');
+    });
+  });
+
+  group('MyBottomNavigationBar Directionality & Navigation', () {
+    testWidgets('adapts indicator position when directionality flips from LTR to RTL', (tester) async {
+      int selectedIndex = 2; // Settings selected
+      final directionNotifier = ValueNotifier<TextDirection>(TextDirection.ltr);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: ValueListenableBuilder<TextDirection>(
+            valueListenable: directionNotifier,
+            builder: (context, direction, _) {
+              return Directionality(
+                textDirection: direction,
+                child: Scaffold(
+                  bottomNavigationBar: MyBottomNavigationBar(
+                    currentIndex: selectedIndex,
+                    itemAnimation: MyBottomNavigationBarAnimation.bounce,
+                    expandItems: true,
+                    onItemSelected: (i) => selectedIndex = i,
+                    items: const [
+                      MyBottomNavigationBarItem(
+                        title: 'Statuses',
+                        icon: Icon(Icons.circle_outlined),
+                      ),
+                      MyBottomNavigationBarItem(
+                        title: 'Saved',
+                        icon: Icon(Icons.download_outlined),
+                      ),
+                      MyBottomNavigationBarItem(
+                        title: 'Settings',
+                        icon: Icon(Icons.settings_outlined),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Find the AnimatedPositioned widget representing the indicator
+      final animatedPositionedFinder = find.byType(AnimatedPositioned);
+      expect(animatedPositionedFinder, findsOneWidget);
+      final ltrPositioned = tester.widget<AnimatedPositioned>(animatedPositionedFinder);
+      final ltrLeft = ltrPositioned.left!;
+
+      // In LTR, index 2 (Settings) is on the right side (left > 400 for an 800-wide test screen)
+      expect(ltrLeft, greaterThan(400));
+
+      // Now flip to RTL (Arabic), while keeping selectedIndex at 2
+      directionNotifier.value = TextDirection.rtl;
+
+      await tester.pump();
+      await tester.pumpAndSettle();
+
+      final rtlPositioned = tester.widget<AnimatedPositioned>(animatedPositionedFinder);
+      final rtlLeft = rtlPositioned.left!;
+
+      // In RTL, index 2 (Settings) is on the left side (left < 100)
+      expect(rtlLeft, lessThan(100));
+      expect(rtlLeft, isNot(equals(ltrLeft)));
     });
   });
 }
