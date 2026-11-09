@@ -31,7 +31,6 @@ class AboutPage extends StatelessWidget {
         padding: context.insetsAllM,
         children: [
           _buildHeader(context),
-          context.verticalSpace(16),
           _buildActionsSection(context, controller),
         ],
       ),
@@ -91,6 +90,15 @@ class AboutPage extends StatelessWidget {
       children: [
         _buildTile(
           context,
+          leadingIcon: AppIcons.code,
+          title: context.l10n.sourceCode,
+          subtitle: context.l10n.contributeOnGitHub,
+          subtitleDirection: TextDirection.ltr,
+          showArrow: true,
+          onTap: () => _openSourceCode(context, controller),
+        ),
+        _buildTile(
+          context,
           leadingIcon: AppIcons.file,
           title: context.l10n.privacyPolicy,
           showArrow: true,
@@ -118,16 +126,31 @@ class AboutPage extends StatelessWidget {
     BuildContext context, {
     required IconData leadingIcon,
     required String title,
+    String? subtitle,
+    TextDirection? subtitleDirection,
     bool showArrow = false,
     VoidCallback? onTap,
   }) {
     return MyListTile(
       leadingIcon: leadingIcon,
       title: title,
+      subtitle: subtitle,
+      subtitleDirection: subtitleDirection,
+      subtitleColor: context.colorScheme.primary,
       trailingIcon: showArrow ? AppIcons.arrowForward(context) : null,
       borderRadius: BorderRadius.zero,
       onTap: onTap,
     );
+  }
+
+  Future<void> _openSourceCode(
+    BuildContext context,
+    SettingsController controller,
+  ) async {
+    final success = await controller.openSourceCode();
+    if (!success && context.mounted) {
+      ToastHelper.show(msg: context.l10n.couldNotOpenLink);
+    }
   }
 
   Future<void> _openPrivacyPolicy(

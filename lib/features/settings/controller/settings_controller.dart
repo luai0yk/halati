@@ -245,6 +245,10 @@ class SettingsController extends GetxController {
     return LangCode.values.byName(storedLang ?? LangCode.system.name);
   }
 
+  Future<bool> openSourceCode() async {
+    return await UrlHelper.openUrl(AppConstants.sourceCodeUrl);
+  }
+
   Future<bool> openPrivacyPolicy() async {
     return await UrlHelper.openUrl(AppConstants.privacyPolicyUrl);
   }

@@ -123,5 +123,7 @@
   "customLocation": "مخصص",
   "folderUpdatedSuccessfully": "تم تحديث المجلد بنجاح",
   "folderRestoredSuccessfully": "تمت استعادة المجلد الافتراضي",
-  "aboutHalati": "حول حالاتي"
+  "aboutHalati": "حول حالاتي",
+  "sourceCode": "كود المصدر",
+  "contributeOnGitHub": "المساهمة عبر GitHub"
 }

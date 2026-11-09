@@ -123,5 +123,7 @@
   "customLocation": "Custom",
   "folderUpdatedSuccessfully": "Folder updated successfully",
   "folderRestoredSuccessfully": "Default folder restored",
-  "aboutHalati": "About Halati"
+  "aboutHalati": "About Halati",
+  "sourceCode": "Source Code",
+  "contributeOnGitHub": "Contribute on GitHub"
 }

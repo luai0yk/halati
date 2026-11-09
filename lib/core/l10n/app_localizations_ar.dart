@@ -346,4 +346,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get aboutHalati => 'حول حالاتي';
+
+  @override
+  String get sourceCode => 'كود المصدر';
+
+  @override
+  String get contributeOnGitHub => 'المساهمة عبر GitHub';
 }

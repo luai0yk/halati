@@ -77,4 +77,5 @@ class AppIcons {
   // Misc
   static const box = Iconsax.box_copy;
   static const receipt = Iconsax.receipt_2_1_copy;
+  static const code = Iconsax.code_circle_copy;
 }

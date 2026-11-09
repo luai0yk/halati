@@ -345,4 +345,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aboutHalati => 'About Halati';
+
+  @override
+  String get sourceCode => 'Source Code';
+
+  @override
+  String get contributeOnGitHub => 'Contribute on GitHub';
 }

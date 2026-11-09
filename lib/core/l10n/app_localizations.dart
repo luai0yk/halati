@@ -739,6 +739,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'About Halati'**
   String get aboutHalati;
+
+  /// No description provided for @sourceCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Source Code'**
+  String get sourceCode;
+
+  /// No description provided for @contributeOnGitHub.
+  ///
+  /// In en, this message translates to:
+  /// **'Contribute on GitHub'**
+  String get contributeOnGitHub;
 }
 
 class _AppLocalizationsDelegate
