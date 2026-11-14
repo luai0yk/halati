@@ -12,7 +12,8 @@ class AppConstants {
 
   // Support & Contact
   static const String supportWhatsAppNumber = '+967774165500';
-  static const String privacyPolicyUrl = 'https://github.com/luai0yk';
+  static const String privacyPolicyUrl =
+      'https://dev-luai0yk-halati.web.app/privacy-policy';
   static const String sourceCodeUrl = 'https://github.com/luai0yk/halati';
   static const String feedbackEmail = 'luai0yk@gmail.com';
 }

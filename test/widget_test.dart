@@ -9,12 +9,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:halati/core/config/app_config.dart';
+import 'package:halati/core/config/app_environment.dart';
 import 'package:halati/core/services/cash/cash_service.dart';
 import 'package:halati/features/settings/controller/settings_controller.dart';
 import 'package:halati/main.dart';
 
 void main() {
   setUp(() async {
+    AppConfig.initialize(
+      const AppConfig(
+        environment: AppEnvironment.prod,
+        appName: 'Halati',
+      ),
+    );
     SharedPreferences.setMockInitialValues({});
     Get.reset();
     await Get.putAsync<CashService>(

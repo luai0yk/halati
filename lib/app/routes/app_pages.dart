@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:halati/core/routes/app_routes.dart';
+import 'package:halati/app/routes/app_routes.dart';
 import 'package:halati/features/app_shell/bindings/app_shell_binding.dart';
 import 'package:halati/features/app_shell/view/app_shell_page.dart';
 import 'package:halati/features/settings/controller/licenses_controller.dart';

@@ -116,8 +116,9 @@ class _MediaViewerPageState extends State<MediaViewerPage> {
     final item = controller.items[index];
     if (item.isSaved ||
         _autoSavingIds.contains(item.id) ||
-        widget.onSave == null)
+        widget.onSave == null) {
       return;
+    }
 
     _autoSavingIds.add(item.id);
 

@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:halati/core/constants/app_icons.dart';
-import 'package:halati/core/l10n/app_localizations.dart';
+import 'package:halati/app/l10n/app_localizations.dart';
 import 'package:halati/core/utils/extensions/context_extension.dart';
 import 'package:halati/core/utils/extensions/responsive_size.dart';
 import 'package:halati/core/utils/extensions/responsive_values.dart';

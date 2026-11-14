@@ -175,7 +175,7 @@ The repository contains a rich set of foundational utilities, themes, services, 
 | `core/platform/saf_channel.dart` | MethodChannel constants | `SafChannel.channelName` (`com.luai0yk.halati/saf`), method constants | Reference when interacting with native SAF bridge |
 | `core/services/cash/cash_service.dart` | Centralized `SharedPreferences` GetX service | `CashService`, `contains()`, `getString()`, `setString()`, `getBool()`, `setBool()` | Inject via `Get.find<CashService>()` |
 | `core/services/cash/cash_keys.dart` | Key constants for `CashService` | `CashKeys.themeMode`, `CashKeys.safTreeUri`, `CashKeys.safTreeUriBusiness`, `CashKeys.autoSaveOpenedStatuses`, `CashKeys.defaultWhatsAppType` | Central repository for preference keys |
-| `core/theme/material_theme.dart` | Theme generator with responsive typography | `MaterialTheme`, `responsiveTextTheme(context)`, `light()`, `dark()` | Standard theme definition |
+| `app/theme/material_theme.dart` | Theme generator with responsive typography | `MaterialTheme`, `responsiveTextTheme(context)`, `light()`, `dark()` | Standard theme definition |
 | `core/utils/extensions/context_extension.dart` | Context shortcuts for colors, text, and localization | `context.colorScheme`, `context.textTheme`, `context.l10n`, `context.isDark` | Use in every widget for clean theme access |
 | `core/utils/extensions/responsive_values.dart` | Standardized padding, radius, and spacing tokens | `context.insetsAllM`, `context.spaceS`, `context.spaceM`, `context.radiusL` | Use for layout margins, insets, and spacings |
 | `core/utils/extensions/responsive_size.dart` | Responsive dimension scaling | `context.setSize()`, `context.setWidth()` | Use for responsive icon sizes and dynamic dimensions |
@@ -420,7 +420,7 @@ class SavedMediaTable extends Table {
 - Child tabs are wrapped in `_KeepAliveTab` (`AutomaticKeepAliveClientMixin`) to guarantee scroll positions and loaded media lists persist across tab switches.
 
 ### 11.2 Design System & Aesthetics
-- **Material 3**: Leverage `MaterialTheme` (`core/theme/material_theme.dart`).
+- **Material 3**: Leverage `MaterialTheme` (`app/theme/material_theme.dart`).
 - **Colors**: Strictly use semantic theme roles (`context.colorScheme.surface`, `context.colorScheme.primary`, etc.). Never hardcode raw hex values or color literals.
 - **Typography**: Strictly use `context.textTheme` with the bundled `NotoSansArabic` font family.
 - **Icons**: Strictly use `AppIcons` from `core/constants/app_icons.dart`. Arrow icons (`AppIcons.arrowForward(context)`) are used only when needed for navigation or open actions.
@@ -431,9 +431,9 @@ class SavedMediaTable extends Table {
 
 The application supports **English (`en`)** and **Arabic (`ar`)** out of the box using Flutter ARB toolchains configured in `l10n.yaml`:
 
-- **Template ARB**: `lib/core/l10n/arb/app_en.arb`
-- **Arabic ARB**: `lib/core/l10n/arb/app_ar.arb`
-- **Generated Code**: `lib/core/l10n/app_localizations.dart`
+- **Template ARB**: `lib/app/l10n/arb/app_en.arb`
+- **Arabic ARB**: `lib/app/l10n/arb/app_ar.arb`
+- **Generated Code**: `lib/app/l10n/app_localizations.dart`
 
 ### Key Terminology
 - App Name: **Halati** (English) / **حالاتي** (Arabic).

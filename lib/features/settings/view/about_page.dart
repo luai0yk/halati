@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide ContextExtensionss;
 import 'package:halati/core/constants/app_assets.dart';
 import 'package:halati/core/constants/app_icons.dart';
-import 'package:halati/core/routes/app_routes.dart';
+import 'package:halati/app/routes/app_routes.dart';
 import 'package:halati/core/utils/extensions/context_extension.dart';
 import 'package:halati/core/utils/extensions/responsive_size.dart';
 import 'package:halati/core/utils/extensions/responsive_values.dart';

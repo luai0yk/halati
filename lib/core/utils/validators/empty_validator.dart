@@ -1,4 +1,4 @@
-import 'package:halati/core/l10n/app_localizations.dart';
+import 'package:halati/app/l10n/app_localizations.dart';
 
 class EmptyValidator {
   EmptyValidator._();

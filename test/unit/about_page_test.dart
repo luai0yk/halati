@@ -3,7 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:halati/core/constants/app_constants.dart';
-import 'package:halati/core/l10n/app_localizations.dart';
+import 'package:halati/app/l10n/app_localizations.dart';
 import 'package:halati/core/services/cash/cash_service.dart';
 import 'package:halati/features/settings/controller/settings_controller.dart';
 import 'package:halati/features/settings/view/about_page.dart';
@@ -12,8 +12,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   group('Open Source in AboutPage & SettingsPage Tests', () {
-    late SettingsController controller;
-
     setUp(() async {
       SharedPreferences.setMockInitialValues({});
       Get.reset();
@@ -21,7 +19,7 @@ void main() {
         () async => await CashService().init(),
         permanent: true,
       );
-      controller = Get.put(SettingsController(), permanent: true);
+      Get.put(SettingsController(), permanent: true);
     });
 
     tearDown(() {
@@ -32,7 +30,14 @@ void main() {
       expect(AppConstants.sourceCodeUrl, 'https://github.com/luai0yk/halati');
     });
 
-    testWidgets('AboutPage displays open source section and contribute button', (
+    test('AppConstants contains correct privacy policy URL', () {
+      expect(
+        AppConstants.privacyPolicyUrl,
+        'https://dev-luai0yk-halati.web.app/privacy-policy',
+      );
+    });
+
+    testWidgets('AboutPage displays actions including privacy policy', (
       WidgetTester tester,
     ) async {
       tester.view.physicalSize = const Size(1080, 2400);
@@ -54,18 +59,14 @@ void main() {
       );
       await tester.pump(const Duration(milliseconds: 500));
 
-      // Check Open Source Card & Title
-      expect(find.text('Open Source'), findsWidgets);
-      expect(
-        find.textContaining('Halati is free and open-source'),
-        findsOneWidget,
-      );
-      expect(find.text('Contribute on GitHub'), findsOneWidget);
-      expect(find.text('github.com/luai0yk/halati'), findsWidgets);
       expect(find.text('Source Code'), findsOneWidget);
+      expect(find.text('Contribute on GitHub'), findsOneWidget);
+      expect(find.text('Privacy Policy'), findsOneWidget);
+      expect(find.text('Contact & Feedback'), findsOneWidget);
+      expect(find.text('Open-Source Licenses'), findsOneWidget);
     });
 
-    testWidgets('SettingsPage displays open source tile in about section', (
+    testWidgets('SettingsPage displays about section tile', (
       WidgetTester tester,
     ) async {
       tester.view.physicalSize = const Size(1080, 2400);
@@ -87,8 +88,7 @@ void main() {
       );
       await tester.pump(const Duration(milliseconds: 500));
 
-      expect(find.text('Open Source'), findsOneWidget);
-      expect(find.text('Contribute on GitHub'), findsOneWidget);
+      expect(find.text('About Halati'), findsOneWidget);
     });
   });
 }

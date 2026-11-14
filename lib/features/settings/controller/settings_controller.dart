@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:halati/core/constants/app_constants.dart';
 import 'package:halati/core/enums/whatsapp_type.dart';
-import 'package:halati/core/l10n/app_locales.dart';
+import 'package:halati/app/l10n/app_locales.dart';
 import 'package:halati/core/services/cash/cash_keys.dart';
 import 'package:halati/core/services/cash/cash_service.dart';
 import 'package:halati/core/utils/helpers/misc/url_helper.dart';

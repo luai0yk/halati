@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:halati/core/l10n/app_localizations.dart';
+import 'package:halati/app/l10n/app_localizations.dart';
 import 'package:halati/core/utils/extensions/responsive_size.dart';
 import 'package:halati/core/utils/helpers/ui/bottom_sheet_helper.dart';
 import 'package:halati/shared/widgets/sheets/my_bottom_sheet.dart';
