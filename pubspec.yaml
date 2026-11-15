@@ -14,14 +14,10 @@ dependencies:
 
   get: ^4.7.3
   shared_preferences: ^2.5.5
-  phone_numbers_parser: ^9.0.24
   skeletonizer: ^2.1.0
   iconsax_flutter: 1.0.1
 
   # Media
-  image_picker: ^1.2.3
-  file_picker: ^11.0.2
-  path_provider: ^2.1.6
   photo_view: ^0.15.0
   flutter_svg: ^2.3.0
   cached_network_image: ^3.4.1
@@ -38,9 +34,7 @@ dependencies:
   video_player: ^2.11.1
 
   # App Startup
-  flutter_native_splash: ^2.4.7
   package_info_plus: ^9.0.1
-
 
 dev_dependencies:
   flutter_test:
@@ -50,6 +44,7 @@ dev_dependencies:
   drift_dev: ^2.34.0
   build_runner: ^2.15.1
   flutter_launcher_icons: ^0.14.4
+  flutter_native_splash: ^2.4.7
 
 flutter:
   generate: true

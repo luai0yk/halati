@@ -9,7 +9,6 @@ import 'package:halati/core/utils/extensions/responsive_size.dart';
 import 'package:halati/core/utils/extensions/responsive_values.dart';
 import 'package:halati/shared/widgets/cards/my_card.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:halati/shared/widgets/images/image_viewer_page.dart';
 import 'package:halati/shared/widgets/misc/my_icon.dart';
 import 'package:halati/shared/widgets/misc/my_progress_indicator.dart';
 
@@ -53,9 +52,6 @@ class MyImage extends StatefulWidget {
   /// Whether to show a skeleton loading state for network images.
   final bool showSkeleton;
 
-  /// Whether the image can be opened in full screen.
-  final bool isViewable;
-
   /// Optional custom error widget to show when loading fails.
   final Widget? errorWidget;
 
@@ -87,8 +83,7 @@ class MyImage extends StatefulWidget {
   }) : assetImage = asset,
        fileImage = null,
        networkImage = null,
-       showSkeleton = false,
-       isViewable = false;
+       showSkeleton = false;
 
   const MyImage.file({
     super.key,
@@ -106,7 +101,6 @@ class MyImage extends StatefulWidget {
     this.errorBuilder,
     this.cacheWidth,
     this.cacheHeight,
-    this.isViewable = false,
   }) : fileImage = file,
        assetImage = null,
        networkImage = null,
@@ -129,7 +123,6 @@ class MyImage extends StatefulWidget {
     this.cacheWidth,
     this.cacheHeight,
     this.showSkeleton = true,
-    this.isViewable = false,
   }) : networkImage = url,
        assetImage = null,
        fileImage = null;
@@ -175,19 +168,6 @@ class _MyImageState extends State<MyImage> {
       borderWidth: widget.borderWidth,
       child: content,
     );
-
-    if (widget.isViewable &&
-        (widget.fileImage != null || widget.networkImage != null)) {
-      final String imagePath = widget.networkImage ?? widget.fileImage!.path;
-      return GestureDetector(
-        onTap: _hasError
-            ? null
-            : () {
-                ImageViewerPage.show(context, image: imagePath);
-              },
-        child: Hero(tag: imagePath, child: card),
-      );
-    }
 
     return card;
   }
