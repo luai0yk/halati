@@ -351,4 +351,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get contributeOnGitHub => 'Contribute on GitHub';
+
+  @override
+  String get storagePermissionTitle => 'Storage Permission Required';
+
+  @override
+  String get storagePermissionExplanation =>
+      'To view and save WhatsApp statuses, please grant storage permission.';
+
+  @override
+  String get storagePermissionExplanationBusiness =>
+      'To view and save WhatsApp Business statuses, please grant storage permission.';
+
+  @override
+  String get grantPermission => 'Grant Permission';
+
+  @override
+  String get permissionDeniedForeverTitle => 'Storage Permission Required';
+
+  @override
+  String get permissionDeniedForeverMessage =>
+      'Storage permission was permanently denied. Please grant permission from App Settings to view and save statuses.';
+
+  @override
+  String get openSettings => 'Open Settings';
 }

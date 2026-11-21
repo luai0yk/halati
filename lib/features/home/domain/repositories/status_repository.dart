@@ -33,4 +33,6 @@ abstract class StatusRepository {
     StatusMedia media, {
     WhatsAppType? type,
   });
+  Future<bool> isLegacyStorage() => Future.value(false);
+  Future<void> openAppSettings() => Future.value();
 }

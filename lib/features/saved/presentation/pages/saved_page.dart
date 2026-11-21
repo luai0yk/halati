@@ -21,20 +21,27 @@ class SavedPage extends GetView<SavedController> {
   const SavedPage({super.key});
 
   void _openViewer(BuildContext context, int initialIndex) {
-    final items = controller.filteredItems
-        .map(
-          (m) => MediaViewerItem(
-            id: m.id.toString(),
-            uri: m.mediaStoreUri,
-            fileName: m.fileName,
-            mediaType: m.mediaType,
-            thumbnailPath: controller.thumbnails[m.mediaStoreUri],
-            durationMs: m.durationMs,
-            isSaved: true,
-            originalObject: m,
-          ),
-        )
-        .toList();
+    final items = controller.filteredItems.map(
+      (m) {
+        String? directFilePath;
+        if (m.mediaStoreUri.startsWith('file://')) {
+          directFilePath = Uri.parse(m.mediaStoreUri).toFilePath();
+        } else if (m.mediaStoreUri.startsWith('/')) {
+          directFilePath = m.mediaStoreUri;
+        }
+        return MediaViewerItem(
+          id: m.id.toString(),
+          uri: m.mediaStoreUri,
+          fileName: m.fileName,
+          mediaType: m.mediaType,
+          filePath: directFilePath,
+          thumbnailPath: controller.thumbnails[m.mediaStoreUri],
+          durationMs: m.durationMs,
+          isSaved: true,
+          originalObject: m,
+        );
+      },
+    ).toList();
 
     MediaViewerPage.show(
       context,

@@ -724,6 +724,12 @@ class _DummyStatusRepo implements StatusRepository {
     StatusMedia media, {
     WhatsAppType? type,
   }) async => const Success({});
+
+  @override
+  Future<bool> isLegacyStorage() async => false;
+
+  @override
+  Future<void> openAppSettings() async {}
 }
 
 class _DummySavedDataSource implements SavedMediaLocalDataSource {
@@ -861,7 +867,10 @@ class _FakeSafDataSource implements SafNativeDataSource {
   Future<bool> releaseDirectoryAccess(String treeUri) async => true;
 
   @override
-  Future<List<StatusMediaModel>> discoverStatuses(String treeUri) async => [];
+  Future<List<StatusMediaModel>> discoverStatuses(
+    String treeUri, {
+    bool isBusiness = false,
+  }) async => [];
 
   @override
   Future<String?> getThumbnail(
@@ -888,4 +897,17 @@ class _FakeSafDataSource implements SafNativeDataSource {
 
   @override
   Future<bool> deleteFromMediaStore(String mediaStoreUri) async => true;
+
+  @override
+  Future<bool> isLegacyStorage() async => false;
+
+  @override
+  Future<Map<String, dynamic>> checkStoragePermission() async => {'granted': true};
+
+  @override
+  Future<Map<String, dynamic>> requestStoragePermission() async =>
+      {'granted': true, 'permanentlyDenied': false};
+
+  @override
+  Future<void> openAppSettings() async {}
 }

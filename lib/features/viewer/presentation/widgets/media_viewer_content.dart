@@ -43,7 +43,11 @@ class MediaViewerContent extends StatelessWidget {
             fit: StackFit.expand,
             children: [
               Center(
-                child: Image.file(File(thumbnailPath!), fit: BoxFit.contain),
+                child: Image.file(
+                  File(thumbnailPath!),
+                  fit: BoxFit.contain,
+                  gaplessPlayback: true,
+                ),
               ),
               const Center(child: MyProgressIndicator()),
             ],

@@ -91,6 +91,12 @@ class FakeStatusRepository implements StatusRepository {
       'relativePath': 'Pictures/Halati',
     });
   }
+
+  @override
+  Future<bool> isLegacyStorage() async => false;
+
+  @override
+  Future<void> openAppSettings() async {}
 }
 
 void main() {

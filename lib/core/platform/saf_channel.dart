@@ -16,4 +16,10 @@ class SafChannel {
   static const String getFullMediaFile = 'getFullMediaFile';
   static const String deleteFromMediaStore = 'deleteFromMediaStore';
   static const String checkMissingFiles = 'checkMissingFiles';
+
+  // Legacy Storage (Android <= 10) & Settings
+  static const String isLegacyStorage = 'isLegacyStorage';
+  static const String checkStoragePermission = 'checkStoragePermission';
+  static const String requestStoragePermission = 'requestStoragePermission';
+  static const String openAppSettings = 'openAppSettings';
 }

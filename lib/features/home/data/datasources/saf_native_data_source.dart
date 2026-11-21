@@ -14,7 +14,10 @@ abstract class SafNativeDataSource {
     String? initialUriHint,
   });
   Future<bool> releaseDirectoryAccess(String uri);
-  Future<List<StatusMediaModel>> discoverStatuses(String treeUri);
+  Future<List<StatusMediaModel>> discoverStatuses(
+    String treeUri, {
+    bool isBusiness = false,
+  });
   Future<String?> getThumbnail(
     String documentUri, {
     int width = 300,
@@ -31,6 +34,10 @@ abstract class SafNativeDataSource {
   });
   Future<bool> deleteFromMediaStore(String mediaStoreUri);
   Future<List<String>> checkMissingFiles(List<Map<String, String>> items);
+  Future<bool> isLegacyStorage();
+  Future<Map<String, dynamic>> checkStoragePermission();
+  Future<Map<String, dynamic>> requestStoragePermission();
+  Future<void> openAppSettings();
 }
 
 class SafNativeDataSourceImpl implements SafNativeDataSource {
@@ -141,11 +148,14 @@ class SafNativeDataSourceImpl implements SafNativeDataSource {
   }
 
   @override
-  Future<List<StatusMediaModel>> discoverStatuses(String treeUri) async {
+  Future<List<StatusMediaModel>> discoverStatuses(
+    String treeUri, {
+    bool isBusiness = false,
+  }) async {
     try {
       final result = await _channel.invokeListMethod<dynamic>(
         SafChannel.discoverStatuses,
-        {'treeUri': treeUri},
+        {'treeUri': treeUri, 'isBusiness': isBusiness},
       );
 
       if (result == null) {
@@ -277,5 +287,56 @@ class SafNativeDataSourceImpl implements SafNativeDataSource {
     } catch (_) {
       return [];
     }
+  }
+
+  @override
+  Future<bool> isLegacyStorage() async {
+    try {
+      final result = await _channel.invokeMethod<bool>(SafChannel.isLegacyStorage);
+      return result ?? false;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  @override
+  Future<Map<String, dynamic>> checkStoragePermission() async {
+    try {
+      final result = await _channel.invokeMethod<Map<dynamic, dynamic>>(
+        SafChannel.checkStoragePermission,
+      );
+      return Map<String, dynamic>.from(result ?? {'granted': false});
+    } catch (_) {
+      return {'granted': false};
+    }
+  }
+
+  @override
+  Future<Map<String, dynamic>> requestStoragePermission() async {
+    try {
+      final result = await _channel.invokeMethod<Map<dynamic, dynamic>>(
+        SafChannel.requestStoragePermission,
+      );
+      return Map<String, dynamic>.from(
+        result ?? {'granted': false, 'permanentlyDenied': false},
+      );
+    } on PlatformException catch (e) {
+      if (e.code == 'PERMANENTLY_DENIED') {
+        throw SafPermanentlyDeniedFailure(
+          e.message ?? 'Storage permission was permanently denied',
+        );
+      }
+      throw SafPermissionDeniedFailure(
+        e.message ?? 'Storage permission was denied',
+        e.code,
+      );
+    }
+  }
+
+  @override
+  Future<void> openAppSettings() async {
+    try {
+      await _channel.invokeMethod<void>(SafChannel.openAppSettings);
+    } catch (_) {}
   }
 }

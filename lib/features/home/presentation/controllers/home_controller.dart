@@ -2,8 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:halati/core/constants/app_icons.dart';
 import 'package:halati/core/enums/whatsapp_type.dart';
+import 'package:halati/core/errors/failures.dart';
+import 'package:halati/core/utils/extensions/context_extension.dart';
+import 'package:halati/core/utils/helpers/ui/app_navigator.dart';
+import 'package:halati/core/utils/helpers/ui/dialog_helper.dart';
 import 'package:halati/features/home/domain/entities/status_media.dart';
+import 'package:halati/features/home/domain/repositories/status_repository.dart';
 import 'package:halati/features/home/domain/usecases/check_saf_access_use_case.dart';
 import 'package:halati/features/home/domain/usecases/get_full_media_file_use_case.dart';
 import 'package:halati/features/home/domain/usecases/get_statuses_use_case.dart';
@@ -14,6 +20,7 @@ import 'package:halati/features/saved/domain/usecases/delete_saved_media_use_cas
 import 'package:halati/features/saved/domain/usecases/get_saved_media_use_case.dart';
 import 'package:halati/features/saved/domain/usecases/sync_saved_media_use_case.dart';
 import 'package:halati/features/settings/controller/settings_controller.dart';
+import 'package:halati/shared/widgets/dialogs/my_dialog.dart';
 
 class HomeController extends GetxController {
   final CheckSafAccessUseCase _checkSafAccessUseCase;
@@ -25,6 +32,7 @@ class HomeController extends GetxController {
   final GetSavedMediaUseCase _getSavedMediaUseCase;
   final DeleteSavedMediaUseCase _deleteSavedMediaUseCase;
   final SyncSavedMediaUseCase? _syncSavedMediaUseCase;
+  final StatusRepository? _statusRepository;
 
   HomeController({
     required CheckSafAccessUseCase checkSafAccessUseCase,
@@ -36,6 +44,7 @@ class HomeController extends GetxController {
     required GetSavedMediaUseCase getSavedMediaUseCase,
     DeleteSavedMediaUseCase? deleteSavedMediaUseCase,
     SyncSavedMediaUseCase? syncSavedMediaUseCase,
+    StatusRepository? statusRepository,
   }) : _checkSafAccessUseCase = checkSafAccessUseCase,
        _requestSafAccessUseCase = requestSafAccessUseCase,
        _getStatusesUseCase = getStatusesUseCase,
@@ -43,6 +52,11 @@ class HomeController extends GetxController {
        _getFullMediaFileUseCase = getFullMediaFileUseCase,
        _saveMediaUseCase = saveMediaUseCase,
        _getSavedMediaUseCase = getSavedMediaUseCase,
+       _statusRepository =
+           statusRepository ??
+           (Get.isRegistered<StatusRepository>()
+               ? Get.find<StatusRepository>()
+               : null),
        _deleteSavedMediaUseCase =
            deleteSavedMediaUseCase ?? Get.find<DeleteSavedMediaUseCase>(),
        _syncSavedMediaUseCase =
@@ -55,6 +69,7 @@ class HomeController extends GetxController {
   final Rx<MediaType?> filterType = Rx<MediaType?>(null);
   final RxBool isLoading = false.obs;
   final RxBool hasPermission = false.obs;
+  final RxBool isLegacyStorage = false.obs;
   final Rxn<String> errorMessage = Rxn<String>();
   final RxMap<String, String> thumbnails = <String, String>{}.obs;
   final RxSet<String> savedDocumentUris = <String>{}.obs;
@@ -90,7 +105,14 @@ class HomeController extends GetxController {
   void onInit() {
     super.onInit();
     _subscribeSavedMedia();
-    _lifecycleListener = AppLifecycleListener(onResume: syncSavedMedia);
+    _lifecycleListener = AppLifecycleListener(
+      onResume: () async {
+        await syncSavedMedia();
+        if (!hasPermission.value) {
+          await checkAccessAndLoadStatuses(currentWhatsAppType);
+        }
+      },
+    );
     if (Get.isRegistered<SettingsController>()) {
       ever(SettingsController.to.activeWhatsAppType, (type) {
         checkAccessAndLoadStatuses(type);
@@ -118,6 +140,7 @@ class HomeController extends GetxController {
   }
 
   Future<void> initSafStatus() async {
+    isLegacyStorage.value = await _statusRepository?.isLegacyStorage() ?? false;
     await checkAccessAndLoadStatuses(currentWhatsAppType);
   }
 
@@ -159,10 +182,40 @@ class HomeController extends GetxController {
       },
       failure: (f) {
         hasPermission.value = false;
-        errorMessage.value = f.message;
         isLoading.value = false;
+        if (f is SafPermanentlyDeniedFailure) {
+          _showPermanentlyDeniedDialog();
+        } else {
+          errorMessage.value = f.message;
+        }
       },
     );
+  }
+
+  Future<void> _showPermanentlyDeniedDialog() async {
+    final context = AppNavigator.context;
+    if (context == null) return;
+
+    await DialogHelper.show(
+      child: MyDialog(
+        title: context.l10n.permissionDeniedForeverTitle,
+        content: context.l10n.permissionDeniedForeverMessage,
+        status: DialogStatus.warning,
+        statusIcon: AppIcons.folder,
+        primaryButton: DialogButton(
+          text: context.l10n.openSettings,
+          prefixIcon: AppIcons.settings,
+          onPressed: () async {
+            await openAppSettings();
+          },
+        ),
+        secondaryButton: DialogButton(text: context.l10n.cancel),
+      ),
+    );
+  }
+
+  Future<void> openAppSettings() async {
+    await _statusRepository?.openAppSettings();
   }
 
   Future<void> loadStatuses({

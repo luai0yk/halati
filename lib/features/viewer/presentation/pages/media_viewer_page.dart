@@ -99,6 +99,19 @@ class _MediaViewerPageState extends State<MediaViewerPage> {
     );
     controller.onInit();
     _checkAutoSave(widget.initialIndex);
+
+    // Initial filmstrip alignment executed once after layout
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && controller.filmstripController.hasClients) {
+        final itemWidth = context.setSize(48) + (context.spaceXxs * 2);
+        controller.scrollToThumbnail(
+          controller.currentIndex.value,
+          screenWidth: MediaQuery.of(context).size.width,
+          itemWidth: itemWidth,
+          animate: false,
+        );
+      }
+    });
   }
 
   @override
@@ -170,18 +183,6 @@ class _MediaViewerPageState extends State<MediaViewerPage> {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted && controller.filmstripController.hasClients) {
-        final itemWidth = context.setSize(48) + (context.spaceXxs * 2);
-        controller.scrollToThumbnail(
-          controller.currentIndex.value,
-          screenWidth: MediaQuery.of(context).size.width,
-          itemWidth: itemWidth,
-          animate: false,
-        );
-      }
-    });
-
     return Obx(() {
       if (controller.items.isEmpty) {
         return Scaffold(
@@ -201,11 +202,6 @@ class _MediaViewerPageState extends State<MediaViewerPage> {
         );
       }
 
-      final currentItem = controller.currentItem;
-      if (currentItem == null) {
-        return const Scaffold(backgroundColor: Colors.black);
-      }
-
       const overlayStyle = SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         systemNavigationBarColor: Colors.transparent,
@@ -215,8 +211,6 @@ class _MediaViewerPageState extends State<MediaViewerPage> {
         systemNavigationBarIconBrightness: Brightness.light,
       );
 
-      final titleText =
-          '${controller.currentIndex.value + 1} ${context.l10n.counterOf} ${controller.items.length}';
       final itemWidth = context.setSize(48) + (context.spaceXxs * 2);
 
       return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -232,7 +226,7 @@ class _MediaViewerPageState extends State<MediaViewerPage> {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                // Main Media Carousel
+                // Main Media Carousel (isolated from UI controls toggling)
                 PageView.builder(
                   controller: controller.pageController,
                   itemCount: controller.items.length,
@@ -247,45 +241,55 @@ class _MediaViewerPageState extends State<MediaViewerPage> {
                   },
                   itemBuilder: (context, index) {
                     final item = controller.items[index];
-                    final resolvedPath = controller.resolvedPaths[item.uri];
-                    final thumbPath =
-                        controller.thumbnails[item.uri] ?? item.thumbnailPath;
+                    return Obx(() {
+                      final resolvedPath = controller.resolvedPaths[item.uri];
+                      final thumbPath =
+                          controller.thumbnails[item.uri] ?? item.thumbnailPath;
+                      final isActive = index == controller.currentIndex.value;
 
-                    return MediaViewerContent(
-                      item: item,
-                      filePath: resolvedPath,
-                      thumbnailPath: thumbPath,
-                      isActive: index == controller.currentIndex.value,
-                    );
+                      return MediaViewerContent(
+                        item: item,
+                        filePath: resolvedPath,
+                        thumbnailPath: thumbPath,
+                        isActive: isActive,
+                      );
+                    });
                   },
                 ),
 
-                // Top AppBar Overlay
-                MediaViewerAppBar(
-                  title: titleText,
-                  currentItem: currentItem,
-                  isVisible: controller.showControls.value,
-                  onSave: controller.onSaveItem != null && !currentItem.isSaved
-                      ? _handleSave
-                      : null,
-                  onShare: controller.onShareItem != null
-                      ? controller.shareCurrentItem
-                      : null,
-                  onDelete:
-                      controller.onDeleteItem != null && currentItem.isSaved
-                      ? _confirmDelete
-                      : null,
-                ),
+                // Top AppBar Overlay (fine-grained reactivity for title, controls & currentItem)
+                Obx(() {
+                  final currentItem = controller.currentItem;
+                  if (currentItem == null) return const SizedBox.shrink();
+                  final titleText =
+                      '${controller.currentIndex.value + 1} ${context.l10n.counterOf} ${controller.items.length}';
 
-                // Floating Bottom Gallery Filmstrip
-                MediaViewerFilmstrip(
+                  return MediaViewerAppBar(
+                    title: titleText,
+                    currentItem: currentItem,
+                    isVisible: controller.showControls.value,
+                    onSave: controller.onSaveItem != null && !currentItem.isSaved
+                        ? _handleSave
+                        : null,
+                    onShare: controller.onShareItem != null
+                        ? controller.shareCurrentItem
+                        : null,
+                    onDelete:
+                        controller.onDeleteItem != null && currentItem.isSaved
+                        ? _confirmDelete
+                        : null,
+                  );
+                }),
+
+                // Floating Bottom Gallery Filmstrip (fine-grained reactivity for thumbnails & selection)
+                Obx(() => MediaViewerFilmstrip(
                   items: controller.items.toList(),
                   currentIndex: controller.currentIndex.value,
                   scrollController: controller.filmstripController,
-                  thumbnails: Map<String, String>.from(controller.thumbnails),
+                  thumbnails: controller.thumbnails,
                   isVisible: controller.showControls.value,
                   onSelectIndex: controller.selectItemFromStrip,
-                ),
+                )),
               ],
             ),
           ),

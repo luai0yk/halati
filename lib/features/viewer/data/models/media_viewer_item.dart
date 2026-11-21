@@ -7,6 +7,7 @@ class MediaViewerItem {
   final String uri;
   final String fileName;
   final MediaType mediaType;
+  final String? filePath;
   final String? thumbnailPath;
   final int? durationMs;
   final bool isSaved;
@@ -17,6 +18,7 @@ class MediaViewerItem {
     required this.uri,
     required this.fileName,
     required this.mediaType,
+    this.filePath,
     this.thumbnailPath,
     this.durationMs,
     this.isSaved = false,
@@ -28,6 +30,7 @@ class MediaViewerItem {
     String? uri,
     String? fileName,
     MediaType? mediaType,
+    String? filePath,
     String? thumbnailPath,
     int? durationMs,
     bool? isSaved,
@@ -38,6 +41,7 @@ class MediaViewerItem {
       uri: uri ?? this.uri,
       fileName: fileName ?? this.fileName,
       mediaType: mediaType ?? this.mediaType,
+      filePath: filePath ?? this.filePath,
       thumbnailPath: thumbnailPath ?? this.thumbnailPath,
       durationMs: durationMs ?? this.durationMs,
       isSaved: isSaved ?? this.isSaved,

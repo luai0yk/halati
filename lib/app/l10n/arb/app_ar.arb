@@ -125,5 +125,12 @@
   "folderRestoredSuccessfully": "تمت استعادة المجلد الافتراضي",
   "aboutHalati": "حول حالاتي",
   "sourceCode": "كود المصدر",
-  "contributeOnGitHub": "المساهمة عبر GitHub"
+  "contributeOnGitHub": "المساهمة عبر GitHub",
+  "storagePermissionTitle": "إذن التخزين مطلوب",
+  "storagePermissionExplanation": "لعرض وحفظ حالات واتساب، يرجى منح إذن الوصول إلى وحدة التخزين.",
+  "storagePermissionExplanationBusiness": "لعرض وحفظ حالات واتساب للأعمال، يرجى منح إذن الوصول إلى وحدة التخزين.",
+  "grantPermission": "منح الإذن",
+  "permissionDeniedForeverTitle": "إذن التخزين مطلوب",
+  "permissionDeniedForeverMessage": "تم رفض إذن التخزين بشكل دائم. يرجى تفعيل الإذن من إعدادات التطبيق لعرض وحفظ الحالات.",
+  "openSettings": "فتح الإعدادات"
 }

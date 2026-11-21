@@ -125,5 +125,12 @@
   "folderRestoredSuccessfully": "Default folder restored",
   "aboutHalati": "About Halati",
   "sourceCode": "Source Code",
-  "contributeOnGitHub": "Contribute on GitHub"
+  "contributeOnGitHub": "Contribute on GitHub",
+  "storagePermissionTitle": "Storage Permission Required",
+  "storagePermissionExplanation": "To view and save WhatsApp statuses, please grant storage permission.",
+  "storagePermissionExplanationBusiness": "To view and save WhatsApp Business statuses, please grant storage permission.",
+  "grantPermission": "Grant Permission",
+  "permissionDeniedForeverTitle": "Storage Permission Required",
+  "permissionDeniedForeverMessage": "Storage permission was permanently denied. Please grant permission from App Settings to view and save statuses.",
+  "openSettings": "Open Settings"
 }

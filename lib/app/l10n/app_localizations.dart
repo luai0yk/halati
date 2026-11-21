@@ -751,6 +751,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Contribute on GitHub'**
   String get contributeOnGitHub;
+
+  /// No description provided for @storagePermissionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage Permission Required'**
+  String get storagePermissionTitle;
+
+  /// No description provided for @storagePermissionExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'To view and save WhatsApp statuses, please grant storage permission.'**
+  String get storagePermissionExplanation;
+
+  /// No description provided for @storagePermissionExplanationBusiness.
+  ///
+  /// In en, this message translates to:
+  /// **'To view and save WhatsApp Business statuses, please grant storage permission.'**
+  String get storagePermissionExplanationBusiness;
+
+  /// No description provided for @grantPermission.
+  ///
+  /// In en, this message translates to:
+  /// **'Grant Permission'**
+  String get grantPermission;
+
+  /// No description provided for @permissionDeniedForeverTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage Permission Required'**
+  String get permissionDeniedForeverTitle;
+
+  /// No description provided for @permissionDeniedForeverMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage permission was permanently denied. Please grant permission from App Settings to view and save statuses.'**
+  String get permissionDeniedForeverMessage;
+
+  /// No description provided for @openSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Settings'**
+  String get openSettings;
 }
 
 class _AppLocalizationsDelegate

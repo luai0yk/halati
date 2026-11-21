@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:halati/core/constants/app_durations.dart';
+import 'package:halati/features/home/domain/entities/status_media.dart';
 import 'package:halati/features/viewer/data/models/media_viewer_item.dart';
 
 class MediaViewerController extends GetxController {
@@ -45,10 +47,28 @@ class MediaViewerController extends GetxController {
     pageController = PageController(initialPage: clampedIndex);
     filmstripController = ScrollController();
 
+    // Fast-path local file resolution & thumbnail registration (0ms frame-0 rendering)
     for (final item in this.items) {
+      if (item.filePath != null && item.filePath!.isNotEmpty) {
+        resolvedPaths[item.uri] = item.filePath!;
+      } else if (item.uri.startsWith('file://') || item.uri.startsWith('/')) {
+        final path = item.uri.startsWith('file://')
+            ? Uri.parse(item.uri).toFilePath()
+            : item.uri;
+        if (File(path).existsSync()) {
+          resolvedPaths[item.uri] = path;
+        }
+      }
+
       if (item.thumbnailPath != null && item.thumbnailPath!.isNotEmpty) {
         thumbnails[item.uri] = item.thumbnailPath!;
       }
+    }
+
+    // Immediately trigger background decode for the initial media item
+    final initial = currentItem;
+    if (initial != null && resolvedPaths.containsKey(initial.uri)) {
+      _precacheIfImage(initial, resolvedPaths[initial.uri]!);
     }
   }
 
@@ -113,6 +133,7 @@ class MediaViewerController extends GetxController {
     loadThumbnailForIndex(index);
     resolveFileForIndex(index);
     _prefetchAdjacent(index);
+    _evictDistantImages(index);
     startHideControlsTimer();
   }
 
@@ -153,7 +174,29 @@ class MediaViewerController extends GetxController {
   Future<void> resolveFileForIndex(int index) async {
     if (index < 0 || index >= items.length) return;
     final item = items[index];
-    if (resolvedPaths.containsKey(item.uri)) return;
+
+    // Already resolved
+    if (resolvedPaths.containsKey(item.uri)) {
+      _precacheIfImage(item, resolvedPaths[item.uri]!);
+      return;
+    }
+
+    // Direct local file check (bypass method channel overhead completely)
+    if (item.filePath != null && item.filePath!.isNotEmpty) {
+      resolvedPaths[item.uri] = item.filePath!;
+      _precacheIfImage(item, item.filePath!);
+      return;
+    } else if (item.uri.startsWith('file://') || item.uri.startsWith('/')) {
+      final localPath = item.uri.startsWith('file://')
+          ? Uri.parse(item.uri).toFilePath()
+          : item.uri;
+      if (File(localPath).existsSync()) {
+        resolvedPaths[item.uri] = localPath;
+        _precacheIfImage(item, localPath);
+        return;
+      }
+    }
+
     if (_inFlightResolutions.containsKey(item.uri)) {
       await _inFlightResolutions[item.uri];
       return;
@@ -166,9 +209,37 @@ class MediaViewerController extends GetxController {
         final fullPath = await future;
         if (fullPath != null) {
           resolvedPaths[item.uri] = fullPath;
+          _precacheIfImage(item, fullPath);
         }
       } finally {
         _inFlightResolutions.remove(item.uri);
+      }
+    }
+  }
+
+  void _precacheIfImage(MediaViewerItem item, String path) {
+    if (item.mediaType == MediaType.image) {
+      try {
+        final provider = FileImage(File(path));
+        provider.resolve(ImageConfiguration.empty);
+      } catch (_) {}
+    }
+  }
+
+  void _evictDistantImages(int activeIndex) {
+    // Keep decoded image textures in memory strictly for the active window [index - 2 .. index + 2]
+    // Prevents unbounded memory growth / OutOfMemoryError on long swiping sessions.
+    for (int i = 0; i < items.length; i++) {
+      if ((i - activeIndex).abs() > 2) {
+        final item = items[i];
+        if (item.mediaType == MediaType.image) {
+          final path = resolvedPaths[item.uri];
+          if (path != null) {
+            try {
+              PaintingBinding.instance.imageCache.evict(FileImage(File(path)));
+            } catch (_) {}
+          }
+        }
       }
     }
   }

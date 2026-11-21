@@ -1,10 +1,12 @@
 package com.luai0yk.halati.saf
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
@@ -14,7 +16,10 @@ import android.os.Environment
 import android.os.storage.StorageManager
 import android.provider.DocumentsContract
 import android.provider.MediaStore
+import android.provider.Settings
 import android.util.Size
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.documentfile.provider.DocumentFile
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -23,6 +28,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.InputStream
 import java.security.MessageDigest
@@ -35,12 +41,14 @@ class SafHandler(
     companion object {
         const val REQUEST_CODE_SAF_TREE = 4210
         const val REQUEST_CODE_SAF_SAVE_FOLDER = 4211
+        const val REQUEST_CODE_STORAGE_PERMISSION = 4212
         private const val WHATSAPP_PACKAGE = "com.whatsapp"
         private const val WHATSAPP_BUSINESS_PACKAGE = "com.whatsapp.w4b"
         private const val STATUSES_FOLDER = ".Statuses"
     }
 
     private var pendingResult: MethodChannel.Result? = null
+    private var pendingPermissionResult: MethodChannel.Result? = null
 
     init {
         channel.setMethodCallHandler(this)
@@ -71,11 +79,24 @@ class SafHandler(
             }
             "discoverStatuses" -> {
                 val treeUri = call.argument<String>("treeUri")
+                val isBusiness = call.argument<Boolean>("isBusiness") ?: false
                 if (treeUri.isNullOrEmpty()) {
                     result.error("INVALID_ARGUMENT", "treeUri is required", null)
                     return
                 }
-                discoverStatuses(treeUri, result)
+                discoverStatuses(treeUri, isBusiness, result)
+            }
+            "isLegacyStorage" -> {
+                result.success(Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q)
+            }
+            "checkStoragePermission" -> {
+                result.success(checkStoragePermission())
+            }
+            "requestStoragePermission" -> {
+                requestStoragePermission(result)
+            }
+            "openAppSettings" -> {
+                openAppSettings(result)
             }
             "getThumbnail" -> {
                 val documentUri = call.argument<String>("documentUri")
@@ -276,7 +297,7 @@ class SafHandler(
                 val legacyRawPath = "$folder%2FMedia%2F$STATUSES_FOLDER"
                 val modernRawPath = "Android%2Fmedia%2F$pkg%2F$folder%2FMedia%2F$STATUSES_FOLDER"
 
-                val isLegacy = try {
+                val isLegacy = Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q || try {
                     val legacyDir = File(Environment.getExternalStorageDirectory(), "$folder/Media/.Statuses")
                     legacyDir.exists()
                 } catch (_: Exception) {
@@ -379,6 +400,109 @@ class SafHandler(
         return true
     }
 
+    fun handleRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ): Boolean {
+        if (requestCode != REQUEST_CODE_STORAGE_PERMISSION) {
+            return false
+        }
+
+        val callback = pendingPermissionResult ?: return false
+        pendingPermissionResult = null
+
+        val allGranted = grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }
+
+        if (allGranted) {
+            callback.success(mapOf("granted" to true, "permanentlyDenied" to false))
+        } else {
+            val readDenied = ContextCompat.checkSelfPermission(
+                activity,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
+
+            val showRationale = if (readDenied) {
+                ActivityCompat.shouldShowRequestPermissionRationale(
+                    activity,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                )
+            } else {
+                true
+            }
+
+            val permanentlyDenied = !showRationale
+            callback.success(mapOf("granted" to false, "permanentlyDenied" to permanentlyDenied))
+        }
+
+        return true
+    }
+
+    private fun checkStoragePermission(): Map<String, Any> {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+            return mapOf("granted" to true)
+        }
+
+        val readGranted = ContextCompat.checkSelfPermission(
+            activity,
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        ) == PackageManager.PERMISSION_GRANTED
+
+        val writeGranted = if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+            ContextCompat.checkSelfPermission(
+                activity,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_GRANTED
+        } else {
+            true
+        }
+
+        return mapOf("granted" to (readGranted && writeGranted))
+    }
+
+    private fun requestStoragePermission(result: MethodChannel.Result) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+            result.success(mapOf("granted" to true, "permanentlyDenied" to false))
+            return
+        }
+
+        if (checkStoragePermission()["granted"] == true) {
+            result.success(mapOf("granted" to true, "permanentlyDenied" to false))
+            return
+        }
+
+        if (pendingPermissionResult != null) {
+            result.error("ALREADY_ACTIVE", "A permission request is already in progress", null)
+            return
+        }
+
+        pendingPermissionResult = result
+
+        val permissions = if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+            arrayOf(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
+        } else {
+            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+        }
+
+        ActivityCompat.requestPermissions(activity, permissions, REQUEST_CODE_STORAGE_PERMISSION)
+    }
+
+    private fun openAppSettings(result: MethodChannel.Result) {
+        try {
+            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                data = Uri.fromParts("package", activity.packageName, null)
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+            activity.startActivity(intent)
+            result.success(true)
+        } catch (e: Exception) {
+            result.error("SETTINGS_ERROR", "Could not open settings: ${e.message}", null)
+        }
+    }
+
     private fun releaseDirectoryAccess(uriString: String?, result: MethodChannel.Result) {
         if (uriString.isNullOrEmpty()) {
             result.success(false)
@@ -397,7 +521,12 @@ class SafHandler(
         }
     }
 
-    private fun discoverStatuses(treeUriString: String, result: MethodChannel.Result) {
+    private fun discoverStatuses(treeUriString: String, isBusiness: Boolean, result: MethodChannel.Result) {
+        if (treeUriString == "legacy_storage" || !treeUriString.startsWith("content://")) {
+            discoverLegacyStatuses(isBusiness, result)
+            return
+        }
+
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val treeUri = Uri.parse(treeUriString)
@@ -425,6 +554,79 @@ class SafHandler(
                     result.error("DISCOVERY_FAILED", "Failed to discover statuses: ${e.message}", null)
                 }
             }
+        }
+    }
+
+    private fun discoverLegacyStatuses(isBusiness: Boolean, result: MethodChannel.Result) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val folder = if (isBusiness) "WhatsApp Business" else "WhatsApp"
+                val pkg = if (isBusiness) WHATSAPP_BUSINESS_PACKAGE else WHATSAPP_PACKAGE
+                val candidates = listOf(
+                    File(Environment.getExternalStorageDirectory(), "$folder/Media/.Statuses"),
+                    File(Environment.getExternalStorageDirectory(), "Android/media/$pkg/$folder/Media/.Statuses")
+                )
+
+                val mediaList = mutableListOf<Map<String, Any>>()
+                val seenNames = mutableSetOf<String>()
+
+                for (dir in candidates) {
+                    if (dir.exists() && dir.isDirectory) {
+                        val files = dir.listFiles() ?: emptyArray()
+                        for (file in files) {
+                            if (!file.isFile || file.name.startsWith(".") || file.name.startsWith(".nomedia") || file.length() == 0L) {
+                                continue
+                            }
+                            if (seenNames.contains(file.name)) continue
+                            seenNames.add(file.name)
+
+                            val mimeType = getMimeType(file)
+                            val mediaType = classifyMedia(file.name, mimeType) ?: continue
+
+                            mediaList.add(
+                                mapOf(
+                                    "id" to file.absolutePath,
+                                    "documentUri" to Uri.fromFile(file).toString(),
+                                    "fileName" to file.name,
+                                    "mediaType" to mediaType,
+                                    "mimeType" to mimeType,
+                                    "size" to file.length(),
+                                    "lastModified" to file.lastModified()
+                                )
+                            )
+                        }
+                    }
+                }
+
+                mediaList.sortByDescending { (it["lastModified"] as? Long) ?: 0L }
+
+                withContext(Dispatchers.Main) {
+                    result.success(mediaList)
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    result.error("DISCOVERY_FAILED", "Failed to discover statuses: ${e.message}", null)
+                }
+            }
+        }
+    }
+
+    private fun getMimeType(file: File): String {
+        val ext = file.extension.lowercase()
+        return when (ext) {
+            "jpg", "jpeg" -> "image/jpeg"
+            "png" -> "image/png"
+            "webp" -> "image/webp"
+            "mp4" -> "video/mp4"
+            "3gp" -> "video/3gpp"
+            "mkv" -> "video/x-matroska"
+            "opus" -> "audio/opus"
+            "ogg" -> "audio/ogg"
+            "m4a" -> "audio/mp4"
+            "mp3" -> "audio/mpeg"
+            "amr" -> "audio/amr"
+            "aac" -> "audio/aac"
+            else -> android.webkit.MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext) ?: "application/octet-stream"
         }
     }
 
@@ -539,8 +741,38 @@ class SafHandler(
                 val docUri = Uri.parse(documentUriString)
                 var bitmap: Bitmap? = null
 
+                if (docUri.scheme == "file") {
+                    val localFile = File(docUri.path ?: "")
+                    if (localFile.exists()) {
+                        val lower = localFile.name.lowercase()
+                        if (lower.endsWith(".mp4") || lower.endsWith(".3gp") || lower.endsWith(".mkv")) {
+                            val retriever = MediaMetadataRetriever()
+                            try {
+                                retriever.setDataSource(localFile.absolutePath)
+                                val targetW = width.coerceAtLeast(300)
+                                val targetH = height.coerceAtLeast(300)
+                                bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+                                    retriever.getScaledFrameAtTime(0, MediaMetadataRetriever.OPTION_CLOSEST_SYNC, targetW, targetH)
+                                        ?: retriever.frameAtTime
+                                } else {
+                                    retriever.getFrameAtTime(0, MediaMetadataRetriever.OPTION_CLOSEST_SYNC)
+                                        ?: retriever.frameAtTime
+                                }
+                            } catch (_: Exception) {}
+                            finally {
+                                try { retriever.release() } catch (_: Exception) {}
+                            }
+                        } else {
+                            try {
+                                val opts = BitmapFactory.Options().apply { inSampleSize = 2 }
+                                bitmap = BitmapFactory.decodeFile(localFile.absolutePath, opts)
+                            } catch (_: Exception) {}
+                        }
+                    }
+                }
+
                 // On Android 10+ (API 29+), ContentResolver.loadThumbnail is available and efficient
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                if (bitmap == null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     try {
                         val size = Size(width.coerceAtLeast(300), height.coerceAtLeast(300))
                         bitmap = activity.contentResolver.loadThumbnail(docUri, size, null)
@@ -718,6 +950,46 @@ class SafHandler(
             val retriever = MediaMetadataRetriever()
             try {
                 val uri = Uri.parse(documentUriString)
+                if (uri.scheme == "file") {
+                    val f = File(uri.path ?: "")
+                    if (f.exists()) {
+                        try {
+                            retriever.setDataSource(f.absolutePath)
+                            val durationStr = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+                            val widthStr = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)
+                            val heightStr = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)
+                            val mimeType = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE)
+
+                            val durationMs = durationStr?.toLongOrNull() ?: 0L
+                            val width = widthStr?.toIntOrNull() ?: 0
+                            val height = heightStr?.toIntOrNull() ?: 0
+
+                            val metadata = mapOf(
+                                "durationMs" to durationMs,
+                                "width" to width,
+                                "height" to height,
+                                "mimeType" to (mimeType ?: getMimeType(f))
+                            )
+
+                            withContext(Dispatchers.Main) {
+                                result.success(metadata)
+                            }
+                            return@launch
+                        } catch (_: Exception) {
+                            val metadata = mapOf(
+                                "durationMs" to 0L,
+                                "width" to 0,
+                                "height" to 0,
+                                "mimeType" to getMimeType(f)
+                            )
+                            withContext(Dispatchers.Main) {
+                                result.success(metadata)
+                            }
+                            return@launch
+                        }
+                    }
+                }
+
                 activity.contentResolver.openFileDescriptor(uri, "r")?.use { pfd ->
                     retriever.setDataSource(pfd.fileDescriptor)
                     val durationStr = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
@@ -817,7 +1089,13 @@ class SafHandler(
                             val targetDoc = existing ?: subDir.createFile(mimeType, fullFileName)
                                 ?: throw Exception("Could not create file in $subFolder")
 
-                            resolver.openInputStream(sourceUri)?.use { input ->
+                            val inStream = if (sourceUri.scheme == "file") {
+                                FileInputStream(File(sourceUri.path ?: ""))
+                            } else {
+                                resolver.openInputStream(sourceUri)
+                            }
+
+                            inStream?.use { input ->
                                 resolver.openOutputStream(targetDoc.uri)?.use { output ->
                                     input.copyTo(output, bufferSize = 64 * 1024)
                                 } ?: throw Exception("Could not open custom output stream")
@@ -872,11 +1150,17 @@ class SafHandler(
                     }
                     val destFile = File(destDir, fullFileName)
 
-                    resolver.openInputStream(sourceUri)?.use { input: InputStream ->
+                    val inStream = if (sourceUri.scheme == "file") {
+                        FileInputStream(File(sourceUri.path ?: ""))
+                    } else {
+                        resolver.openInputStream(sourceUri)
+                    } ?: throw Exception("Could not open source input stream")
+
+                    inStream.use { input: InputStream ->
                         FileOutputStream(destFile).use { output ->
                             input.copyTo(output, bufferSize = 64 * 1024)
                         }
-                    } ?: throw Exception("Could not open source input stream")
+                    }
 
                     android.media.MediaScannerConnection.scanFile(
                         activity,
@@ -926,15 +1210,59 @@ class SafHandler(
                 }
 
                 if (insertedUri == null) {
+                    if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
+                        val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                        val destDir = File(downloadsDir, "Halati/$appName/$subFolder").apply {
+                            if (!exists()) mkdirs()
+                        }
+                        val destFile = File(destDir, fullFileName)
+
+                        val inStream = if (sourceUri.scheme == "file") {
+                            FileInputStream(File(sourceUri.path ?: ""))
+                        } else {
+                            resolver.openInputStream(sourceUri)
+                        } ?: throw Exception("Could not open source input stream")
+
+                        inStream.use { input ->
+                            FileOutputStream(destFile).use { output ->
+                                input.copyTo(output, bufferSize = 64 * 1024)
+                            }
+                        }
+
+                        android.media.MediaScannerConnection.scanFile(
+                            activity,
+                            arrayOf(destFile.absolutePath),
+                            arrayOf(mimeType),
+                            null
+                        )
+
+                        val response = mapOf(
+                            "savedUri" to Uri.fromFile(destFile).toString(),
+                            "relativePath" to relativePath,
+                            "fileName" to fullFileName
+                        )
+
+                        withContext(Dispatchers.Main) {
+                            result.success(response)
+                        }
+                        return@launch
+                    }
+
                     throw Exception("MediaStore insert returned null URI")
                 }
 
                 // Copy stream
-                resolver.openInputStream(sourceUri)?.use { input: InputStream ->
+                val inStream = if (sourceUri.scheme == "file") {
+                    FileInputStream(File(sourceUri.path ?: ""))
+                } else {
+                    resolver.openInputStream(sourceUri)
+                } ?: throw Exception("Could not open source input stream")
+
+                inStream.use { input: InputStream ->
                     resolver.openOutputStream(insertedUri)?.use { output ->
                         input.copyTo(output, bufferSize = 64 * 1024)
                     } ?: throw Exception("Could not open MediaStore output stream")
-                } ?: throw Exception("Could not open source input stream")
+                }
 
                 // Update IS_PENDING on Android 10+
                 contentValues.clear()
@@ -1093,6 +1421,46 @@ class SafHandler(
     private fun getFullMediaFile(documentUriString: String, fileName: String, result: MethodChannel.Result) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
+                val sourceUri = Uri.parse(documentUriString)
+                if (sourceUri.scheme == "file") {
+                    val f = File(sourceUri.path ?: "")
+                    if (f.exists() && f.length() > 0) {
+                        withContext(Dispatchers.Main) {
+                            result.success(f.absolutePath)
+                        }
+                        return@launch
+                    }
+                }
+
+                // If content URI is from MediaStore, check for direct local file path (0ms copy bypass)
+                if (sourceUri.scheme == "content" && sourceUri.authority?.contains("media") == true) {
+                    try {
+                        activity.contentResolver.query(
+                            sourceUri,
+                            arrayOf(MediaStore.MediaColumns.DATA),
+                            null,
+                            null,
+                            null
+                        )?.use { cursor ->
+                            if (cursor.moveToFirst()) {
+                                val dataIdx = cursor.getColumnIndex(MediaStore.MediaColumns.DATA)
+                                if (dataIdx != -1) {
+                                    val dataPath = cursor.getString(dataIdx)
+                                    if (!dataPath.isNullOrEmpty()) {
+                                        val directFile = File(dataPath)
+                                        if (directFile.exists() && directFile.canRead() && directFile.length() > 0) {
+                                            withContext(Dispatchers.Main) {
+                                                result.success(directFile.absolutePath)
+                                            }
+                                            return@launch
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } catch (_: Exception) {}
+                }
+
                 val fullDir = File(activity.cacheDir, "status_full").apply {
                     if (!exists()) mkdirs()
                 }
@@ -1109,12 +1477,22 @@ class SafHandler(
                     return@launch
                 }
 
-                val sourceUri = Uri.parse(documentUriString)
-                activity.contentResolver.openInputStream(sourceUri)?.use { input ->
-                    FileOutputStream(targetFile).use { output ->
-                        input.copyTo(output, bufferSize = 64 * 1024)
+                val tempFile = File(fullDir, "$hash.tmp_${System.currentTimeMillis()}")
+                try {
+                    activity.contentResolver.openInputStream(sourceUri)?.use { input ->
+                        FileOutputStream(tempFile).use { output ->
+                            input.copyTo(output, bufferSize = 128 * 1024)
+                        }
+                    } ?: throw Exception("Could not open input stream for $documentUriString")
+
+                    if (tempFile.exists() && tempFile.length() > 0) {
+                        if (targetFile.exists()) targetFile.delete()
+                        tempFile.renameTo(targetFile)
                     }
-                } ?: throw Exception("Could not open input stream for $documentUriString")
+                } catch (e: Exception) {
+                    if (tempFile.exists()) tempFile.delete()
+                    throw e
+                }
 
                 withContext(Dispatchers.Main) {
                     result.success(targetFile.absolutePath)

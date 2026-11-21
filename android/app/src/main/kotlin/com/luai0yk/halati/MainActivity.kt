@@ -21,4 +21,11 @@ class MainActivity : FlutterActivity() {
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        if (safHandler?.handleRequestPermissionsResult(requestCode, permissions, grantResults) == true) {
+            return
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
 }

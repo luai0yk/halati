@@ -21,21 +21,25 @@ class HomePage extends GetView<HomeController> {
   const HomePage({super.key});
 
   void _openViewer(BuildContext context, int initialIndex) {
-    final items = controller.filteredStatuses
-        .map(
-          (m) => MediaViewerItem(
-            id: m.id,
-            uri: m.documentUri,
-            fileName: m.fileName,
-            mediaType: m.mediaType,
-            thumbnailPath:
-                controller.thumbnails[m.documentUri] ?? m.thumbnailPath,
-            durationMs: m.durationMs,
-            isSaved: controller.savedDocumentUris.contains(m.documentUri),
-            originalObject: m,
-          ),
-        )
-        .toList();
+    final items = controller.filteredStatuses.map((m) {
+      String? directFilePath;
+      if (m.documentUri.startsWith('file://')) {
+        directFilePath = Uri.parse(m.documentUri).toFilePath();
+      } else if (m.documentUri.startsWith('/')) {
+        directFilePath = m.documentUri;
+      }
+      return MediaViewerItem(
+        id: m.id,
+        uri: m.documentUri,
+        fileName: m.fileName,
+        mediaType: m.mediaType,
+        filePath: directFilePath,
+        thumbnailPath: controller.thumbnails[m.documentUri] ?? m.thumbnailPath,
+        durationMs: m.durationMs,
+        isSaved: controller.savedDocumentUris.contains(m.documentUri),
+        originalObject: m,
+      );
+    }).toList();
 
     MediaViewerPage.show(
       context,
@@ -86,17 +90,30 @@ class HomePage extends GetView<HomeController> {
         if (isLoading) {
           bodyContent = const Center(child: MyProgressIndicator());
         } else if (!hasPerm) {
+          final isLegacy = controller.isLegacyStorage.value;
+          final title = isLegacy
+              ? context.l10n.storagePermissionTitle
+              : (isBusiness
+                    ? context.l10n.safPermissionTitleBusiness
+                    : context.l10n.safPermissionTitle);
+          final subtitle = isLegacy
+              ? (isBusiness
+                    ? context.l10n.storagePermissionExplanationBusiness
+                    : context.l10n.storagePermissionExplanation)
+              : (isBusiness
+                    ? context.l10n.safPermissionExplanationBusiness
+                    : context.l10n.safPermissionExplanation);
+          final actionText = isLegacy
+              ? context.l10n.grantPermission
+              : context.l10n.selectFolder;
+
           bodyContent = Center(
             child: MyEmptyState(
               icon: AppIcons.folder,
-              title: isBusiness
-                  ? context.l10n.safPermissionTitleBusiness
-                  : context.l10n.safPermissionTitle,
-              subtitle: isBusiness
-                  ? context.l10n.safPermissionExplanationBusiness
-                  : context.l10n.safPermissionExplanation,
+              title: title,
+              subtitle: subtitle,
               onAction: controller.requestPermission,
-              actionText: context.l10n.selectFolder,
+              actionText: actionText,
             ),
           );
         } else if (error != null && controller.statuses.isEmpty) {

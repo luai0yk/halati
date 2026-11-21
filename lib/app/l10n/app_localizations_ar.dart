@@ -352,4 +352,28 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get contributeOnGitHub => 'المساهمة عبر GitHub';
+
+  @override
+  String get storagePermissionTitle => 'إذن التخزين مطلوب';
+
+  @override
+  String get storagePermissionExplanation =>
+      'لعرض وحفظ حالات واتساب، يرجى منح إذن الوصول إلى وحدة التخزين.';
+
+  @override
+  String get storagePermissionExplanationBusiness =>
+      'لعرض وحفظ حالات واتساب للأعمال، يرجى منح إذن الوصول إلى وحدة التخزين.';
+
+  @override
+  String get grantPermission => 'منح الإذن';
+
+  @override
+  String get permissionDeniedForeverTitle => 'إذن التخزين مطلوب';
+
+  @override
+  String get permissionDeniedForeverMessage =>
+      'تم رفض إذن التخزين بشكل دائم. يرجى تفعيل الإذن من إعدادات التطبيق لعرض وحفظ الحالات.';
+
+  @override
+  String get openSettings => 'فتح الإعدادات';
 }

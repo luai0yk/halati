@@ -15,6 +15,10 @@ class SafPermissionDeniedFailure extends Failure {
   const SafPermissionDeniedFailure([super.message = 'SAF permission was denied by user', super.code]);
 }
 
+class SafPermanentlyDeniedFailure extends Failure {
+  const SafPermanentlyDeniedFailure([super.message = 'Storage permission was permanently denied by user', super.code]);
+}
+
 class SafFolderInvalidFailure extends Failure {
   const SafFolderInvalidFailure([super.message = 'The selected folder is not the WhatsApp .Statuses folder', super.code]);
 }

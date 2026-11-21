@@ -1,4 +1,4 @@
-import 'package:halati/core/enums/whatsapp_type.dart';
+ import 'package:halati/core/enums/whatsapp_type.dart';
 import 'package:halati/core/errors/failures.dart';
 import 'package:halati/core/services/cash/cash_keys.dart';
 import 'package:halati/core/services/cash/cash_service.dart';
@@ -27,6 +27,12 @@ class StatusRepositoryImpl implements StatusRepository {
     WhatsAppType type = WhatsAppType.whatsapp,
   ]) async {
     try {
+      final isLegacy = await _safDataSource.isLegacyStorage();
+      if (isLegacy) {
+        final perm = await _safDataSource.checkStoragePermission();
+        return Success(perm['granted'] == true);
+      }
+
       final storedUri = _cashService.getString(_safKey(type));
       if (storedUri == null || storedUri.isEmpty) {
         return const Success(false);
@@ -49,6 +55,20 @@ class StatusRepositoryImpl implements StatusRepository {
     WhatsAppType type = WhatsAppType.whatsapp,
   ]) async {
     try {
+      final isLegacy = await _safDataSource.isLegacyStorage();
+      if (isLegacy) {
+        final perm = await _safDataSource.requestStoragePermission();
+        if (perm['granted'] == true) {
+          await _cashService.setString(_safKey(type), 'legacy_storage');
+          _cachedStatuses.remove(type);
+          return const Success('legacy_storage');
+        } else if (perm['permanentlyDenied'] == true) {
+          return const FailureResult(SafPermanentlyDeniedFailure());
+        } else {
+          return const FailureResult(SafPermissionDeniedFailure());
+        }
+      }
+
       final selectedUri = await _safDataSource.requestDirectorySelection(
         isBusiness: type.isBusiness,
       );
@@ -95,14 +115,28 @@ class StatusRepositoryImpl implements StatusRepository {
     }
 
     try {
-      final storedUri = _cashService.getString(_safKey(type));
-      if (storedUri == null || storedUri.isEmpty) {
-        return const FailureResult(
-          SafPermissionDeniedFailure('No SAF folder configured'),
-        );
+      final isLegacy = await _safDataSource.isLegacyStorage();
+      final String targetUri;
+      if (isLegacy) {
+        final perm = await _safDataSource.checkStoragePermission();
+        if (perm['granted'] != true) {
+          return const FailureResult(SafPermissionDeniedFailure());
+        }
+        targetUri = 'legacy_storage';
+      } else {
+        final storedUri = _cashService.getString(_safKey(type));
+        if (storedUri == null || storedUri.isEmpty) {
+          return const FailureResult(
+            SafPermissionDeniedFailure('No SAF folder configured'),
+          );
+        }
+        targetUri = storedUri;
       }
 
-      final models = await _safDataSource.discoverStatuses(storedUri);
+      final models = await _safDataSource.discoverStatuses(
+        targetUri,
+        isBusiness: type.isBusiness,
+      );
       final mapped = models.map((m) => m.copyWith(whatsAppType: type)).toList();
       _cachedStatuses[type] = mapped;
       return Success(mapped);
@@ -202,4 +236,10 @@ class StatusRepositoryImpl implements StatusRepository {
       return FailureResult(MediaStoreSaveFailure(e.toString()));
     }
   }
+
+  @override
+  Future<bool> isLegacyStorage() => _safDataSource.isLegacyStorage();
+
+  @override
+  Future<void> openAppSettings() => _safDataSource.openAppSettings();
 }
